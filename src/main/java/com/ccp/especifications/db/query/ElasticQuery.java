@@ -8,7 +8,7 @@ import java.util.Map;
 import com.ccp.decorators.CcpMapDecorator;
 
 
-public abstract class ElasticQuery extends Component{
+public class ElasticQuery extends Component{
 	
 	public ElasticQuery() { 
 		super(null, "");
@@ -61,9 +61,14 @@ public abstract class ElasticQuery extends Component{
 		copy.values = copy.values.put("sort", asList);
 		return copy;
 	}
-	public abstract  <T extends Component> T getInstanceCopy();
+	@SuppressWarnings("unchecked")
+	protected <T extends Component> T getInstanceCopy() {
+		return (T)new ElasticQuery();
+	}
 
-	public abstract TransformOptions selectFrom(String... resourceName);
+	public CcpQueryExecutorDecorator selectFrom(CcpQueryExecutor requestExecutor, String... resourcesNames) {
+		return new CcpQueryExecutorDecorator(requestExecutor, resourcesNames);
+	}
 	
 	public ElasticQuery setScrollId(String scrollId) {
 		ElasticQuery clone = super.putProperty("scroll_id", scrollId);

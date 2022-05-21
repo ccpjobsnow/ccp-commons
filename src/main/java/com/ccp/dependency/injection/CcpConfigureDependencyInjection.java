@@ -10,14 +10,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class CcpDependencyInjection {
+public class CcpConfigureDependencyInjection {
 
 	public static void injectAllDependencies(Class<?> clazz) {
 		
-		if(clazz.isAnnotationPresent(CcpInjection.class) == false) {
-			throw new RuntimeException("A classe " + clazz.getName() + " não está anotada com  " + CcpInjection.class.getName());
+		if(clazz.isAnnotationPresent(CcpDependencyInjectionDirectives.class) == false) {
+			throw new RuntimeException("A classe " + clazz.getName() + " não está anotada com  " + CcpDependencyInjectionDirectives.class.getName());
 		}
-		CcpInjection annotation = clazz.getAnnotation(CcpInjection.class);
+		CcpDependencyInjectionDirectives annotation = clazz.getAnnotation(CcpDependencyInjectionDirectives.class);
 		Class<?> businessPackage = annotation.businessPackage();
 		Class<?>[] implementationPackages = annotation.implementationPackages();
 		injectDependencies(businessPackage, implementationPackages);
