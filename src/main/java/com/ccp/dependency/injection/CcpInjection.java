@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Target({ ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface JnInjection {
+public @interface CcpInjection {
 	Class<?> businessPackage();
 	Class<?>[] implementationPackages();
 	

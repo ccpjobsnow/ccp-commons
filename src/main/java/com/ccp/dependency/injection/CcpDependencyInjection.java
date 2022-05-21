@@ -10,14 +10,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class JnDependencyInjection {
+public class CcpDependencyInjection {
 
 	public static void injectAllDependencies(Class<?> clazz) {
 		
-		if(clazz.isAnnotationPresent(JnInjection.class) == false) {
-			throw new RuntimeException("A classe " + clazz.getName() + " não está anotada com a anotação " + JnInjection.class.getName());
+		if(clazz.isAnnotationPresent(CcpInjection.class) == false) {
+			throw new RuntimeException("A classe " + clazz.getName() + " não está anotada com a anotação " + CcpInjection.class.getName());
 		}
-		JnInjection annotation = clazz.getAnnotation(JnInjection.class);
+		CcpInjection annotation = clazz.getAnnotation(CcpInjection.class);
 		Class<?> businessPackage = annotation.businessPackage();
 		Class<?>[] implementationPackages = annotation.implementationPackages();
 		injectDependencies(businessPackage, implementationPackages);
@@ -55,7 +55,7 @@ public class JnDependencyInjection {
 		
 		Field[] fields = clazz.getDeclaredFields();
 		for (Field field : fields) {
-			if(field.isAnnotationPresent(JnEspecification.class) == false) {
+			if(field.isAnnotationPresent(CcpEspecification.class) == false) {
 				continue;
 			}
 			Class<?> especification = field.getType();
@@ -140,10 +140,10 @@ public class JnDependencyInjection {
 
 
 	private static  boolean isValidClass(Class<?> clazz) {
-		if(clazz.isAnnotationPresent(JnBusiness.class)){
+		if(clazz.isAnnotationPresent(CcpBusiness.class)){
 			return true;
 		}
-		if(clazz.isAnnotationPresent(JnImplementation.class)){
+		if(clazz.isAnnotationPresent(CcpImplementation.class)){
 			return true;
 		}
 		return false;
