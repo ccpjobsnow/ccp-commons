@@ -17,9 +17,9 @@ public final class CcpHttpHandler {
 	}
 	
 	
-	public CcpMapDecorator executeHttpRequest() {
+	public CcpMapDecorator executeHttpRequest(String url, String method, CcpMapDecorator headers, CcpMapDecorator body) {
 		
-		CcpMapDecorator _package = this.ccpHttp.executeHttpRequest();
+		CcpMapDecorator _package = this.ccpHttp.executeHttpRequest(url, method, headers, body);
 	
 		int status = _package.getAsIntegerNumber("status");
 		

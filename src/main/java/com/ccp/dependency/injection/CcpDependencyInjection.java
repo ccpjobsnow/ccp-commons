@@ -15,7 +15,7 @@ public class CcpDependencyInjection {
 	public static void injectAllDependencies(Class<?> clazz) {
 		
 		if(clazz.isAnnotationPresent(CcpInjection.class) == false) {
-			throw new RuntimeException("A classe " + clazz.getName() + " não está anotada com a anotação " + CcpInjection.class.getName());
+			throw new RuntimeException("A classe " + clazz.getName() + " não está anotada com  " + CcpInjection.class.getName());
 		}
 		CcpInjection annotation = clazz.getAnnotation(CcpInjection.class);
 		Class<?> businessPackage = annotation.businessPackage();
@@ -66,6 +66,11 @@ public class CcpDependencyInjection {
 			implementation = injectDependencies(implementation, dependencies);
 			field.setAccessible(true);
 			try {
+				Object value = field.get(instance);
+				boolean alreadyInjected = value != null;
+				if(alreadyInjected) {
+					return instance;
+				}
 				field.set(implementation, instance);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
