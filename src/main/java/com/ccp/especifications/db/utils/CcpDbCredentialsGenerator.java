@@ -1,4 +1,4 @@
-package com.ccp.especifications.db.credentials.generator;
+package com.ccp.especifications.db.utils;
 
 import com.ccp.decorators.CcpMapDecorator;
 
