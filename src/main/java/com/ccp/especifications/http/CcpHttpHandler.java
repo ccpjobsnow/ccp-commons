@@ -8,14 +8,14 @@ public final class CcpHttpHandler {
 
 	private final CcpMapDecorator flows;
 	
-	private final CcpHttp ccpHttp;
+	private final CcpHttpRequester ccpHttp;
 
-	public CcpHttpHandler(CcpMapDecorator flows, CcpHttp ccpHttp) {
+	public CcpHttpHandler(CcpMapDecorator flows, CcpHttpRequester ccpHttp) {
 		this.flows = flows;
 		this.ccpHttp = ccpHttp;
 	}
 
-	public CcpHttpHandler(Integer httpStatus, CcpHttp ccpHttp) {
+	public CcpHttpHandler(Integer httpStatus, CcpHttpRequester ccpHttp) {
 		this.flows = new CcpMapDecorator().put("" + httpStatus, CcpConstants.doNothing);
 		this.ccpHttp = ccpHttp;
 	}
