@@ -12,12 +12,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.ccp.constantes.CcpConstants;
 import com.ccp.process.CcpProcess;
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class CcpMapDecorator {
-	private static Gson gson = new Gson();
 	public final Map<String, Object> content;
 	
 	public CcpMapDecorator() {
@@ -44,7 +43,7 @@ public class CcpMapDecorator {
 	@SuppressWarnings("unchecked")
 	static Map<String, Object> getMap(String json) {
 		try {
-			Map<String, Object> fromJson = gson.fromJson(json, Map.class);
+			Map<String, Object> fromJson = CcpConstants.gson.fromJson(json, Map.class);
 			return fromJson;
 			
 		} catch (Exception e) {
@@ -234,7 +233,7 @@ public class CcpMapDecorator {
 
 
 	public String asJson() {
-		return gson.toJson(this.content);
+		return CcpConstants.gson.toJson(this.content);
 	}
 	
 	public String asPrettyJson() {
