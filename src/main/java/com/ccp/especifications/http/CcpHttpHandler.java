@@ -1,5 +1,6 @@
 package com.ccp.especifications.http;
 
+import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.process.CcpProcess;
 
@@ -15,8 +16,7 @@ public final class CcpHttpHandler {
 	}
 
 	public CcpHttpHandler(Integer httpStatus, CcpHttp ccpHttp) {
-		CcpProcess byPass = x -> x;
-		this.flows = new CcpMapDecorator().put("" + httpStatus, byPass);
+		this.flows = new CcpMapDecorator().put("" + httpStatus, CcpConstants.doNothing);
 		this.ccpHttp = ccpHttp;
 	}
 	
