@@ -6,4 +6,5 @@ import com.ccp.process.CcpProcess;
 public interface CcpConstants {
 	CcpProcess returnEmpty = x -> new CcpMapDecorator();
 	CcpProcess doNothing = x -> x;
+
 }
