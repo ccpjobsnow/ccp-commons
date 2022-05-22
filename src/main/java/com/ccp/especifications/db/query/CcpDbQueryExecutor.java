@@ -12,7 +12,7 @@ public interface CcpDbQueryExecutor {
 	
 	CcpMapDecorator update(ElasticQuery elasticQuery, String[] resourcesNames, CcpMapDecorator newValues) ;
 	
-	void consumeQueryResult(CcpDbQueryExecutor requestExecutor, ElasticQuery elasticQuery, String[] resourcesNames, String scrollTime, int size, Consumer<List<CcpMapDecorator> > consumer, String...fields);
+	void consumeQueryResult(ElasticQuery elasticQuery, String[] resourcesNames, String scrollTime, int size, Consumer<List<CcpMapDecorator> > consumer, String...fields);
 
 	long total(ElasticQuery elasticQuery, String[] resourcesNames);
 

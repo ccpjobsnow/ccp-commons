@@ -33,7 +33,7 @@ public class CcpQueryExecutorDecorator {
 
 	public void consumeQueryResult(String scrollTime, int size,
 			Consumer<List<CcpMapDecorator>> consumer, String... fields) {
-		this.requestExecutor.consumeQueryResult(this.requestExecutor, this.elasticQuery, this.resourcesNames, scrollTime, size, consumer, fields);
+		this.requestExecutor.consumeQueryResult(this.elasticQuery, this.resourcesNames, scrollTime, size, consumer, fields);
 	}
 
 	public long total() {
