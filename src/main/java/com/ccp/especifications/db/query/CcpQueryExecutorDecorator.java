@@ -7,54 +7,57 @@ import com.ccp.decorators.CcpMapDecorator;
 
 public class CcpQueryExecutorDecorator {
 
-	private final CcpQueryExecutor requestExecutor;
+	private final CcpDbQueryExecutor requestExecutor;
 	
 	private final String[] resourcesNames;
+	
+	private final ElasticQuery elasticQuery;
 
-	protected CcpQueryExecutorDecorator(CcpQueryExecutor requestExecutor, String... resourcesNames) {
+	protected CcpQueryExecutorDecorator(CcpDbQueryExecutor requestExecutor, ElasticQuery elasticQuery, String... resourcesNames) {
 		this.requestExecutor = requestExecutor;
 		this.resourcesNames = resourcesNames;
+		this.elasticQuery = elasticQuery;
 	}
 
 	public CcpMapDecorator getTermsStatis(String fieldName) {
-		return requestExecutor.getTermsStatis(this.resourcesNames, fieldName);
+		return this.requestExecutor.getTermsStatis(this.elasticQuery, this.resourcesNames, fieldName);
 	}
 
 	public CcpMapDecorator delete() {
-		return requestExecutor.delete(this.resourcesNames);
+		return this.requestExecutor.delete(this.elasticQuery, this.resourcesNames);
 	}
 
 	public CcpMapDecorator update(CcpMapDecorator newValues) {
-		return requestExecutor.update(this.resourcesNames, newValues);
+		return this.requestExecutor.update(this.elasticQuery, this.resourcesNames, newValues);
 	}
 
 	public void consumeQueryResult(String scrollTime, int size,
 			Consumer<List<CcpMapDecorator>> consumer, String... fields) {
-		requestExecutor.consumeQueryResult(this.resourcesNames, scrollTime, size, consumer, fields);
+		this.requestExecutor.consumeQueryResult(this.requestExecutor, this.elasticQuery, this.resourcesNames, scrollTime, size, consumer, fields);
 	}
 
 	public long total() {
-		return requestExecutor.total(this.resourcesNames);
+		return this.requestExecutor.total(this.elasticQuery, this.resourcesNames);
 	}
 
 	public List<CcpMapDecorator> getResultAsList(String... fieldsToSearch) {
-		return requestExecutor.getResultAsList(this.resourcesNames, fieldsToSearch);
+		return this.requestExecutor.getResultAsList(this.elasticQuery, this.resourcesNames, fieldsToSearch);
 	}
 
 	public CcpMapDecorator getResultAsMap(String field) {
-		return requestExecutor.getResultAsMap(this.resourcesNames, field);
+		return this.requestExecutor.getResultAsMap(this.elasticQuery, this.resourcesNames, field);
 	}
 
 	public CcpMapDecorator getResultAsPackage(String... array) {
-		return requestExecutor.getResultAsPackage(this.resourcesNames, array);
+		return this.requestExecutor.getResultAsPackage(this.elasticQuery, array);
 	}
 
 	public CcpMapDecorator getMap(String field) {
-		return requestExecutor.getMap(this.resourcesNames, field);
+		return this.requestExecutor.getMap(this.elasticQuery, this.resourcesNames, field);
 	}
 
 	public CcpMapDecorator getAggregations() {
-		return requestExecutor.getAggregations(this.resourcesNames);
+		return requestExecutor.getAggregations(this.elasticQuery, this.resourcesNames);
 	};
 	
 	

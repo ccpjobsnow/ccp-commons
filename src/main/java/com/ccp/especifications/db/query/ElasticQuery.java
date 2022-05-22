@@ -66,8 +66,8 @@ public class ElasticQuery extends Component{
 		return (T)new ElasticQuery();
 	}
 
-	public CcpQueryExecutorDecorator selectFrom(CcpQueryExecutor requestExecutor, String... resourcesNames) {
-		return new CcpQueryExecutorDecorator(requestExecutor, resourcesNames);
+	public CcpQueryExecutorDecorator selectFrom(CcpDbQueryExecutor requestExecutor, String... resourcesNames) {
+		return new CcpQueryExecutorDecorator(requestExecutor, this, resourcesNames);
 	}
 	
 	public ElasticQuery setScrollId(String scrollId) {

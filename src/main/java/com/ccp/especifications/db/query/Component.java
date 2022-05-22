@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 
 abstract class Component {
 
-	CcpMapDecorator values = new CcpMapDecorator();
+	public CcpMapDecorator values = new CcpMapDecorator();
 	protected Component parent;
 	protected String name;
 	

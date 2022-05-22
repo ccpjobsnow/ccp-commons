@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.ccp.decorators.CcpMapDecorator;
 
-public interface CcpBulkExecutor {
+public interface CcpDbBulkExecutor {
 
 	CcpMapDecorator commit(List<CcpMapDecorator> records, CcpBulkOperation bulkOperation, String index);
 	
