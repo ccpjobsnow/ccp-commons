@@ -8,5 +8,5 @@ public interface CcpEmailSender {
 		this.send(subject, emailTo, message, "text/html");
 	}
 
-	void notifyFailure(Throwable e, String email);
+	String sendFailure(Throwable e);
 }

@@ -33,6 +33,10 @@ public class CcpMapDecorator {
 		}
 		this.content = obj.content;
 	}
+	
+	public CcpMapDecorator(Throwable e) {
+		this(getErrorDetails(e));
+	}
 
 	public CcpMapDecorator(String json) {
 		this(getMap(json));
@@ -57,7 +61,7 @@ public class CcpMapDecorator {
 	}
 
 	//ThrowableDecorator getErrorDetails()
-	public CcpMapDecorator getErrorDetails(Throwable e) {
+	private static CcpMapDecorator getErrorDetails(Throwable e) {
 
 		CcpMapDecorator jr = new CcpMapDecorator();
 
