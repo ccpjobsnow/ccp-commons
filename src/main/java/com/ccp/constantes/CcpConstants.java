@@ -4,7 +4,7 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.process.CcpProcess;
 
 public interface CcpConstants {
-	CcpProcess returnEmpty = x -> new CcpMapDecorator();
+	CcpMapDecorator emptyJson = new CcpMapDecorator();
+	CcpProcess returnEmpty = x -> CcpConstants.emptyJson;
 	CcpProcess doNothing = x -> x;
-
 }
