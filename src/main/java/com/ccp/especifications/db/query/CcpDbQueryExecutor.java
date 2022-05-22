@@ -20,7 +20,7 @@ public interface CcpDbQueryExecutor {
 	
 	CcpMapDecorator getResultAsMap(ElasticQuery elasticQuery, String[] resourcesNames, String field);
 
-	CcpMapDecorator getResultAsPackage(ElasticQuery elasticQuery, String[] resourcesNames, String ...array);
+	CcpMapDecorator getResultAsPackage(String url, String method, int expectedStatus, ElasticQuery elasticQuery, String[] resourcesNames, String ...array);
 
 	CcpMapDecorator getMap(ElasticQuery elasticQuery, String[] resourcesNames, String field);
 	

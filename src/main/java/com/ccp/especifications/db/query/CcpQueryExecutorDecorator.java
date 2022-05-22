@@ -19,6 +19,10 @@ public class CcpQueryExecutorDecorator {
 		this.elasticQuery = elasticQuery;
 	}
 
+	public CcpMapDecorator getResultAsPackage(String url, String method, int expectedStatus,  String... array) {
+		return this.requestExecutor.getResultAsPackage(url, method, expectedStatus, this.elasticQuery, this.resourcesNames, array);
+	}
+
 	public CcpMapDecorator getTermsStatis(String fieldName) {
 		return this.requestExecutor.getTermsStatis(this.elasticQuery, this.resourcesNames, fieldName);
 	}
@@ -46,10 +50,6 @@ public class CcpQueryExecutorDecorator {
 
 	public CcpMapDecorator getResultAsMap(String field) {
 		return this.requestExecutor.getResultAsMap(this.elasticQuery, this.resourcesNames, field);
-	}
-
-	public CcpMapDecorator getResultAsPackage(String... array) {
-		return this.requestExecutor.getResultAsPackage(this.elasticQuery, array);
 	}
 
 	public CcpMapDecorator getMap(String field) {
