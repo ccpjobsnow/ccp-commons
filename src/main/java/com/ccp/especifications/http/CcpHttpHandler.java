@@ -21,34 +21,25 @@ public final class CcpHttpHandler {
 	}
 	
 	
-	public CcpMapDecorator executeHttpRequest(String url, String method, CcpMapDecorator headers, CcpMapDecorator body) {
+	public <V> V executeHttpRequest(String url, String method, CcpMapDecorator headers, CcpMapDecorator body, CcpHttpResponseTransform<V> transformer) {
 		
-		CcpMapDecorator _package = this.ccpHttp.executeHttpRequest(url, method, headers, body);
-	
-		int status = _package.getAsIntegerNumber("status");
-		
-		CcpProcess flow = this.flows.getAsObject("" + status);
-		if(flow == null) {
-			throw new RuntimeException("Sem tratamento para o http status: " + status);
-		}
-		CcpMapDecorator response = _package.getSubMap("response");
-		CcpMapDecorator execute = flow.execute(response);
-		return execute;
+		V executeHttpRequest = this.executeHttpRequest(url, method, headers, body.asJson(), transformer);
+		return executeHttpRequest;
 	}
 
-	public CcpMapDecorator executeHttpRequest(String url, String method, CcpMapDecorator headers, String body) {
+	public <V>V executeHttpRequest(String url, String method, CcpMapDecorator headers, String body, CcpHttpResponseTransform<V> transformer) {
 		
-		CcpMapDecorator _package = this.ccpHttp.executeHttpRequest(url, method, headers, body);
+		CcpHttpResponse _package = this.ccpHttp.executeHttpRequest(url, method, headers, body);
 	
-		int status = _package.getAsIntegerNumber("status");
+		int status = _package.httpStatus;
 		
 		CcpProcess flow = this.flows.getAsObject("" + status);
 		if(flow == null) {
-			throw new RuntimeException("Sem tratamento para o http status: " + status);
+			throw new RuntimeException("Status http não esperado: " + status);
 		}
-		CcpMapDecorator response = _package.getSubMap("response");
-		CcpMapDecorator execute = flow.execute(response);
-		return execute;
+		
+		V tranform = transformer.transform(_package);
+		return tranform;
 	}
 	
 	

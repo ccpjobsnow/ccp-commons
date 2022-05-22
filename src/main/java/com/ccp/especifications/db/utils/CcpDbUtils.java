@@ -1,14 +1,15 @@
 package com.ccp.especifications.db.utils;
 
 import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.especifications.http.CcpHttpResponseTransform;
 
 public interface CcpDbUtils {
 
-	CcpMapDecorator executeHttpRequest(String url, String method, int expectedStatus, CcpMapDecorator body, String[] resources);
+	<V> V executeHttpRequest(String url, String method, int expectedStatus, CcpMapDecorator body, String[] resources, CcpHttpResponseTransform<V> transformer);
 
-	CcpMapDecorator executeHttpRequest(String url, String method,  int expectedStatus, String body, CcpMapDecorator headers);
+	<V> V executeHttpRequest(String url, String method,  int expectedStatus, String body, CcpMapDecorator headers, CcpHttpResponseTransform<V> transformer);
 
-	CcpMapDecorator executeHttpRequest(String url, String method, CcpMapDecorator flows, CcpMapDecorator body);
+	<V> V executeHttpRequest(String url, String method, CcpMapDecorator flows, CcpMapDecorator body, CcpHttpResponseTransform<V> transformer);
 
-	CcpMapDecorator executeHttpRequest(String url, String method, int expectedStatus, CcpMapDecorator body);
+	<V> V executeHttpRequest(String url, String method, int expectedStatus, CcpMapDecorator body, CcpHttpResponseTransform<V> transformer);
 }
