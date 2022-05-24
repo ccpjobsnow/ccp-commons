@@ -5,17 +5,17 @@ import com.ccp.decorators.CcpMapDecorator;
 public interface CcpInstantMessenger {
 
 	
-	void sendMessageToSupport(String message);
+	void sendMessageToSupport(String botToken, String message);
 	
-	Long getMembersCount(Long chatId);
+	Long getMembersCount(String botToken, Long chatId);
 	
-	void sendSlowlyMessage(String message, Long chatId, Long replyTo);
+	void sendSlowlyMessage(String botToken, String message, Long chatId, Long replyTo);
 
-	void sendMessage(String message, Long chatId, Long replyTo);
+	void sendMessage(String botToken, String message, Long chatId, Long replyTo);
 	
-	String getFileName(CcpMapDecorator messageData);
+	String getFileName(String botToken, CcpMapDecorator messageData);
 	
-	String extractTextFromMessage(CcpMapDecorator messageData);
+	String extractTextFromMessage(String botToken, CcpMapDecorator messageData);
 	
 	
 }

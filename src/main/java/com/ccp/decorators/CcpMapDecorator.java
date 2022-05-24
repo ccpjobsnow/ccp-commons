@@ -106,7 +106,7 @@ public class CcpMapDecorator {
 	public Integer getAsIntegerNumber(String property) {
 		
 		try {
-			return new Double ("" + this.content.get(property)).intValue();
+			return Double.valueOf("" + this.content.get(property)).intValue();
 		} catch (Exception e) {
 			return null;
 		}
@@ -118,7 +118,7 @@ public class CcpMapDecorator {
 		
 		try {
 			String asString = this.getAsString(property);
-			return new Boolean (asString.toLowerCase());
+			return Boolean.valueOf(asString.toLowerCase());
 		} catch (Exception e) {
 			return false;
 		}
@@ -138,7 +138,7 @@ public class CcpMapDecorator {
 	public Double getAsDoubleNumber(String property) {
 		
 		try {
-			return new Double ("" + this.content.get(property));
+			return Double.valueOf("" + this.content.get(property));
 		} catch (Exception e) {
 			return null;
 		}
@@ -149,7 +149,7 @@ public class CcpMapDecorator {
 		
 		try {
 			String asString = this.getAsString(property);
-			Double double1 = new Double(asString);
+			Double double1 = Double.valueOf(asString);
 			long longValue = double1.longValue();
 			return new Date(longValue);
 		} catch (Exception e) {

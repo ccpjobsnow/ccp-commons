@@ -3,6 +3,7 @@ package com.ccp.dependency.injection;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
@@ -82,8 +83,10 @@ public class CcpConfigureDependencyInjection {
 	
 	private static  Object instanciate(Class<?> x) {
 		try {
-			return x.newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
+			Constructor<?> declaredConstructor = x.getDeclaredConstructor();
+			declaredConstructor.setAccessible(true);
+			return declaredConstructor.newInstance();
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -101,7 +104,9 @@ public class CcpConfigureDependencyInjection {
 			}
 			Class<?> _interface = interfaces[0];
 			try {
-				Object newInstance = class1.newInstance();
+				Constructor<?> declaredConstructor = class1.getDeclaredConstructor();
+				declaredConstructor.setAccessible(true);
+				Object newInstance = declaredConstructor.newInstance();
 				map.put(_interface, newInstance);
 			} catch (Exception e) {
 				throw new RuntimeException("Problema com a classe " + className, e);

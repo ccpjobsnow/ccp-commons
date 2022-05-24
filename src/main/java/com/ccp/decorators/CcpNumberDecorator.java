@@ -10,7 +10,7 @@ public class CcpNumberDecorator {
 	public boolean isLong() {
 		try {
 			
-			new Long(this.content);
+			Long.valueOf(this.content);
 			return true;
 		} catch (Exception e) {
 			return false;
@@ -20,7 +20,7 @@ public class CcpNumberDecorator {
 	public boolean isDouble() {
 		try {
 			
-			new Double(this.content);
+			Double.valueOf(this.content);
 			return true;
 		} catch (Exception e) {
 			return false;

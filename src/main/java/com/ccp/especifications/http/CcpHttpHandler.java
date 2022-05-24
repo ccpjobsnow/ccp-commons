@@ -2,6 +2,7 @@ package com.ccp.especifications.http;
 
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.exceptions.db.UnexpectedHttpStatus;
 import com.ccp.process.CcpProcess;
 
 public final class CcpHttpHandler {
@@ -20,6 +21,10 @@ public final class CcpHttpHandler {
 		this.ccpHttp = ccpHttp;
 	}
 	
+	public <V> V executeHttpSimplifiedGet(String url, CcpHttpResponseTransform<V> transformer) {
+		V executeHttpRequest = this.executeHttpRequest(url, "GET", CcpConstants.emptyJson, CcpConstants.emptyJson, transformer);
+		return executeHttpRequest;
+	}
 	
 	public <V> V executeHttpRequest(String url, String method, CcpMapDecorator headers, CcpMapDecorator body, CcpHttpResponseTransform<V> transformer) {
 		
@@ -35,7 +40,7 @@ public final class CcpHttpHandler {
 		
 		CcpProcess flow = this.flows.getAsObject("" + status);
 		if(flow == null) {
-			throw new RuntimeException("Status http não esperado: " + status);
+			throw new UnexpectedHttpStatus(_package);
 		}
 		
 		V tranform = transformer.transform(_package);
