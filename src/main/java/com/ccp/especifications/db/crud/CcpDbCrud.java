@@ -1,10 +1,10 @@
-package com.ccp.especifications.db.loaddata;
+package com.ccp.especifications.db.crud;
 
 import java.util.List;
 
 import com.ccp.decorators.CcpMapDecorator;
 
-public interface CppDatabaseLoadData {
+public interface CcpDbCrud {
 	
 	List<CcpMapDecorator> getManyByIds(CcpMapDecorator filterEspecifications);
 	List<CcpMapDecorator> getManyByIds(String[] ids, String tableName);
