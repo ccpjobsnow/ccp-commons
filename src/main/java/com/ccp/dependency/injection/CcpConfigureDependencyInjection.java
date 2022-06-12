@@ -35,9 +35,17 @@ public class CcpConfigureDependencyInjection {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
+	public static <T> T getImplementantionInstance(Class<?> implementationPackage, Class<?> requiredInterface) {
+		Map<Class<?>, Object> dependencies = getDependencies(implementationPackage);
+		Object implementation = dependencies.get(requiredInterface);
+		return (T) implementation;
+	}	
+	
+	
 	private static  Map<Class<?>, Object> injectDependencies(Class<?> implementationPackage) {
 		
-		Map<Class<?>, Object> dependencies = getDependencies(implementationPackage.getPackage().getName());
+		Map<Class<?>, Object> dependencies = getDependencies(implementationPackage);
 		Map<Class<?>, Object> newDependencies = new HashMap<>();
 		dependencies.keySet().forEach(clazz -> {
 			Object instance = dependencies.get(clazz);
@@ -45,6 +53,11 @@ public class CcpConfigureDependencyInjection {
 			newDependencies.put(clazz, implementation);
 		});
 		return newDependencies;
+	}
+
+	private static Map<Class<?>, Object> getDependencies(Class<?> implementationPackage) {
+		Map<Class<?>, Object> dependencies = getDependencies(implementationPackage.getPackage().getName());
+		return dependencies;
 	}
 
 	private static  Object injectDependencies (Object instance, Map<Class<?>, Object> dependencies) {
@@ -91,6 +104,8 @@ public class CcpConfigureDependencyInjection {
 		}
 	}
 
+	
+	
 
 	private static  Map<Class<?>, Object> getDependencies(String implementationPackage) {
 		Map<Class<?>, Object> map = new HashMap<>();
