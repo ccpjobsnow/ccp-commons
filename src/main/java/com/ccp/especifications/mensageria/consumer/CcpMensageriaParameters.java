@@ -1,5 +1,7 @@
 package com.ccp.especifications.mensageria.consumer;
 
+import java.util.function.Function;
+
 import com.ccp.decorators.CcpMapDecorator;
 
 public class CcpMensageriaParameters {
@@ -7,13 +9,13 @@ public class CcpMensageriaParameters {
 	public final String tenantName;
 	public final Object credentialsFile;
 	public final int threadsQuantity;
-	public final Object messageReceiver;
 	public final CcpMapDecorator otherParameters;
+	public final Function<CcpMensageriaParameters, Object> messageReceiverProducer;
 	public CcpMensageriaParameters(String topicName, String tenantName, Object credentialsFile, int threadsQuantity,
-			Object messageReceiver, CcpMapDecorator otherParameters) {
+			Function<CcpMensageriaParameters, Object> messageReceiverProducer, CcpMapDecorator otherParameters) {
+		this.messageReceiverProducer = messageReceiverProducer;
 		this.credentialsFile = credentialsFile;
 		this.threadsQuantity = threadsQuantity;
-		this.messageReceiver = messageReceiver;
 		this.otherParameters = otherParameters;
 		this.tenantName = tenantName;
 		this.topicName = topicName;
@@ -21,12 +23,12 @@ public class CcpMensageriaParameters {
 
 	@SuppressWarnings("unchecked")
 	public <T> T getMessageReceiver() {
-		return (T) this.messageReceiver;
+		return(T) this.messageReceiverProducer.apply(this);
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> T getCredentialsFile() {
-		return (T) this.credentialsFile;
+	public <U> U getCredentialsFile() {
+		return (U) this.credentialsFile;
 	}
 	
 }
