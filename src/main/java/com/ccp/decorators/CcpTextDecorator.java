@@ -1,6 +1,7 @@
 package com.ccp.decorators;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.text.Normalizer;
 import java.util.Base64;
 import java.util.Base64.Decoder;
@@ -11,7 +12,7 @@ import java.util.Set;
 public class CcpTextDecorator {
 	public final String content;
 
-	protected CcpTextDecorator(String content) {
+	public CcpTextDecorator(String content) {
 		this.content = content;
 	}
 
@@ -48,6 +49,13 @@ public class CcpTextDecorator {
 
 		return sb.toString();
 	}
+	
+	public InputStream getByteArrayInputStream() {
+		byte[] byteArrayFromBase64String = this.getByteArrayFromBase64String();
+		ByteArrayInputStream is = new ByteArrayInputStream(byteArrayFromBase64String);
+		return is;
+	}
+	
 	public byte[] getByteArrayFromBase64String() {
 		String[] split = this.content.split(",");
 		String str = split[0];

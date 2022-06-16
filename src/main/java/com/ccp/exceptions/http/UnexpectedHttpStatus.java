@@ -1,4 +1,4 @@
-package com.ccp.exceptions.db;
+package com.ccp.exceptions.http;
 
 import com.ccp.especifications.http.CcpHttpResponse;
 

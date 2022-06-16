@@ -2,7 +2,7 @@ package com.ccp.especifications.http;
 
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.exceptions.db.UnexpectedHttpStatus;
+import com.ccp.exceptions.http.UnexpectedHttpStatus;
 import com.ccp.process.CcpProcess;
 
 public final class CcpHttpHandler {

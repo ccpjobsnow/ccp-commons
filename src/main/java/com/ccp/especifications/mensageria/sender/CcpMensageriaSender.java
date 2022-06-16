@@ -2,9 +2,11 @@ package com.ccp.especifications.mensageria.sender;
 
 import com.ccp.decorators.CcpMapDecorator;
 
-public interface CcpMessageriaSender {
+public interface CcpMensageriaSender {
 
-	void send(CcpMapDecorator msg, String topic);
+	default void send(CcpMapDecorator msg, String topic) {
+		this.send(msg.asJson(), topic);
+	}
 
 	void send(String msg, String topic);
 	
