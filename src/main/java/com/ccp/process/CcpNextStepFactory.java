@@ -22,14 +22,9 @@ public abstract class CcpNextStepFactory {
 		return this;
 	}
 	
-	public CcpStepResult executeAllSteps(CcpMapDecorator values) {
-		CcpStepResult executeDecisionTree = this.executeTheNextStep(values);
-		return executeDecisionTree;
-	}
-
-	private CcpStepResult executeTheNextStep(CcpMapDecorator currentValues) {
+	public CcpStepResult executeAllSteps(CcpMapDecorator currentValues) {
 		
-		CcpStepResult stepResult = this.executeDecisionTree(currentValues);
+		CcpStepResult stepResult = this.executeThisStep(currentValues);
 		
 		boolean thereAreNotNextSteps = this.decisionTree.isEmpty();
 		
@@ -44,11 +39,11 @@ public abstract class CcpNextStepFactory {
 			throw new CcpFlow(stepResult);
 		}
 		
-		CcpStepResult execute = nextProcess.executeTheNextStep(stepResult.data);
+		CcpStepResult execute = nextProcess.executeAllSteps(stepResult.data);
 		return execute;
 	}
 
-	public abstract CcpStepResult executeDecisionTree(CcpMapDecorator values);
+	public abstract CcpStepResult executeThisStep(CcpMapDecorator values);
 
 	
 	
