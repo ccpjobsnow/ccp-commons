@@ -13,7 +13,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.ccp.constantes.CcpConstants;
-import com.ccp.process.CcpProcess;
 import com.google.gson.GsonBuilder;
 
 public class CcpMapDecorator {
@@ -174,11 +173,6 @@ public class CcpMapDecorator {
 			return falseValue;
 		}
 		return trueValue;
-	}
-	
-	public CcpMapDecorator get(CcpProcess processo) {
-		CcpMapDecorator processar = processo.execute(this);
-		return processar;
 	}
 	
 	public String getDecimalFormat(String key, String format, String defaultValue) {

@@ -12,7 +12,7 @@ import java.util.Set;
 public class CcpTextDecorator {
 	public final String content;
 
-	public CcpTextDecorator(String content) {
+	protected CcpTextDecorator(String content) {
 		this.content = content;
 	}
 

@@ -10,5 +10,5 @@ public interface CcpDbCrud {
 	List<CcpMapDecorator> getManyByIds(String[] ids, String tableName);
 	List<CcpMapDecorator> getManyById(String id, String... tables);
 	CcpMapDecorator getOneById(String id, String tableName);
-	
+	boolean exists(String id, String tableName);
 }

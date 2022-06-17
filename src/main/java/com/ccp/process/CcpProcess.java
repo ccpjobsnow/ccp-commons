@@ -5,4 +5,5 @@ import com.ccp.decorators.CcpMapDecorator;
 public interface CcpProcess{
 	
 	CcpMapDecorator execute(CcpMapDecorator values);
+	
 }
