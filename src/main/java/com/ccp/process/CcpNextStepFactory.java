@@ -27,7 +27,7 @@ public abstract class CcpNextStepFactory {
 		return executeDecisionTree;
 	}
 
-	private CcpStepResult executeTheNextStep( CcpMapDecorator currentValues) {
+	private CcpStepResult executeTheNextStep(CcpMapDecorator currentValues) {
 		
 		CcpStepResult stepResult = this.executeDecisionTree(currentValues);
 		
