@@ -23,28 +23,28 @@ public abstract class CcpNextStepFactory {
 	}
 	
 	public CcpStepResult executeAllSteps(CcpMapDecorator values) {
-		CcpStepResult executeDecisionTree = this.executeTheNextStep(this, values);
+		CcpStepResult executeDecisionTree = this.executeTheNextStep(values);
 		return executeDecisionTree;
 	}
 
-	private CcpStepResult executeTheNextStep(CcpNextStepFactory currentProcess, CcpMapDecorator currentValues) {
+	private CcpStepResult executeTheNextStep( CcpMapDecorator currentValues) {
 		
-		CcpStepResult stepResult = currentProcess.executeDecisionTree(currentValues);
+		CcpStepResult stepResult = this.executeDecisionTree(currentValues);
 		
-		boolean thereAreNotNextSteps = currentProcess.decisionTree.isEmpty();
+		boolean thereAreNotNextSteps = this.decisionTree.isEmpty();
 		
 		if(thereAreNotNextSteps) {
-			return new CcpStepResult(stepResult.data, stepResult.status, currentProcess);
+			return new CcpStepResult(stepResult.data, stepResult.status, this);
 		}
 
-		CcpNextStepFactory nextProcess = currentProcess.decisionTree.get(stepResult.status);
+		CcpNextStepFactory nextProcess = this.decisionTree.get(stepResult.status);
 		boolean unexpectedStatus = nextProcess == null;
 
 		if(unexpectedStatus) {
 			throw new CcpFlow(stepResult);
 		}
 		
-		CcpStepResult execute = currentProcess.executeTheNextStep(nextProcess, stepResult.data);
+		CcpStepResult execute = nextProcess.executeTheNextStep(stepResult.data);
 		return execute;
 	}
 
