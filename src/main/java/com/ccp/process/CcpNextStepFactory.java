@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.exceptions.process.CcpStepResult;
+import com.ccp.exceptions.process.CcpFlow;
 
 public abstract class CcpNextStepFactory {
 	
