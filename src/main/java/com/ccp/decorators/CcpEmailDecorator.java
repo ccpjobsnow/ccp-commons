@@ -182,7 +182,7 @@ public class CcpEmailDecorator {
 	}
 
 	//EmailDecorator isNonProfessionalDomain()
-	public  boolean isNonProfessional() {
+	public  boolean isFreelancerDomain() {
 		String domain = this.getDomain();
 
 		boolean contains = nonProfessionalDomains.contains(domain);

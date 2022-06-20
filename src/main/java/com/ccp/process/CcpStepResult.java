@@ -6,28 +6,28 @@ public class CcpStepResult{
 
 	public final CcpMapDecorator data;
 	
-	public final String businessName;
+	public final String business;
 
-	public final String flowName;
+	public final String step;
 
 	public final int status;
 
-	public CcpStepResult(CcpMapDecorator data, int status, CcpNextStepFactory flow) {
+	public CcpStepResult(CcpMapDecorator data, int status, CcpNextStep currentStep) {
+
 		CcpMapDecorator pastSteps = data.getInternalMap("pastSteps");
-		String flowName = flow.getClass().getName();
 		
-		if(pastSteps.containsAllKeys(flowName)) {
-			throw new RuntimeException("It is not allowed repeated steps: " + flowName);
-		}
-		pastSteps = pastSteps.put(flowName, data.removeKey("pastSteps"));
+		String step = currentStep.getClass().getName();
+		
+		pastSteps = pastSteps.put(step, data.removeKey("pastSteps"));
+		
 		this.data = data.put("pastSteps", pastSteps);
-		this.businessName = flow.businessName;
-		this.flowName = flowName;
+		this.business = currentStep.businessName;
 		this.status = status;
+		this.step = step;
 	}
 
 	public CcpMapDecorator getData() {
-		return this.data.put("businessName", this.businessName).put("flowName", this.flowName);
+		return this.data.put("business", this.business).put("step", this.step);
 	}
 	
 	
