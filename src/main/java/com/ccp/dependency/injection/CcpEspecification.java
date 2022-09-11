@@ -9,7 +9,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CcpEspecification {
 	
-	Class<? extends CcpImplementationProvider> value() default DefaultImplementationProvider.class;
 	
-	public static abstract class DefaultImplementationProvider implements CcpImplementationProvider {}
 }
