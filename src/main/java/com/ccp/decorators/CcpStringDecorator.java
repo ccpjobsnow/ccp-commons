@@ -36,4 +36,8 @@ public class CcpStringDecorator {
 		return new CcpMapDecorator(this.content);
 	}
 	
+	public CcpPasswordDecorator password() {
+		return new CcpPasswordDecorator(this.content);
+	}
+	
 }

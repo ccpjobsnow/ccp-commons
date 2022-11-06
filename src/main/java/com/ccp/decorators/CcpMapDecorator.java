@@ -37,7 +37,7 @@ public class CcpMapDecorator {
 		this(getErrorDetails(e));
 	}
 
-	public CcpMapDecorator(String json) {
+	protected CcpMapDecorator(String json) {
 		this(getMap(json));
 	}
 	@SuppressWarnings("unchecked")

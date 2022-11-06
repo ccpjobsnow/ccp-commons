@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.decorators.CcpStringDecorator;
 
 public class CcpHttpResponse {
 	
@@ -18,7 +19,7 @@ public class CcpHttpResponse {
 	}
 
 	public CcpMapDecorator asSingleRecord() {
-		return new CcpMapDecorator(this.httpResponse);
+		return new CcpStringDecorator(this.httpResponse).map();
 	}
 	
 	@SuppressWarnings("unchecked")
