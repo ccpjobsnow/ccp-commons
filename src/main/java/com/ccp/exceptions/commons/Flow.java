@@ -15,6 +15,16 @@ public class Flow extends RuntimeException{
 		this.status = status;
 	}
 	
+	public Flow(CcpMapDecorator values, int status) {
+		this.values = values;
+		this.status = status;
+	}
+
+	public Flow(CcpMapDecorator values, Integer status, String message) {
+		super(message);
+		this.values = values;
+		this.status = status;
+	}
 	
 	
 }

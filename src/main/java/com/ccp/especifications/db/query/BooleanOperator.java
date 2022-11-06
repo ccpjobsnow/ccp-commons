@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.especifications.db.table.CcpDbTableField;
 
 abstract class BooleanOperator extends Component{
 
@@ -15,22 +16,22 @@ abstract class BooleanOperator extends Component{
 		super(parent, name);
 	}
 
-	public <T extends BooleanOperator> T term(String field, Object value) {
+	public <T extends BooleanOperator> T term(CcpDbTableField field, Object value) {
 		T addCondition = this.addCondition(field, value, "term");
 		return addCondition;
 	}
 
-	public <T extends BooleanOperator> T prefix(String field, Object value) {
+	public <T extends BooleanOperator> T prefix(CcpDbTableField field, Object value) {
 		T addCondition = this.addCondition(field, value, "prefix");
 		return addCondition;
 	}
 
-	public <T extends BooleanOperator> T match(String field, Object value) {
+	public <T extends BooleanOperator> T match(CcpDbTableField field, Object value) {
 		T addCondition = this.addCondition(field, value, "match");
 		return addCondition;
 	}
 
-	public <T extends BooleanOperator> T matchPhrase(String field, Object value) {
+	public <T extends BooleanOperator> T matchPhrase(CcpDbTableField field, Object value) {
 		T addCondition = this.addCondition(field, value, "match_phrase");
 		return addCondition;
 	}
@@ -47,18 +48,18 @@ abstract class BooleanOperator extends Component{
 
 	
 	public <T extends BooleanOperator> T exists(String field) {
-		T addCondition = this.addCondition("field", field, "exists");
+		T addCondition = this.addCondition(() -> "field", field, "exists");
 		return addCondition;
 	}
 
 	@SuppressWarnings("unchecked")
-	protected <T extends BooleanOperator> T addCondition(String field, Object value, String key) {
+	protected <T extends BooleanOperator> T addCondition(CcpDbTableField field, Object value, String key) {
 		BooleanOperator clone = this.copy();
 		if(value == null) {
 			return (T)clone;
 		}
 		
-		Map<String, Object> map = new CcpMapDecorator().put(field, value).getContent();
+		Map<String, Object> map = new CcpMapDecorator().put(field.name(), value).getContent();
 		Map<String, Object> outerMap = new CcpMapDecorator().put(key, map).getContent();
 		
 		clone.items.addAll(this.items);

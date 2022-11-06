@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.ccp.constantes.CcpConstants;
+import com.ccp.process.CcpProcess;
 import com.google.gson.GsonBuilder;
 
 public class CcpMapDecorator {
@@ -267,6 +268,12 @@ public class CcpMapDecorator {
 	public CcpMapDecorator put(String key, Collection<CcpMapDecorator> list) {
 		List<Map<String, Object>> collect = list.stream().map(x -> x.content).collect(Collectors.toList());
 		CcpMapDecorator put = this.put(key, collect);
+		return put;
+	}
+	
+	
+	public CcpMapDecorator put(String key, CcpProcess process) {
+		CcpMapDecorator put = this.put(key, process);
 		return put;
 	}
 	

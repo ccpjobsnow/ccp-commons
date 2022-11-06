@@ -1,5 +1,7 @@
 package com.ccp.especifications.db.query;
 
+import com.ccp.especifications.db.table.CcpDbTableField;
+
 public final class MustNot extends BooleanOperator{
 
 	 MustNot(Component parent) {
@@ -12,20 +14,20 @@ public final class MustNot extends BooleanOperator{
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public MustNot prefix(String field, Object value) {
+	public MustNot prefix(CcpDbTableField field, Object value) {
 		return super.prefix(field, value);
 	}
 
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public MustNot matchPhrase(String field, Object value) {
+	public MustNot matchPhrase(CcpDbTableField field, Object value) {
 		return super.matchPhrase(field, value);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public MustNot term(String field, Object value) {
+	public MustNot term(CcpDbTableField field, Object value) {
 		return super.term(field, value);
 	}
 

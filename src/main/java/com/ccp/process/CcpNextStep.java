@@ -17,6 +17,12 @@ public abstract class CcpNextStep {
 		this.decisionTree = new HashMap<>();
 	}
 	
+	public CcpNextStep() {
+		this.businessName = this.getClass().getSimpleName();
+		this.decisionTree = new HashMap<>();
+		
+	}
+	
 	public CcpNextStep addStep(int status, CcpNextStep nextProcess) {
 		this.decisionTree.put(status, nextProcess);
 		return this;

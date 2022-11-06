@@ -4,11 +4,12 @@ import com.ccp.decorators.CcpMapDecorator;
 
 public interface CcpMensageriaSender {
 
-	default void send(CcpMapDecorator msg, String topic) {
+	default CcpMapDecorator send(CcpMapDecorator msg, CcpMensageriaTopic topic) {
 		this.send(msg.asJson(), topic);
+		return msg;
 	}
 
-	void send(String msg, String topic);
+	void send(String msg, CcpMensageriaTopic topic);
 	
 	
 }

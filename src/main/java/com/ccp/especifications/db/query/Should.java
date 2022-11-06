@@ -1,5 +1,7 @@
 package com.ccp.especifications.db.query;
 
+import com.ccp.especifications.db.table.CcpDbTableField;
+
 public final class Should  extends BooleanOperator {
 
 	Should(Component parent) {
@@ -8,7 +10,7 @@ public final class Should  extends BooleanOperator {
 	}
 	@Override
 	@SuppressWarnings("unchecked")
-	public Should prefix(String field, Object value) {
+	public Should prefix(CcpDbTableField field, Object value) {
 		return super.prefix(field, value);
 	}
 
@@ -24,13 +26,13 @@ public final class Should  extends BooleanOperator {
 		return addChild;
 	}
 	
-	public Should matchPhrase2(String field, Object value) {
+	public Should matchPhrase2(CcpDbTableField field, Object value) {
 		return super.matchPhrase(field, value);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public Should match(String field, Object value) {
+	public Should match(CcpDbTableField field, Object value) {
 		return super.match(field, value);
 	}
 	
@@ -50,7 +52,7 @@ public final class Should  extends BooleanOperator {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public Should term(String field, Object value) {
+	public Should term(CcpDbTableField field, Object value) {
 		return super.term(field, value);
 	}
 	@SuppressWarnings("unchecked")

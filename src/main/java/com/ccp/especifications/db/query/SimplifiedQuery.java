@@ -3,6 +3,7 @@ package com.ccp.especifications.db.query;
 import java.util.Map;
 
 import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.especifications.db.table.CcpDbTableField;
 
 public final class SimplifiedQuery  extends BooleanOperator {
 
@@ -12,7 +13,7 @@ public final class SimplifiedQuery  extends BooleanOperator {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public SimplifiedQuery prefix(String field, Object value) {
+	public SimplifiedQuery prefix(CcpDbTableField field, Object value) {
 		return super.prefix(field, value);
 	}
 
@@ -53,19 +54,19 @@ public final class SimplifiedQuery  extends BooleanOperator {
 	 }
 		@Override
 		@SuppressWarnings("unchecked")
-		public SimplifiedQuery matchPhrase(String field, Object value) {
+		public SimplifiedQuery matchPhrase(CcpDbTableField field, Object value) {
 			return super.matchPhrase(field, value);
 		}
 
 		@Override
 		@SuppressWarnings("unchecked")
-		public SimplifiedQuery term(String field, Object value) {
+		public SimplifiedQuery term(CcpDbTableField field, Object value) {
 			return super.term(field, value);
 		}
 		
 		@Override
 		@SuppressWarnings("unchecked")
-		public SimplifiedQuery match(String field, Object value) {
+		public SimplifiedQuery match(CcpDbTableField field, Object value) {
 			return super.match(field, value);
 		}
 		@SuppressWarnings("unchecked")
@@ -73,7 +74,6 @@ public final class SimplifiedQuery  extends BooleanOperator {
 			return super.exists(field);
 		}
 		
-		@SuppressWarnings("unchecked")
 		protected SimplifiedQuery addCondition(String field, Object value, String key) {
 			Map<String, Object> map = new CcpMapDecorator().put(field, value).getContent();
 			Map<String, Object> outerMap = new CcpMapDecorator().put(key, map).getContent();
