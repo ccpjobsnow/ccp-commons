@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.especifications.db.crud.CcpDbCrud;
 import com.ccp.exceptions.commons.Flow;
+import com.ccp.exceptions.db.CcpRecordNotFound;
+import com.ccp.process.CcpProcess;
 
 public interface CcpDbTable {
 
@@ -69,10 +71,16 @@ public interface CcpDbTable {
 		}
 	} 
 
-	default CcpMapDecorator get(CcpMapDecorator data) {
-		String id = this.getId(data, this.getTimeOption(), this.getKeys());
-		CcpMapDecorator oneById = this.getCrud().getOneById(this, id);
-		return oneById;
+	default CcpMapDecorator get(CcpMapDecorator data, CcpProcess ifNotFound) {
+		try {
+			String id = this.getId(data, this.getTimeOption(), this.getKeys());
+			CcpMapDecorator oneById = this.getCrud().getOneById(this, id);
+			return oneById;
+			
+		} catch (CcpRecordNotFound e) {
+			CcpMapDecorator execute = ifNotFound.execute(data);
+			return execute;
+		}
 	}
 
 	default boolean exists(CcpMapDecorator data) {
@@ -92,4 +100,10 @@ public interface CcpDbTable {
 	CcpDbTableField[] getKeys();
 
 	CcpDbCrud getCrud();
+	
+	default void remove(CcpMapDecorator values) {
+		String id = this.getId(values, this.getTimeOption(), this.getKeys());
+		this.getCrud().remove(id);
+	}
+
 }
