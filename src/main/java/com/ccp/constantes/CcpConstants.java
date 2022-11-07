@@ -14,7 +14,6 @@ public interface CcpConstants {
 	Gson gson = new Gson();
 	Predicate<String> doNotEvaluate = x -> false;
 	Consumer<String> byPass = x -> {};
-	CcpProcess getFirstTry = values -> values.getSubMap("email").put("tries",0);
 
 
 }
