@@ -89,10 +89,11 @@ public interface CcpDbTable {
 		return exists;
 	}
 	
-	default boolean save(CcpMapDecorator data) {
+	default CcpMapDecorator save(CcpMapDecorator data) {
 		String id = this.getId(data, this.getTimeOption(), this.getKeys());
 		boolean updated = this.getCrud().updateOrSave(data, this, id);
-		return updated;
+		CcpMapDecorator put = data.put("_updated",updated);
+		return put;
 	}
 
 	TimeOption getTimeOption();
