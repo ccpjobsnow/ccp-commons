@@ -1,7 +1,6 @@
-package com.ccp.especifications.db.crud;
+package com.ccp.especifications.db.table;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.especifications.db.table.CcpDbTable;
 import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
 
@@ -27,6 +26,13 @@ public class TransferDataBetweenTables extends CcpNextStep {
 		}
 		
 		CcpMapDecorator remove = this.origin.remove(values);
+
+		boolean theOriginDataIsMissing = remove.isEmpty();
+		
+		if(theOriginDataIsMissing) {
+			return new CcpStepResult(values, 200, this);
+		}
+		
 		this.target.save(remove);
 		CcpMapDecorator renameKey = tables.renameKey(this.origin.name(), this.target.name());
 		CcpMapDecorator put = values.put("_tables", renameKey);

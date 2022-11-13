@@ -1,7 +1,6 @@
-package com.ccp.especifications.db.crud;
+package com.ccp.especifications.db.table;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.especifications.db.table.CcpDbTable;
 import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
 
