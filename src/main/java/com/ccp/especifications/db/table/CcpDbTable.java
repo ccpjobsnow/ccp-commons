@@ -102,9 +102,10 @@ public interface CcpDbTable {
 
 	CcpDbCrud getCrud();
 	
-	default void remove(CcpMapDecorator values) {
+	default CcpMapDecorator remove(CcpMapDecorator values) {
 		String id = this.getId(values, this.getTimeOption(), this.getKeys());
-		this.getCrud().remove(id);
+		CcpMapDecorator remove = this.getCrud().remove(id);
+		return remove;
 	}
 
 }

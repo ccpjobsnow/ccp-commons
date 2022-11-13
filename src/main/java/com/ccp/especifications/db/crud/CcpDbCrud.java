@@ -16,5 +16,5 @@ public interface CcpDbCrud {
 	CcpMapDecorator getOneById(CcpDbTable tableName, String id);
 	boolean exists(CcpDbTable tableName, String id);
 	CcpMapDecorator findById(CcpMapDecorator values, CcpMapDecorator...roadMap) ;
-	void remove(String id);
+	CcpMapDecorator remove(String id);
 }
