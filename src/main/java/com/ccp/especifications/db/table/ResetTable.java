@@ -8,8 +8,6 @@ public class ResetTable extends CcpNextStep{
 	
 	private final CcpDbTable entity;
 	
-	
-	
 	public ResetTable(CcpDbTable entity) {
 		this.entity = entity;
 	}
