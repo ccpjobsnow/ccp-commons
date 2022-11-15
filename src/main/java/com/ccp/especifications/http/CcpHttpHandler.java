@@ -17,12 +17,12 @@ public final class CcpHttpHandler {
 	}
 
 	public CcpHttpHandler(Integer httpStatus, CcpHttpRequester ccpHttp) {
-		this.flows = new CcpMapDecorator().put("" + httpStatus, CcpConstants.doNothing);
+		this.flows = new CcpMapDecorator().put("" + httpStatus, CcpConstants.DO_NOTHING);
 		this.ccpHttp = ccpHttp;
 	}
 	
 	public <V> V executeHttpSimplifiedGet(String url, CcpHttpResponseTransform<V> transformer) {
-		V executeHttpRequest = this.executeHttpRequest(url, "GET", CcpConstants.emptyJson, CcpConstants.emptyJson, transformer);
+		V executeHttpRequest = this.executeHttpRequest(url, "GET", CcpConstants.EMPTY_JSON, CcpConstants.EMPTY_JSON, transformer);
 		return executeHttpRequest;
 	}
 	

@@ -8,12 +8,12 @@ import com.ccp.process.CcpProcess;
 import com.google.gson.Gson;
 
 public interface CcpConstants {
-	CcpMapDecorator emptyJson = new CcpMapDecorator();
-	CcpProcess returnEmpty = x -> CcpConstants.emptyJson;
-	CcpProcess doNothing = x -> x;
-	Gson gson = new Gson();
-	Predicate<String> doNotEvaluate = x -> false;
-	Consumer<String> byPass = x -> {};
+	CcpMapDecorator EMPTY_JSON = new CcpMapDecorator();
+	CcpProcess RETURNS_EMPTY_JSON = x -> CcpConstants.EMPTY_JSON;
+	CcpProcess DO_NOTHING = x -> x;
+	Gson GSON = new Gson();
+	Predicate<String> TO_DISCARD = x -> false;
+	Consumer<String> EXECUTE_NOTHING = x -> {};
 
 
 }

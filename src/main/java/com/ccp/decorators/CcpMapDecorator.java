@@ -43,7 +43,7 @@ public class CcpMapDecorator {
 	@SuppressWarnings("unchecked")
 	static Map<String, Object> getMap(String json) {
 		try {
-			Map<String, Object> fromJson = CcpConstants.gson.fromJson(json, Map.class);
+			Map<String, Object> fromJson = CcpConstants.GSON.fromJson(json, Map.class);
 			return fromJson;
 			
 		} catch (Exception e) {
@@ -228,7 +228,7 @@ public class CcpMapDecorator {
 
 
 	public String asJson() {
-		return CcpConstants.gson.toJson(this.content);
+		return CcpConstants.GSON.toJson(this.content);
 	}
 	
 	public String asPrettyJson() {

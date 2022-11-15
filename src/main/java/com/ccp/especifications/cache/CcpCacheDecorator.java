@@ -14,7 +14,7 @@ public class CcpCacheDecorator {
 	}
 
 	public <V> V get(CcpMapTransform<V> taskToGetValue, int cacheSeconds) {
-		return this.cache.get(this.key, CcpConstants.emptyJson, taskToGetValue, cacheSeconds);
+		return this.cache.get(this.key, CcpConstants.EMPTY_JSON, taskToGetValue, cacheSeconds);
 	}
 
 	public <V> V getOrDefault(V defaultValue) {

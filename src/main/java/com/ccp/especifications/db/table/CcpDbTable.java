@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.especifications.db.crud.CcpDbCrud;
-import com.ccp.exceptions.commons.Flow;
+import com.ccp.exceptions.commons.CcpFlow;
 import com.ccp.exceptions.db.CcpRecordNotFound;
 import com.ccp.process.CcpProcess;
 
@@ -36,7 +36,7 @@ public interface CcpDbTable {
 		List<CcpDbTableField> missingKeys = Arrays.asList(keys).stream().filter(key -> values.getAsString(key.name()).trim().isEmpty()).collect(Collectors.toList());
 		
 		if(missingKeys.isEmpty() == false) {
-			throw new Flow(values, 500, "The following keys are missing to compose an id: " + missingKeys + ". Current values: " + values, null);
+			throw new CcpFlow(values, 500, "The following keys are missing to compose an id: " + missingKeys + ". Current values: " + values, null);
 		}
 		
 		

@@ -9,10 +9,10 @@ public class CcpDependencyInjection {
 
 	static Map<Class<?>, Object> instances = new HashMap<>();
 	
-	public static void loadAllInstances(CcpImplementationProvider... providers) {
+	public static void loadAllInstances(CcpModuleExporter... providers) {
 		
-		for (CcpImplementationProvider provider : providers) {
-			Object implementation = provider.getImplementation();
+		for (CcpModuleExporter provider : providers) {
+			Object implementation = provider.export();
 			Class<? extends Object> class1 = implementation.getClass();
 			Class<?>[] interfaces = class1.getInterfaces();
 			Class<?> especification = interfaces[0];
@@ -36,7 +36,7 @@ public class CcpDependencyInjection {
 	
 	private static void injectDependencies(Field field, Object instance) {
 		
-		boolean annotationPresent = field.isAnnotationPresent(CcpEspecification.class);
+		boolean annotationPresent = field.isAnnotationPresent(CcpSpecification.class);
 		
 		if(annotationPresent == false) {
 			return;

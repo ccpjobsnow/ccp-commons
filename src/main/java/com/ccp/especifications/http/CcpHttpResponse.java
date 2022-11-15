@@ -25,7 +25,7 @@ public class CcpHttpResponse {
 	@SuppressWarnings("unchecked")
 	public List<CcpMapDecorator> asListRecord(){
 		try {
-			List<CcpMapDecorator> fromJson = CcpConstants.gson.fromJson(this.httpResponse, List.class);
+			List<CcpMapDecorator> fromJson = CcpConstants.GSON.fromJson(this.httpResponse, List.class);
 			return fromJson; 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -35,7 +35,7 @@ public class CcpHttpResponse {
 	@SuppressWarnings("unchecked")
 	public List<Object> asListObject(){
 		try {
-			List<Object> fromJson = CcpConstants.gson.fromJson(this.httpResponse, List.class);
+			List<Object> fromJson = CcpConstants.GSON.fromJson(this.httpResponse, List.class);
 			return fromJson; 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
