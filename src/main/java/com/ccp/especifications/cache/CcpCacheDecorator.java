@@ -1,5 +1,6 @@
 package com.ccp.especifications.cache;
 
+import com.ccp.constantes.CcpConstants;
 import com.ccp.process.CcpMapTransform;
 
 public class CcpCacheDecorator {
@@ -13,7 +14,7 @@ public class CcpCacheDecorator {
 	}
 
 	public <V> V get(CcpMapTransform<V> taskToGetValue, int cacheSeconds) {
-		return this.cache.get(this.key, taskToGetValue, cacheSeconds);
+		return this.cache.get(this.key, CcpConstants.emptyJson, taskToGetValue, cacheSeconds);
 	}
 
 	public <V> V getOrDefault(V defaultValue) {
