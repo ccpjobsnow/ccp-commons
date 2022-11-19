@@ -36,13 +36,11 @@ public final class Should  extends BooleanOperator {
 		return super.match(field, value);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public Should matchPhrase(String field, Object value, double boost) {
 		Should addCondition = this.addCondition(field, value, "match_phrase", boost, "");
 		return addCondition;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public Should match(String field, Object value, double boost, String operator) {
 		Should addCondition = this.addCondition(field, value, "match", boost, operator);
 		return addCondition;
