@@ -39,5 +39,4 @@ public class CcpStringDecorator {
 	public CcpPasswordDecorator password() {
 		return new CcpPasswordDecorator(this.content);
 	}
-	
 }

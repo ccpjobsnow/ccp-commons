@@ -36,13 +36,13 @@ abstract class BooleanOperator extends Component{
 		return addCondition;
 	}
 
-	public <T extends BooleanOperator> T match(String field, Object value, double boost, String operator) {
-		T addCondition = this.addCondition(field, value, "match", boost, operator);
+	public <T extends BooleanOperator> T match(CcpDbTableField field, Object value, double boost, String operator) {
+		T addCondition = this.addCondition(field.name(), value, "match", boost, operator);
 		return addCondition;
 	}
 
-	public <T extends BooleanOperator> T matchPhrase(String field, Object value, double boost) {
-		T addCondition = this.addCondition(field, value, "match_phrase", boost, "");
+	public <T extends BooleanOperator> T matchPhrase(CcpDbTableField field, Object value, double boost) {
+		T addCondition = this.addCondition(field.name(), value, "match_phrase", boost, "");
 		return addCondition;
 	}
 

@@ -124,4 +124,21 @@ public class CcpTextDecorator {
 		return removed;
 	}
 
+	public boolean isLongNumber() {
+		try {
+			Long.valueOf(this.content);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	public boolean isDoubleNumber() {
+		try {
+			Double.valueOf(this.content);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
 }

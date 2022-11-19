@@ -54,7 +54,7 @@ public class ElasticQuery extends Component{
 		List<Object> asList = Arrays.asList(content);
 
 		if(copy.values.content.containsKey("sort")) {
-			List<Object> sort = copy.values.getAsList("sort");
+			List<Object> sort = copy.values.getAsObjectList("sort");
 			asList = new ArrayList<>(sort);
 			asList.add(content);
 		}

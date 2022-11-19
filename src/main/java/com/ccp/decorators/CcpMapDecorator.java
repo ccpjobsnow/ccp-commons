@@ -37,7 +37,7 @@ public class CcpMapDecorator {
 		this(getErrorDetails(e));
 	}
 
-	protected CcpMapDecorator(String json) {
+	public CcpMapDecorator(String json) {
 		this(getMap(json));
 	}
 	@SuppressWarnings("unchecked")
@@ -374,10 +374,18 @@ public class CcpMapDecorator {
 		return collect;
 	}
 
+	
+	public List<String> getAsStringList(String key){
+		List<String> collect = this.getAsObjectList(key).stream()
+				.filter(x -> x != null)
+				.map(x -> x.toString()).collect(Collectors.toList());
+		return collect;
+	}
+	
 	@SuppressWarnings("unchecked")
-	public List<Object> getAsList(String name) {
+	public List<Object> getAsObjectList(String key) {
 		
-		Object object = this.content.get(name);
+		Object object = this.content.get(key);
 		
 		if(object instanceof String) {
 			List<Object> lista = new ArrayList<>();
@@ -504,4 +512,63 @@ public class CcpMapDecorator {
 	public static interface Transformer<T>{
 		T transform(CcpMapDecorator md);
 	}
+	
+
+	public CcpMapDecorator whenHasKey(String key, CcpProcess process) {
+		
+		boolean hasNot = this.containsAllKeys(key) == false;
+		
+		if(hasNot) {
+			CcpMapDecorator response = new CcpMapDecorator(this);
+			return response;
+		}
+		
+		CcpMapDecorator execute = process.execute(this);
+		
+		return execute;
+	}
+
+	public CcpMapDecorator whenHasNotKey(String key, CcpProcess process) {
+		
+		boolean has = this.containsAllKeys(key);
+		
+		if(has) {
+			CcpMapDecorator response = new CcpMapDecorator(this);
+			return response;
+		}
+		
+		CcpMapDecorator execute = process.execute(this);
+		
+		return execute;
+	}
+
+	public CcpMapDecorator whenValueIsTrue(String key, CcpProcess process) {
+
+		boolean isFalse = this.getAsBoolean(key) == false;
+		
+		if(isFalse) {
+			CcpMapDecorator response = new CcpMapDecorator(this);
+			return response;
+		}
+		
+		CcpMapDecorator execute = process.execute(this);
+		
+		return execute;
+	}
+
+	public CcpMapDecorator whenValueIsFalse(String key, CcpProcess process) {
+	
+		boolean isTrue = this.getAsBoolean(key);
+		
+		if(isTrue) {
+			CcpMapDecorator response = new CcpMapDecorator(this);
+			return response;
+		}
+		
+		CcpMapDecorator execute = process.execute(this);
+		
+		return execute;
+	}
+
+
 }
