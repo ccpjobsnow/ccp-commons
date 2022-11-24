@@ -271,6 +271,10 @@ public class CcpMapDecorator {
 		return put;
 	}
 	
+	public CcpMapDecorator getTransformed(CcpProcess transformer) {
+		CcpMapDecorator execute = transformer.execute(this);
+		return execute;
+	}
 	
 	public CcpMapDecorator put(String key, CcpProcess process) {
 		CcpMapDecorator put = this.put(key, process);
@@ -542,33 +546,6 @@ public class CcpMapDecorator {
 		return execute;
 	}
 
-	public CcpMapDecorator whenValueIsTrue(String key, CcpProcess process) {
-
-		boolean isFalse = this.getAsBoolean(key) == false;
-		
-		if(isFalse) {
-			CcpMapDecorator response = new CcpMapDecorator(this);
-			return response;
-		}
-		
-		CcpMapDecorator execute = process.execute(this);
-		
-		return execute;
-	}
-
-	public CcpMapDecorator whenValueIsFalse(String key, CcpProcess process) {
-	
-		boolean isTrue = this.getAsBoolean(key);
-		
-		if(isTrue) {
-			CcpMapDecorator response = new CcpMapDecorator(this);
-			return response;
-		}
-		
-		CcpMapDecorator execute = process.execute(this);
-		
-		return execute;
-	}
 
 
 }

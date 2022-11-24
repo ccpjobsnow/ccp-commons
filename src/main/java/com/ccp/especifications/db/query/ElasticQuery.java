@@ -36,7 +36,7 @@ public class ElasticQuery extends Component{
 		return sort;
 	}
 	
-	private ElasticQuery addSorting(String sortType, String... fields) {
+	public ElasticQuery addSorting(String sortType, String... fields) {
 		ElasticQuery sort = this;
 		
 		for (String field : fields) {
