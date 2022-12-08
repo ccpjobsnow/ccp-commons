@@ -48,7 +48,8 @@ abstract class BooleanOperator extends Component{
 
 	
 	public <T extends BooleanOperator> T exists(String field) {
-		T addCondition = this.addCondition(() -> "field", field, "exists");
+		CcpDbTableField campo = null;//TODO RESOLVER
+		T addCondition = this.addCondition(campo, field, "exists");
 		return addCondition;
 	}
 

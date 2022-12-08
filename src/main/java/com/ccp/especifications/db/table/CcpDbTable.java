@@ -20,11 +20,11 @@ public interface CcpDbTable {
 	String name();
 	
 	
-	default String getId(CcpMapDecorator values,TimeOption timeOptioption, CcpDbTableField...keys) {
+	default String getId(CcpMapDecorator values,TimeOption timeOptioption, CcpDbTableField...fields) {
 		
 		String formattedCurrentDate = timeOptioption.getFormattedCurrentDate();
 		
-		if(keys.length == 0) {
+		if(fields.length == 0) {
 			
 			if(TimeOption.none != timeOptioption) {
 				return formattedCurrentDate;
@@ -33,14 +33,14 @@ public interface CcpDbTable {
 			return UUID.randomUUID().toString();
 		}
 		
-		List<CcpDbTableField> missingKeys = Arrays.asList(keys).stream().filter(key -> values.getAsString(key.name()).trim().isEmpty()).collect(Collectors.toList());
+		List<CcpDbTableField> missingKeys = Arrays.asList(fields).stream().filter(key -> key.isPrimaryKey()).filter(key -> values.getAsString(key.name()).trim().isEmpty()).collect(Collectors.toList());
 		
 		if(missingKeys.isEmpty() == false) {
 			throw new CcpFlow(values, 500, "The following keys are missing to compose an id: " + missingKeys + ". Current values: " + values, null);
 		}
 		
 		
-		List<String> collect = Arrays.asList(keys).stream().map(key -> values.getAsString(key.name()).trim()).collect(Collectors.toList());
+		List<String> collect = Arrays.asList(fields).stream().filter(key -> key.isPrimaryKey()).map(key -> values.getAsString(key.name()).trim()).collect(Collectors.toList());
 		collect = new ArrayList<>(collect);
 		collect.add(0, formattedCurrentDate);
 		String replace = collect.toString().replace(",", "_").replace("[", "").replace("]", "");
@@ -73,7 +73,7 @@ public interface CcpDbTable {
 
 	default CcpMapDecorator get(CcpMapDecorator data, CcpProcess ifNotFound) {
 		try {
-			String id = this.getId(data, this.getTimeOption(), this.getKeys());
+			String id = this.getId(data, this.getTimeOption(), this.getFields());
 			CcpMapDecorator oneById = this.getCrud().getOneById(this, id);
 			return oneById;
 			
@@ -84,26 +84,44 @@ public interface CcpDbTable {
 	}
 
 	default boolean exists(CcpMapDecorator data) {
-		String id = this.getId(data, this.getTimeOption(), this.getKeys());
+		String id = this.getId(data, this.getTimeOption(), this.getFields());
 		boolean exists = this.getCrud().exists(this, id);
 		return exists;
 	}
 	
-	default CcpMapDecorator save(CcpMapDecorator data) {
-		String id = this.getId(data, this.getTimeOption(), this.getKeys());
-		boolean updated = this.getCrud().updateOrSave(data, this, id);
-		CcpMapDecorator put = data.put("_updated",updated);
+	default CcpMapDecorator getOnlyExistingFields(CcpMapDecorator values) {
+		CcpDbTableField[] fields = this.getFields();
+		String[] array = Arrays.asList(fields).stream().map(x -> x.name()).collect(Collectors.toList()).toArray(new String[fields.length]);
+		CcpMapDecorator subMap = values.getSubMap(array);
+		return subMap;
+	}
+	
+	default CcpMapDecorator save(CcpMapDecorator values) {
+		CcpMapDecorator onlyExistingFields = this.getOnlyExistingFields(values);
+		CcpDbCrud crud = this.getCrud();
+		CcpDbTableField[] fields = this.getFields();
+		TimeOption timeOption = this.getTimeOption();
+		String id = this.getId(onlyExistingFields, timeOption, fields);
+
+		boolean updated = crud.updateOrSave(onlyExistingFields, this, id);
+
+		this.saveAuditory(id, this.name(), onlyExistingFields, updated);
+		
+		CcpMapDecorator put = onlyExistingFields.put("_updated",updated).put("_id", id);
+		
 		return put;
 	}
+	
+	void saveAuditory(String id, String entityName, CcpMapDecorator values, boolean updated);
 
 	TimeOption getTimeOption();
 
-	CcpDbTableField[] getKeys();
+	CcpDbTableField[] getFields();
 
 	CcpDbCrud getCrud();
 	
 	default CcpMapDecorator remove(CcpMapDecorator values) {
-		String id = this.getId(values, this.getTimeOption(), this.getKeys());
+		String id = this.getId(values, this.getTimeOption(), this.getFields());
 		CcpMapDecorator remove = this.getCrud().remove(id);
 		return remove;
 	}

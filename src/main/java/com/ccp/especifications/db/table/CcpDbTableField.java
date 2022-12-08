@@ -4,4 +4,5 @@ public interface CcpDbTableField {
 
 	String name();
 	
+	boolean isPrimaryKey();
 }
