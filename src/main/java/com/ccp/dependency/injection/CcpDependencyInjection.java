@@ -3,7 +3,9 @@ package com.ccp.dependency.injection;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class CcpDependencyInjection {
 
@@ -27,12 +29,13 @@ public class CcpDependencyInjection {
 	}
 	
 
-	private static void injectDependencies(Object instance) {
+	public static void injectDependencies(Object instance) {
 		Field[] declaredFields = instance.getClass().getDeclaredFields();
 		for (Field field : declaredFields) {
 			injectDependencies(field, instance);
 		}
 	}
+	static Set<String> fields = new HashSet<>();
 	
 	private static void injectDependencies(Field field, Object instance) {
 		
@@ -42,18 +45,20 @@ public class CcpDependencyInjection {
 			return;
 		}
 		try {
-			Object object = field.get(instance);
-			boolean alreadyInjected = object != null;
+			String fieldKey = instance.getClass().getName() + "." + field.getName();
 			
-			if(alreadyInjected) {
+			boolean esteFieldJaFoiRegistrado = fields.contains(fieldKey);
+			
+			if(esteFieldJaFoiRegistrado) {
 				return;
 			}
+			
+			field.setAccessible(true);
 			Class<?> especificationClass = field.getType();
 			Object implementation = instances.get(especificationClass);
 			injectDependencies(implementation);
-			field.setAccessible(true);
 			field.set(instance, implementation);
-			
+			fields.add(fieldKey);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
