@@ -8,7 +8,12 @@ import com.ccp.decorators.CcpMapDecorator;
 public interface CcpInstantMessenger {
 
 	
-	void sendMessageToSupport(String botToken, String message);
+	void sendMessageToSupport(CcpMapDecorator parameters, String message);
+
+	default void sendErrorToSupport(CcpMapDecorator parameters, Throwable e) {
+		this.sendMessageToSupport(parameters, new CcpMapDecorator(e).asJson());
+	}
+
 	
 	Long getMembersCount(String botToken, Long chatId);
 	

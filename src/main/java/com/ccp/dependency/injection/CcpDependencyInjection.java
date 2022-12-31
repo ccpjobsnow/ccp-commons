@@ -11,7 +11,7 @@ public class CcpDependencyInjection {
 
 	static Map<Class<?>, Object> instances = new HashMap<>();
 	
-	public static void loadAllInstances(CcpModuleExporter... providers) {
+	public static void loadAllImplementationsProviders(CcpModuleExporter... providers) {
 		
 		for (CcpModuleExporter provider : providers) {
 			Object implementation = provider.export();
@@ -39,13 +39,14 @@ public class CcpDependencyInjection {
 	
 	private static void injectDependencies(Field field, Object instance) {
 		
-		boolean annotationPresent = field.isAnnotationPresent(CcpSpecification.class);
+		boolean annotationPresent = field.isAnnotationPresent(CcpDependencyInject.class);
 		
 		if(annotationPresent == false) {
 			return;
 		}
+		
 		try {
-			String fieldKey = instance.getClass().getName() + "." + field.getName();
+			String fieldKey = instance.getClass().getName() + "." + instance.hashCode() + "." + field.getName();
 			
 			boolean esteFieldJaFoiRegistrado = fields.contains(fieldKey);
 			
@@ -54,6 +55,15 @@ public class CcpDependencyInjection {
 			}
 			
 			field.setAccessible(true);
+			
+			Object object = field.get(instance);
+			
+			if(object != null) {
+				injectDependencies(object);
+				fields.add(fieldKey);
+				return;
+			}
+			
 			Class<?> especificationClass = field.getType();
 			Object implementation = instances.get(especificationClass);
 			injectDependencies(implementation);
