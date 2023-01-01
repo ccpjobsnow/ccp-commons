@@ -34,16 +34,24 @@ public final class CcpHttpHandler {
 
 	public <V>V executeHttpRequest(String url, String method, CcpMapDecorator headers, String body, CcpHttpResponseTransform<V> transformer) {
 		
-		CcpHttpResponse _package = this.ccpHttp.executeHttpRequest(url, method, headers, body);
+		CcpHttpResponse response = this.ccpHttp.executeHttpRequest(url, method, headers, body);
 	
-		int status = _package.httpStatus;
+		int status = response.httpStatus;
 		
 		CcpProcess flow = this.flows.getAsObject("" + status);
+	
 		if(flow == null) {
-			throw new UnexpectedHttpStatus(_package);
+			throw new UnexpectedHttpStatus(response);
+		}
+	
+		boolean validSingleJson = response.isValidSingleJson();
+		
+		if(validSingleJson) {
+			CcpMapDecorator asSingleJson = response.asSingleJson();
+			flow.execute(asSingleJson);
 		}
 		
-		V tranform = transformer.transform(_package);
+		V tranform = transformer.transform(response);
 		return tranform;
 	}
 	

@@ -9,8 +9,6 @@ public class CcpTimeDecorator {
 	
 	public final Long time;
 	
-	
-	
 	public CcpTimeDecorator(Long time) {
 		this.time = time;
 	}
@@ -18,9 +16,25 @@ public class CcpTimeDecorator {
 		this(System.currentTimeMillis());
 	}
 
-	//TimeDecorator getPrimeiroDiaDesseMesEmMilisegundos()
+	public long getTotalDeSegundosDecorridosDesdeMeiaNoiteDesteDia() {
+		Long meiaNoite = this.getMeiaNoite();
+		long tempo = (this.time - meiaNoite) / 1000L;
+		return tempo;
+	}
+	
+	public Long getMeiaNoite() {
+		Calendar cal = this.getBrazilianCalendar();
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		long timeInMillis = cal.getTimeInMillis();
+		return timeInMillis;
+		
+	}
+	
 	public long getPrimeiroDiaDesseMesEmMilisegundos(int mes) {
-		Calendar cal = (Calendar)Calendar.getInstance().clone();
+		Calendar cal = this.getBrazilianCalendar();
 		cal.add(Calendar.MONTH, mes);
 		cal.set(Calendar.DAY_OF_MONTH, 1);
 		cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -31,9 +45,8 @@ public class CcpTimeDecorator {
 		return timeInMillis;
 	}
 	
-	//TimeDecorator getUltimoDiaDesseMesEmMilisegundos()
 	public long getUltimoDiaDesseMesEmMilisegundos(int mes) {
-		Calendar cal = (Calendar)Calendar.getInstance().clone();
+		Calendar cal = this.getBrazilianCalendar();
 		cal.add(Calendar.MONTH, mes);
 		cal.getLeastMaximum(Calendar.MONTH);
 		cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DATE));
@@ -45,13 +58,11 @@ public class CcpTimeDecorator {
 		return timeInMillis;
 	}
 
-	//TimeDecorator getFormattedCurrentDateTime()
 	public String getFormattedCurrentDateTime(String pattern) {
 
 		return this.getFormattedDateTime(pattern);
 	}
 
-	//TimeDecorator getFormattedDateTime()
 	public String getFormattedDateTime(String pattern) {
 		Date d = new Date();
 		d.setTime(this.time);
@@ -61,7 +72,6 @@ public class CcpTimeDecorator {
 	}
 
 
-	//TimeUtils getBrazilianCalendar()
 	public Calendar getBrazilianCalendar() {
 		TimeZone timeZone = TimeZone.getTimeZone("America/Sao_Paulo");
 		Calendar cal = Calendar.getInstance(timeZone);

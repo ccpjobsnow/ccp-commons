@@ -141,4 +141,13 @@ public class CcpTextDecorator {
 			return false;
 		}
 	}
+	
+	public boolean isValidSingleJson() {
+		try {
+			new CcpMapDecorator(this.content);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.decorators.CcpStringDecorator;
+import com.ccp.decorators.CcpTextDecorator;
 
 public class CcpHttpResponse {
 	
@@ -17,8 +18,15 @@ public class CcpHttpResponse {
 		this.httpResponse = httpResponse;
 		this.httpStatus = httpStatus;
 	}
-
-	public CcpMapDecorator asSingleRecord() {
+	
+	public boolean isValidSingleJson() {
+		CcpStringDecorator ccpStringDecorator = new CcpStringDecorator(this.httpResponse);
+		CcpTextDecorator text = ccpStringDecorator.text();
+		boolean validSingleJson = text.isValidSingleJson();
+		return validSingleJson;
+	}
+	
+	public CcpMapDecorator asSingleJson() {
 		return new CcpStringDecorator(this.httpResponse).map();
 	}
 	
