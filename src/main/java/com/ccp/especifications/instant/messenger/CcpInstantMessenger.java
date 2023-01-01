@@ -5,13 +5,13 @@ import com.ccp.decorators.CcpMapDecorator;
 public interface CcpInstantMessenger {
 
 	
-	Long getMembersCount(String botToken, Long chatId);
+	Long getMembersCount(CcpMapDecorator parameters);
 	
-	Long sendMessage(String botToken, String message, Long chatId, Long replyTo);
+	Long sendMessage(CcpMapDecorator parameters);
 	
-	String getFileName(String botToken, CcpMapDecorator messageData);
+	String getFileName(CcpMapDecorator parameters);
 	
-	String extractTextFromMessage(String botToken, CcpMapDecorator messageData);
+	String extractTextFromMessage(CcpMapDecorator parameters);
 	
 	@SuppressWarnings("serial")
 	public static class InstantMessageApiIsUnavailable extends RuntimeException {}

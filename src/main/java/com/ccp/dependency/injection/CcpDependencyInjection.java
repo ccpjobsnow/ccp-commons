@@ -28,8 +28,13 @@ public class CcpDependencyInjection {
 		}
 	}
 	
+	public static void injectDependencies(Object... instances) {
+		for (Object instance : instances) {
+			injectDependencies(instance);
+		}
+	}
 
-	public static void injectDependencies(Object instance) {
+	private static void injectDependencies(Object instance) {
 		Field[] declaredFields = instance.getClass().getDeclaredFields();
 		for (Field field : declaredFields) {
 			injectDependencies(field, instance);
@@ -66,6 +71,11 @@ public class CcpDependencyInjection {
 			
 			Class<?> especificationClass = field.getType();
 			Object implementation = instances.get(especificationClass);
+			
+			if(implementation == null) {
+				throw new RuntimeException("It is missing an implementation of the class " + especificationClass.getName());
+			}
+			
 			injectDependencies(implementation);
 			field.set(instance, implementation);
 			fields.add(fieldKey);

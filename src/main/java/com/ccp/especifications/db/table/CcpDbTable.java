@@ -3,12 +3,14 @@ package com.ccp.especifications.db.table;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.especifications.db.crud.CcpDbCrud;
 import com.ccp.exceptions.commons.CcpFlow;
 import com.ccp.exceptions.db.CcpRecordNotFound;
@@ -40,11 +42,23 @@ public interface CcpDbTable {
 		}
 		
 		
-		List<String> collect = Arrays.asList(fields).stream().filter(key -> key.isPrimaryKey()).map(key -> values.getAsString(key.name()).trim()).collect(Collectors.toList());
-		collect = new ArrayList<>(collect);
-		collect.add(0, formattedCurrentDate);
-		String replace = collect.toString().replace(",", "_").replace("[", "").replace("]", "");
-		return replace;
+		List<String> onlyPrimaryKeys = Arrays.asList(fields).stream().filter(key -> key.isPrimaryKey()).map(key -> values.getAsString(key.name()).trim()).collect(Collectors.toList());
+
+		if(onlyPrimaryKeys.isEmpty()) {
+			String hash = new CcpStringDecorator(formattedCurrentDate).hash().asString("SHA1");
+			return hash;
+		}
+		
+		Collections.sort(onlyPrimaryKeys);
+		onlyPrimaryKeys = new ArrayList<>(onlyPrimaryKeys);
+
+		if(formattedCurrentDate.trim().isEmpty() == false) {
+			onlyPrimaryKeys.add(0, formattedCurrentDate);
+		}
+		
+		String replace = onlyPrimaryKeys.toString().replace("[", "").replace("]", "");
+		String hash = new CcpStringDecorator(replace).hash().asString("SHA1");
+		return hash;
 	}
 	public static enum TimeOption{
 		none{

@@ -1,12 +1,21 @@
 package com.ccp.especifications.email;
 
+import com.ccp.decorators.CcpMapDecorator;
+
 public interface CcpEmailSender {
 
-	void send(String subject, String emailTo, String message, String format) ;
+	void send(CcpMapDecorator emailParameters) ;
 	
-	default void send(String subject, String emailTo, String message) {
-		this.send(subject, emailTo, message, "text/html");
-	}
+	@SuppressWarnings("serial")
+	public static class EmailWasNotSent extends RuntimeException {
+		public final String errorDetails;
 
-	String sendFailure(Throwable e);
+		public EmailWasNotSent(String errorDetails) {
+			this.errorDetails = errorDetails;
+		}
+		
+		
+		
+	}
+	
 }
