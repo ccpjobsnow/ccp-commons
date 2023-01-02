@@ -3,7 +3,7 @@ package com.ccp.especifications.db.query;
 import java.util.Map;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.especifications.db.table.CcpDbTableField;
+import com.ccp.especifications.db.utils.CcpDbTableField;
 
 
 public final class Aggregations extends Component{

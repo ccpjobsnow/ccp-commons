@@ -1,6 +1,6 @@
 package com.ccp.especifications.db.query;
 
-import com.ccp.especifications.db.table.CcpDbTableField;
+import com.ccp.especifications.db.utils.CcpDbTableField;
 
 public final class ShouldNot  extends BooleanOperator {
 

@@ -3,7 +3,7 @@ package com.ccp.especifications.db.bulk;
 import java.util.List;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.especifications.db.table.CcpDbTable;
+import com.ccp.especifications.db.utils.CcpDbTable;
 
 public interface CcpDbBulkExecutor {
 

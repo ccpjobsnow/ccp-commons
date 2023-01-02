@@ -1,4 +1,4 @@
-package com.ccp.especifications.db.table;
+package com.ccp.especifications.db.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

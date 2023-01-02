@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.especifications.db.table.CcpDbTableField;
+import com.ccp.especifications.db.utils.CcpDbTableField;
 
 abstract class BooleanOperator extends Component{
 

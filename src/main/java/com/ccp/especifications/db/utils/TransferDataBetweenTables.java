@@ -1,4 +1,4 @@
-package com.ccp.especifications.db.table;
+package com.ccp.especifications.db.utils;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.process.CcpNextStep;

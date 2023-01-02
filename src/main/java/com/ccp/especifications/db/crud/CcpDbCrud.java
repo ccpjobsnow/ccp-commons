@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.especifications.db.table.CcpDbTable;
+import com.ccp.especifications.db.utils.CcpDbTable;
 
 public interface CcpDbCrud {
 	
