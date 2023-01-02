@@ -33,6 +33,15 @@ public class CcpMapDecorator {
 		this.content = obj.content;
 	}
 	
+	
+	public String getHash(String algorithm) {
+		String asJson = this.asJson();
+		CcpStringDecorator ccpStringDecorator = new CcpStringDecorator(asJson);
+		CcpHashDecorator hash = ccpStringDecorator.hash();
+		String asString = hash.asString(algorithm);
+		return asString;
+	}
+	
 	public CcpMapDecorator(Throwable e) {
 		this(getErrorDetails(e));
 	}
@@ -155,6 +164,17 @@ public class CcpMapDecorator {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+	
+	public String getFilledTemplate(String templateKey) {
+		
+		String asString = this.getAsString(templateKey);
+		
+		CcpTextDecorator ccpTextDecorator = new CcpTextDecorator(asString);
+		
+		String message = ccpTextDecorator.getMessage(this);
+		 
+		return message;
 	}
 	
 	public String getAsString(String property) {

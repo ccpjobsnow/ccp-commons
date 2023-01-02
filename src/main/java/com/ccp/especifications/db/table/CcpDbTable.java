@@ -97,6 +97,11 @@ public interface CcpDbTable {
 		}
 	}
 
+	default CcpMapDecorator get(CcpMapDecorator data) {
+		CcpMapDecorator md = this.get(data, x -> x);
+		return md;
+	}
+	
 	default boolean exists(CcpMapDecorator data) {
 		String id = this.getId(data, this.getTimeOption(), this.getFields());
 		boolean exists = this.getCrud().exists(this, id);
