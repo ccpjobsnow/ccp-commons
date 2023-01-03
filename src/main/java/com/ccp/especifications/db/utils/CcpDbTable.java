@@ -144,5 +144,31 @@ public interface CcpDbTable {
 		CcpMapDecorator remove = this.getCrud().remove(id);
 		return remove;
 	}
-
+	
+	default List<CcpMapDecorator> getManyByIds(CcpMapDecorator... values){
+		String[] ids = new String[values.length];
+		
+		int k = 0;
+		
+		for (CcpMapDecorator value : values) {
+			String id = this.getId(value, this.getTimeOption());
+			ids[k++] = id;
+		}
+		CcpDbCrud crud = this.getCrud();
+		List<CcpMapDecorator> manyByIds = crud.getManyByIds(this, ids);
+	
+		k = 0;
+		List<CcpMapDecorator> response = new ArrayList<>();
+		for (CcpMapDecorator value : values) {
+			CcpMapDecorator md = manyByIds.get(k++);
+			md = md.put("_id", value);
+			response.add(md);
+		}
+		return response;
+	}
+	
+	default List<CcpMapDecorator> getManyByIds(List< CcpMapDecorator> values){
+		CcpMapDecorator[] array = values.toArray(new CcpMapDecorator[values.size()]);
+		return this.getManyByIds(array);
+	}	
 }
