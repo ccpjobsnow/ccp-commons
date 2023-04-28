@@ -4,7 +4,7 @@ import com.ccp.decorators.CcpMapDecorator;
 
 public class CcpStepResult{
 
-	public final CcpMapDecorator data;
+	public final CcpMapDecorator values;
 	
 	public final String business;
 
@@ -20,14 +20,14 @@ public class CcpStepResult{
 		
 		pastSteps = pastSteps.put(step, data.removeKey("pastSteps"));
 		
-		this.data = data.put("pastSteps", pastSteps);
+		this.values = data.put("pastSteps", pastSteps);
 		this.business = currentStep.businessName;
 		this.status = status;
 		this.step = step;
 	}
 
 	public CcpMapDecorator getData() {
-		return this.data.put("business", this.business).put("step", this.step);
+		return this.values.put("business", this.business).put("step", this.step);
 	}
 	
 	

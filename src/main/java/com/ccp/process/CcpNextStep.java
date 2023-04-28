@@ -35,7 +35,7 @@ public abstract class CcpNextStep {
 		boolean thisProcessHasFinishedWithSuccess = this.decisionTree.isEmpty();
 		
 		if(thisProcessHasFinishedWithSuccess) {
-			return new CcpStepResult(stepResult.data, stepResult.status, this);
+			return new CcpStepResult(stepResult.values, stepResult.status, this);
 		}
 
 		CcpNextStep nextStep = this.decisionTree.get(stepResult.status);
@@ -46,7 +46,7 @@ public abstract class CcpNextStep {
 			throw new CcpFlowDeviation(stepResult);
 		}
 		
-		CcpStepResult execute = nextStep.goToTheNextStep(stepResult.data);
+		CcpStepResult execute = nextStep.goToTheNextStep(stepResult.values);
 		return execute;
 	}
 

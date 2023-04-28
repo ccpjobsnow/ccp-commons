@@ -34,6 +34,16 @@ public class CcpDependencyInjection {
 		}
 	}
 
+	public static <T> T getInjected(Class<T> clazz) {
+		try {
+			T newInstance = clazz.newInstance();
+			injectDependencies(newInstance);
+			return newInstance;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	private static void injectDependencies(Object instance) {
 		Field[] declaredFields = instance.getClass().getDeclaredFields();
 		for (Field field : declaredFields) {
