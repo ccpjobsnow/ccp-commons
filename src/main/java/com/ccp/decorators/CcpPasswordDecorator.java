@@ -9,7 +9,7 @@ public class CcpPasswordDecorator {
 	}
 
 
-	public boolean isStrongPassword() {
+	public boolean isStrong() {
 		if (this.content.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$")){
 		   return true;
 		} 

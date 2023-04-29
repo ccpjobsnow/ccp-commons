@@ -28,7 +28,7 @@ public abstract class CcpNextStep {
 		return this;
 	}
 	
-	public CcpStepResult goToTheNextStep(CcpMapDecorator currentValues) {
+	public final CcpStepResult goToTheNextStep(CcpMapDecorator currentValues) {
 		
 		CcpStepResult stepResult = this.executeThisStep(currentValues);
 		
