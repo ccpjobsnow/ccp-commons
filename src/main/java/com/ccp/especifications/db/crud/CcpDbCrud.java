@@ -10,11 +10,14 @@ public interface CcpDbCrud {
 	
 	Set<String> getSynonyms(Set<String> wordsToAnalyze, CcpDbTable tableName,  String... analyzers);
 	List<CcpMapDecorator> getManyById(CcpMapDecorator values, CcpDbTable... tables);
-	CcpMapDecorator findById(CcpMapDecorator values, CcpMapDecorator...roadMap) ;
 	boolean updateOrSave(CcpMapDecorator data, CcpDbTable tableName, String id);
 	List<CcpMapDecorator> getManyByIds(CcpMapDecorator filterEspecifications);
 	List<CcpMapDecorator> getManyByIds(CcpDbTable tableName, String... ids);
 	CcpMapDecorator getOneById(CcpDbTable tableName, String id);
 	boolean exists(CcpDbTable tableName, String id);
 	CcpMapDecorator remove(String id);
+	default UseThisId useThisId(CcpMapDecorator id) {
+		return new UseThisId(id, new CcpMapDecorator(), this);
+	}
+
 }
