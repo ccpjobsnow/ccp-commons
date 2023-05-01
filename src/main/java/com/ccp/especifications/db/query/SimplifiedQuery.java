@@ -74,6 +74,7 @@ public final class SimplifiedQuery  extends BooleanOperator {
 			return super.exists(field);
 		}
 		
+		@SuppressWarnings("unchecked")
 		protected SimplifiedQuery addCondition(String field, Object value, String key) {
 			Map<String, Object> map = new CcpMapDecorator().put(field, value).getContent();
 			Map<String, Object> outerMap = new CcpMapDecorator().put(key, map).getContent();
