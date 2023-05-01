@@ -1,14 +1,12 @@
 package com.ccp.especifications.db.crud;
 
 import java.util.List;
-import java.util.Set;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.especifications.db.utils.CcpDbTable;
 
 public interface CcpDbCrud {
 	
-	Set<String> getSynonyms(Set<String> wordsToAnalyze, CcpDbTable tableName,  String... analyzers);
 	List<CcpMapDecorator> getManyById(CcpMapDecorator values, CcpDbTable... tables);
 	boolean updateOrSave(CcpMapDecorator data, CcpDbTable tableName, String id);
 	List<CcpMapDecorator> getManyByIds(CcpMapDecorator filterEspecifications);

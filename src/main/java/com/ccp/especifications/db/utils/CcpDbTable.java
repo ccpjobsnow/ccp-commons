@@ -3,6 +3,7 @@ package com.ccp.especifications.db.utils;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -23,8 +24,10 @@ public interface CcpDbTable {
 	
 	
 	default String getId(CcpMapDecorator values,TimeOption timeOptioption, CcpDbTableField...fields) {
+
+		Long time = values.getOrDefault("_time", System.currentTimeMillis());	
 		
-		String formattedCurrentDate = timeOptioption.getFormattedCurrentDate();
+		String formattedCurrentDate = timeOptioption.getFormattedCurrentDate(time);
 		
 		if(fields.length == 0) {
 			
@@ -35,14 +38,14 @@ public interface CcpDbTable {
 			return UUID.randomUUID().toString();
 		}
 		
-		List<CcpDbTableField> missingKeys = Arrays.asList(fields).stream().filter(key -> key.isPrimaryKey()).filter(key -> values.getAsString(key.name()).trim().isEmpty()).collect(Collectors.toList());
+		List<CcpDbTableField> missingKeys = Arrays.asList(fields).stream().filter(key -> key.isPrimaryKey()).filter(key -> getValue(key, values).isEmpty()).collect(Collectors.toList());
 		
 		if(missingKeys.isEmpty() == false) {
-			throw new CcpFlow(values, 500, "The following keys are missing to compose an id: " + missingKeys + ". Current values: " + values, null);
+			throw new CcpFlow(values, 500, "The following keys are missing to compose an id: " + missingKeys +" for entity " + this.name() + ". Current values: " + values, null);
 		}
 		
 		
-		List<String> onlyPrimaryKeys = Arrays.asList(fields).stream().filter(key -> key.isPrimaryKey()).map(key -> values.getAsString(key.name()).trim()).collect(Collectors.toList());
+		List<String> onlyPrimaryKeys = Arrays.asList(fields).stream().filter(key -> key.isPrimaryKey()).map(key -> this.getValue(key, values)).collect(Collectors.toList());
 
 		if(onlyPrimaryKeys.isEmpty()) {
 			String hash = new CcpStringDecorator(formattedCurrentDate).hash().asString("SHA1");
@@ -60,10 +63,23 @@ public interface CcpDbTable {
 		String hash = new CcpStringDecorator(replace).hash().asString("SHA1");
 		return hash;
 	}
+
+
+	default String getValue(CcpDbTableField key, CcpMapDecorator values) {
+		if(values.get(key.name()) instanceof Collection<?>) {
+			Collection<?> col = values.getAsObject(key.name());
+			ArrayList<?> list = new ArrayList<>(col);
+			list.sort((a, b) -> ("" + a).compareTo("" + b));
+			return list.toString();
+		}
+		
+		
+		return values.getAsString(key.name()).trim();
+	}
 	public static enum TimeOption{
 		none{
 			@Override
-			String getFormattedCurrentDate() {
+			public String getFormattedCurrentDate(Long time) {
 				return "";
 			}
 		}
@@ -73,9 +89,6 @@ public interface CcpDbTable {
 		,ddMMyyyyHHmmss
 		,ddMMyyyyHHmmssSSS
 		;
-		String getFormattedCurrentDate() {
-			return getFormattedCurrentDate(System.currentTimeMillis());
-		}
 
 		public String getFormattedCurrentDate(Long date) {
 			Date d = new Date();

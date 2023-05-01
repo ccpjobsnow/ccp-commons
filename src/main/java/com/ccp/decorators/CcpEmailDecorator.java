@@ -146,7 +146,6 @@ public class CcpEmailDecorator {
 		return "";
 	}
 
-	//TODO StringDecorator extractEmail(String delimiter)
 	public Set<String> extractFromText(String delimiter) {
 		String[] split = this.content.split(delimiter);
 		Set<String> emails = new TreeSet<>();
