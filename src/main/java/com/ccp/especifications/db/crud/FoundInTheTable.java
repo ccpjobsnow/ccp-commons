@@ -16,11 +16,11 @@ public class FoundInTheTable {
 		this.id = id;
 	}
 
-	public NextStep thenDoAnAction(CcpProcess action) {
+	public NextStep executeAction(CcpProcess action) {
 		return this.addStatement("action", action);
 	}
 
-	public NextStep thenReturnStatus(Integer status) {
+	public NextStep returnStatus(Integer status) {
 		return this.addStatement("status", status);
 	}
 

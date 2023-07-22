@@ -15,7 +15,7 @@ public class UseThisId {
 
 	}
 	
-	public Procedure toBeginProcedure() {
+	public Procedure toBeginProcedureAnd() {
 		return new Procedure(this.id, this.statements, this.crud);
 	}
 

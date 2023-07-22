@@ -83,6 +83,7 @@ public final class SimplifiedQuery  extends BooleanOperator {
 			clone.values = new CcpMapDecorator(outerMap);
 			return clone;
 		}
+		
 		@Override
 		public boolean hasChildreen() {
 			return this.values.content.isEmpty() == false;

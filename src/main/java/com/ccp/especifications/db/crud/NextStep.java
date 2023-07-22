@@ -18,7 +18,7 @@ public class NextStep {
 		return new Finally(this.crud, this.id, this.statements);
 	}
 	
-	public Procedure andSo() {
+	public Procedure and() {
 		return new Procedure(this.id, this.statements, this.crud);
 	}
 	
