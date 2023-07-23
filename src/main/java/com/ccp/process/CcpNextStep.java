@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.exceptions.process.CcpFlowDeviation;
+import com.ccp.exceptions.commons.CcpFlow;
 
 public abstract class CcpNextStep {
 	
@@ -43,7 +43,7 @@ public abstract class CcpNextStep {
 		boolean thisProcessHasFinishedWithError = nextStep == null;
 
 		if(thisProcessHasFinishedWithError) {
-			throw new CcpFlowDeviation(stepResult);
+			throw new CcpFlow(stepResult);
 		}
 		
 		CcpStepResult execute = nextStep.goToTheNextStep(stepResult.values);

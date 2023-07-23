@@ -1,6 +1,7 @@
 package com.ccp.exceptions.commons;
 
 import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.process.CcpStepResult;
 
 @SuppressWarnings("serial")
 public class CcpFlow extends RuntimeException{
@@ -15,6 +16,11 @@ public class CcpFlow extends RuntimeException{
 		this.status = status;
 	}
 	
+	public CcpFlow (CcpStepResult stepResult) {
+		this.values = stepResult.getData();
+		this.status = stepResult.status;
+
+	}
 	public CcpFlow(CcpMapDecorator values, int status) {
 		this.values = values;
 		this.status = status;
