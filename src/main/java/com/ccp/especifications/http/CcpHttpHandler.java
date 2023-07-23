@@ -17,7 +17,7 @@ public final class CcpHttpHandler {
 	}
 
 	public CcpHttpHandler(Integer httpStatus, CcpHttpRequester ccpHttp) {
-		this.flows = new CcpMapDecorator().put("" + httpStatus, CcpConstants.DO_NOTHING);
+		this.flows = new CcpMapDecorator().put(httpStatus.toString(), CcpConstants.DO_NOTHING);
 		this.ccpHttp = ccpHttp;
 	}
 	
@@ -28,7 +28,8 @@ public final class CcpHttpHandler {
 	
 	public <V> V executeHttpRequest(String url, String method, CcpMapDecorator headers, CcpMapDecorator body, CcpHttpResponseTransform<V> transformer) {
 		
-		V executeHttpRequest = this.executeHttpRequest(url, method, headers, body.asJson(), transformer);
+		String asJson = body.asJson();
+		V executeHttpRequest = this.executeHttpRequest(url, method, headers, asJson, transformer);
 		return executeHttpRequest;
 	}
 

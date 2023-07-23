@@ -2,6 +2,7 @@ package com.ccp.decorators;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -79,7 +80,11 @@ public class CcpMapDecorator {
 
 		Throwable cause = e.getCause();
 		String message = e.getMessage();
-		StackTraceElement[] stackTrace = e.getStackTrace();
+		List<String> stackTrace = Arrays.asList(e.getStackTrace())
+				.stream()
+				.map(x -> x.getFileName() + "." + x.getMethodName() + ":" + x.getLineNumber())
+				.collect(Collectors.toList())
+				;
 		CcpMapDecorator causeDetails = getErrorDetails(cause);
 
 		jr = jr.put("message", message).put("type", e.getClass().getName()).put("stackTrace", stackTrace).put("cause", causeDetails);
@@ -297,7 +302,7 @@ public class CcpMapDecorator {
 	}
 	
 	public CcpMapDecorator put(String key, CcpProcess process) {
-		CcpMapDecorator put = this.put(key, process);
+		CcpMapDecorator put = this.put(key, (Object)process);
 		return put;
 	}
 	

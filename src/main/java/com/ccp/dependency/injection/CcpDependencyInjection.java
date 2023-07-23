@@ -10,7 +10,7 @@ import java.util.Set;
 public class CcpDependencyInjection {
 
 	static Map<Class<?>, Object> instances = new HashMap<>();
-	
+	public static Set<String> classes = new HashSet<>();
 	public static void loadAllImplementationsProviders(CcpModuleExporter... providers) {
 		
 		for (CcpModuleExporter provider : providers) {
@@ -45,12 +45,13 @@ public class CcpDependencyInjection {
 	}
 	
 	private static void injectDependencies(Object instance) {
+		classes.add(instance.getClass().getName());
 		Field[] declaredFields = instance.getClass().getDeclaredFields();
 		for (Field field : declaredFields) {
 			injectDependencies(field, instance);
 		}
 	}
-	static Set<String> fields = new HashSet<>();
+	public static Set<String> fields = new HashSet<>();
 	
 	private static void injectDependencies(Field field, Object instance) {
 		
