@@ -1,9 +1,9 @@
 package com.ccp.especifications.db.crud;
 
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.ccp.decorators.CcpMapDecorator;
@@ -39,8 +39,9 @@ public class Finally {
 	private CcpMapDecorator findById(CcpMapDecorator values, CcpMapDecorator... roadMap) {
 		CcpDbTable[]  tables = new CcpDbTable[roadMap.length];
 		int k = 0;
-		Set<CcpDbTable> keySet = Arrays.asList(roadMap).stream().map(x -> (CcpDbTable) x.getAsObject("table") ).collect(Collectors.toSet());
-		for (CcpDbTable ccpDbTable : keySet) {
+		List<CcpDbTable> keySet = Arrays.asList(roadMap).stream().map(x -> (CcpDbTable) x.getAsObject("table") ).collect(Collectors.toList());
+		LinkedHashSet<CcpDbTable> set = new LinkedHashSet<>(keySet);
+		for (CcpDbTable ccpDbTable : set) {
 			tables[k++] = ccpDbTable;
 		}
 
@@ -88,7 +89,7 @@ public class Finally {
 				
 				Integer status = specification.getAsIntegerNumber("status");
 				String message = specification.getAsString("message");
-				throw new CcpFlow(values, status , message);
+				throw new CcpFlow(values.put("_dataBaseRow", dataBaseRow), status , message);
 			}
 			
 			CcpProcess action = specification.getAsObject("action");

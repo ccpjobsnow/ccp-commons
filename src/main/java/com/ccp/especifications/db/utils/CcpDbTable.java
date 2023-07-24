@@ -100,8 +100,11 @@ public interface CcpDbTable {
 
 	default CcpMapDecorator get(CcpMapDecorator data, CcpProcess ifNotFound) {
 		try {
-			String id = this.getId(data, this.getTimeOption(), this.getFields());
-			CcpMapDecorator oneById = this.getCrud().getOneById(this, id);
+			TimeOption timeOption = this.getTimeOption();
+			CcpDbTableField[] fields = this.getFields();
+			String id = this.getId(data, timeOption, fields);
+			CcpDbCrud crud = this.getCrud();
+			CcpMapDecorator oneById = crud.getOneById(this, id);
 			return oneById;
 			
 		} catch (CcpRecordNotFound e) {
@@ -111,7 +114,7 @@ public interface CcpDbTable {
 	}
 
 	default CcpMapDecorator get(CcpMapDecorator data) {
-		CcpMapDecorator md = this.get(data, x -> x);
+		CcpMapDecorator md = this.get(data, x -> {throw new CcpFlow(x, 404);});
 		return md;
 	}
 	

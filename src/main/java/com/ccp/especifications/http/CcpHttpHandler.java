@@ -50,6 +50,8 @@ public final class CcpHttpHandler {
 		if(validSingleJson) {
 			CcpMapDecorator asSingleJson = response.asSingleJson();
 			flow.execute(asSingleJson);
+			V tranform = transformer.transform(response);
+			return tranform;
 		}
 		
 		V tranform = transformer.transform(response);
