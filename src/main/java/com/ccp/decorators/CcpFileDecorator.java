@@ -10,7 +10,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -67,34 +66,8 @@ public class CcpFileDecorator {
 			throw new RuntimeException(e);
 		}
     }
-	public  String extractStringContent(String... paths) {
-		for (String path : paths) {
-			File file = new File(path);
-			
-			if(file.exists() == false) {
-				continue;
-			}
-			if(file.isDirectory() == false) {
-				continue;
-			}
-			
-			String pathname = path+ "\\" + this.content;
-			long length = new File(pathname).length();
-			
-			if(length > 1000000) {
-				throw new RuntimeException("Arquivo maior que 1 milhao de bytes. Path: " + pathname + ". Bytes: " + length);
-			}
-			
-			String readFileToString= new CcpFileDecorator(pathname).extractStringContent();
-			return readFileToString;
-		}
-		throw new RuntimeException("Nenhum dos arquivos existe. Arquivos: " + Arrays.asList(paths));
-	}	
-	private String extractStringContent() {
+	public  String extractStringContent() {
 		String path = this.content;
-		if(new File(this.content).exists()== false && this.content.toLowerCase().startsWith("..\\") == false && this.content.toLowerCase().startsWith("c:\\") == false) {
-			path = "/home/onias/logs" + this.content;
-		}
 		String line;
 		StringBuilder sb = new StringBuilder();
 		try (FileReader fr = new FileReader(path); BufferedReader br = new BufferedReader(fr)) {

@@ -46,11 +46,9 @@ public class Finally {
 		}
 
 		List<CcpMapDecorator> manyById = this.crud.getManyById(values, tables);
-		
 		k = 0;
 		
 		for (CcpMapDecorator dataBaseRow : manyById) {
-		
 			String tableName = dataBaseRow.getAsString("_index");
 
 			boolean recordFound = dataBaseRow.getAsBoolean("found");

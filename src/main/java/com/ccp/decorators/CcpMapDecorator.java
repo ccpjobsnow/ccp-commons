@@ -171,7 +171,7 @@ public class CcpMapDecorator {
 		}
 	}
 	
-	public String getFilledTemplate(String templateKey) {
+	public CcpMapDecorator putFilledTemplate(String templateKey, String newKey) {
 		
 		String asString = this.getAsString(templateKey);
 		
@@ -179,7 +179,9 @@ public class CcpMapDecorator {
 		
 		String message = ccpTextDecorator.getMessage(this);
 		 
-		return message;
+		CcpMapDecorator put = this.put(newKey, message);
+		
+		return put;
 	}
 	
 	public String getAsString(String property) {
@@ -370,14 +372,15 @@ public class CcpMapDecorator {
 			return (CcpMapDecorator) object;
 		}
 		
-		if((object instanceof Map) == false) {
-			return new CcpMapDecorator();
-		}
-
 		if(object instanceof String) {
 			return new CcpMapDecorator("" + object);
 		}
 		
+
+		if((object instanceof Map) == false) {
+			return new CcpMapDecorator();
+		}
+
 		CcpMapDecorator mapDecorator = new CcpMapDecorator((Map<String, Object>) object);
 		return mapDecorator;
 	}
@@ -411,6 +414,15 @@ public class CcpMapDecorator {
 		return collect;
 	}
 	
+	public List<String> getAsStringList(String key, String alternativeKey){
+		List<String> asStringList = this.getAsStringList(key);
+		boolean found = asStringList.isEmpty() == false;
+		if(found) {
+			return asStringList;
+		}
+		String asString = this.getAsString(alternativeKey);
+		return Arrays.asList(asString);
+	}
 	@SuppressWarnings("unchecked")
 	public List<Object> getAsObjectList(String key) {
 		
