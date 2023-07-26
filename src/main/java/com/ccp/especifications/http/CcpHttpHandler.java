@@ -42,7 +42,7 @@ public final class CcpHttpHandler {
 		CcpProcess flow = this.flows.getAsObject("" + status);
 	
 		if(flow == null) {
-			throw new UnexpectedHttpStatus(response);
+			throw new UnexpectedHttpStatus(response, url, method, this.flows.keySet().toString());
 		}
 	
 		boolean validSingleJson = response.isValidSingleJson();

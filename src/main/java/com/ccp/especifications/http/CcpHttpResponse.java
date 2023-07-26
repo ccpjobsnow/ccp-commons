@@ -55,4 +55,12 @@ public class CcpHttpResponse {
 		
 		return encodeToString;
 	}
+	
+	@Override
+	public String toString() {
+		return new CcpMapDecorator()
+				.put("httpStatus", this.httpStatus)
+				.put("httpResponse", this.httpResponse)
+				.toString();
+	}
 }
