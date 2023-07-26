@@ -156,8 +156,11 @@ public interface CcpDbTable {
 	CcpDbCrud getCrud();
 	
 	default CcpMapDecorator remove(CcpMapDecorator values) {
-		String id = this.getId(values, this.getTimeOption(), this.getFields());
-		CcpMapDecorator remove = this.getCrud().remove(id);
+		CcpDbTableField[] fields = this.getFields();
+		TimeOption timeOption = this.getTimeOption();
+		String id = this.getId(values, timeOption, fields);
+		CcpDbCrud crud = this.getCrud();
+		CcpMapDecorator remove = crud.remove(id);
 		return remove;
 	}
 	
