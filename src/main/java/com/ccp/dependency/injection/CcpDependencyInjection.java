@@ -1,5 +1,6 @@
 package com.ccp.dependency.injection;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.HashMap;
@@ -36,7 +37,9 @@ public class CcpDependencyInjection {
 
 	public static <T> T getInjected(Class<T> clazz) {
 		try {
-			T newInstance = clazz.newInstance();
+			Constructor<T> constructor = clazz.getConstructor();
+			constructor.setAccessible(true);
+			T newInstance = constructor.newInstance();
 			injectDependencies(newInstance);
 			return newInstance;
 		} catch (Exception e) {
