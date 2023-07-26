@@ -1,5 +1,7 @@
 package com.ccp.decorators;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,6 +12,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,6 +25,26 @@ public class CcpMapDecorator {
 	
 	public CcpMapDecorator() {
 		this.content = new HashMap<>();
+	}
+	
+	public CcpMapDecorator(InputStream is) {
+		
+		this.content = new HashMap<>();
+		
+		Properties props = new Properties();
+		
+		try {
+			props.load(is);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		
+		Set<Object> keySet = props.keySet();
+		for (Object key : keySet) {
+			Object value = props.get(key);
+			this.content.put("" + key, value);
+		}
+
 	}
 	
 	public CcpMapDecorator(List<CcpMapDecorator> list, String key, String value) {
