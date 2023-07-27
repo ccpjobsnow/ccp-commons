@@ -1,6 +1,6 @@
 package com.ccp.especifications.db.utils;
 
-public interface CcpDbTableField {
+public interface CcpField {
 
 	String name();
 	

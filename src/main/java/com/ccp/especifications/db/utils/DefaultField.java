@@ -1,6 +1,6 @@
 package com.ccp.especifications.db.utils;
 
-public class DefaultField implements CcpDbTableField{
+public class DefaultField implements CcpField{
 
 	public static final DefaultField _index = new DefaultField(false, "_index");
 	public static final DefaultField _id = new DefaultField(false, "_id");

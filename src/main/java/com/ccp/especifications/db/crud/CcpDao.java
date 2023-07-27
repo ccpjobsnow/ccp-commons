@@ -3,29 +3,29 @@ package com.ccp.especifications.db.crud;
 import java.util.List;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.especifications.db.utils.CcpDbTable;
+import com.ccp.especifications.db.utils.CcpEntity;
 
-public interface CcpDbCrud {
+public interface CcpDao {
 
-	List<CcpMapDecorator> getManyById(List<CcpMapDecorator> values, CcpDbTable... tables);
+	List<CcpMapDecorator> getManyById(List<CcpMapDecorator> values, CcpEntity... tables);
 	
-	List<CcpMapDecorator> getManyById(CcpMapDecorator values, CcpDbTable... tables);
+	List<CcpMapDecorator> getManyById(CcpMapDecorator values, CcpEntity... tables);
 	
-	boolean updateOrSave(CcpDbTable tableName, CcpMapDecorator data);
+	boolean createOrUpdate(String tableName, CcpMapDecorator data);
 	
-	List<CcpMapDecorator> getManyByIds(CcpDbTable tableName, String... ids);
+	List<CcpMapDecorator> getManyByIds(CcpEntity tableName, String... ids);
 	
-	CcpMapDecorator getOneById(CcpDbTable tableName, CcpMapDecorator values);
+	CcpMapDecorator getOneById(CcpEntity tableName, CcpMapDecorator values);
 	
-	boolean exists(CcpDbTable tableName, CcpMapDecorator values);
+	boolean exists(CcpEntity tableName, CcpMapDecorator values);
 	
-	CcpMapDecorator remove(CcpDbTable tableName, CcpMapDecorator values);
+	CcpMapDecorator delete(CcpEntity tableName, CcpMapDecorator values);
 	
 	default UseThisId useThisId(CcpMapDecorator id) {
 		return new UseThisId(id, new CcpMapDecorator(), this);
 	}
 	
-	default boolean anyMatch(CcpMapDecorator values, CcpDbTable... tables) {
+	default boolean anyMatch(CcpMapDecorator values, CcpEntity... tables) {
 		List<CcpMapDecorator> manyById = this.getManyById(values, tables);
 		for (CcpMapDecorator md : manyById) {
 			boolean found = md.getAsBoolean("_found");
@@ -37,7 +37,7 @@ public interface CcpDbCrud {
 		return false;
 	}
 
-	default boolean allMatch(CcpMapDecorator values, CcpDbTable... tables) {
+	default boolean allMatch(CcpMapDecorator values, CcpEntity... tables) {
 		List<CcpMapDecorator> manyById = this.getManyById(values, tables);
 		for (CcpMapDecorator md : manyById) {
 			boolean notFound = md.getAsBoolean("_found") == false;
@@ -49,7 +49,7 @@ public interface CcpDbCrud {
 		return true;
 	}
 
-	default boolean noMatches(CcpMapDecorator values, CcpDbTable... tables) {
+	default boolean noMatches(CcpMapDecorator values, CcpEntity... tables) {
 		List<CcpMapDecorator> manyById = this.getManyById(values, tables);
 		for (CcpMapDecorator md : manyById) {
 			boolean found = md.getAsBoolean("_found");

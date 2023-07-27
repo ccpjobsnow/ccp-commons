@@ -5,9 +5,9 @@ import com.ccp.decorators.CcpMapDecorator;
 public class LoadDataFromTable {
 	private final CcpMapDecorator id;
 	private final CcpMapDecorator statements;
-	private final CcpDbCrud crud;
+	private final CcpDao crud;
 
-	LoadDataFromTable(CcpMapDecorator id, CcpMapDecorator statements, CcpDbCrud crud) {
+	LoadDataFromTable(CcpMapDecorator id, CcpMapDecorator statements, CcpDao crud) {
 		this.statements = statements;
 		this.crud = crud;
 		this.id = id;

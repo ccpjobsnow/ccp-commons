@@ -6,9 +6,9 @@ public class UseThisId {
 
 	private final CcpMapDecorator id;
 	private final CcpMapDecorator statements;
-	private final CcpDbCrud crud;
+	private final CcpDao crud;
 
-	UseThisId(CcpMapDecorator id, CcpMapDecorator statements, CcpDbCrud crud) {
+	UseThisId(CcpMapDecorator id, CcpMapDecorator statements, CcpDao crud) {
 		this.statements = statements;
 		this.id = id;
 		this.crud = crud;

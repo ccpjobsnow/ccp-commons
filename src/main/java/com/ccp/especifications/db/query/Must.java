@@ -1,6 +1,6 @@
 package com.ccp.especifications.db.query;
 
-import com.ccp.especifications.db.utils.CcpDbTableField;
+import com.ccp.especifications.db.utils.CcpField;
 
 public final class Must extends BooleanOperator{
 
@@ -13,19 +13,19 @@ public final class Must extends BooleanOperator{
 	}
 	@Override
 	@SuppressWarnings("unchecked")
-	public Must matchPhrase(CcpDbTableField field, Object value) {
+	public Must matchPhrase(CcpField field, Object value) {
 		return super.matchPhrase(field, value);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public Must prefix(CcpDbTableField field, Object value) {
+	public Must prefix(CcpField field, Object value) {
 		return super.prefix(field, value);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public Must term(CcpDbTableField field, Object value) {
+	public Must term(CcpField field, Object value) {
 		return super.term(field, value);
 	}
 
@@ -45,7 +45,7 @@ public final class Must extends BooleanOperator{
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Must match(CcpDbTableField field, Object value) {
+	public Must match(CcpField field, Object value) {
 		return super.match(field, value);
 	}
 }

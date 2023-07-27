@@ -5,9 +5,9 @@ import com.ccp.decorators.CcpMapDecorator;
 public class NextStep {
 	private final CcpMapDecorator id;
 	private final CcpMapDecorator statements;
-	private final CcpDbCrud crud;
+	private final CcpDao crud;
 
-	NextStep(CcpMapDecorator id, CcpMapDecorator statements, CcpDbCrud crud) {
+	NextStep(CcpMapDecorator id, CcpMapDecorator statements, CcpDao crud) {
 		this.id = id;
 		this.statements = statements;
 		this.crud = crud;

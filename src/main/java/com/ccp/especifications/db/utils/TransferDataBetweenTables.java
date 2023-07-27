@@ -6,10 +6,10 @@ import com.ccp.process.CcpStepResult;
 
 public class TransferDataBetweenTables extends CcpNextStep {
 
-	private final CcpDbTable origin;
-	private final CcpDbTable target;
+	private final CcpEntity origin;
+	private final CcpEntity target;
 	
-	public TransferDataBetweenTables(CcpDbTable origin, CcpDbTable target) {
+	public TransferDataBetweenTables(CcpEntity origin, CcpEntity target) {
 		this.origin = origin;
 		this.target = target;
 	}
@@ -25,7 +25,7 @@ public class TransferDataBetweenTables extends CcpNextStep {
 			return new CcpStepResult(values, 200, this);
 		}
 		
-		CcpMapDecorator remove = this.origin.remove(values);
+		CcpMapDecorator remove = this.origin.delete(values);
 
 		boolean theOriginDataIsMissing = remove.isEmpty();
 		
@@ -33,7 +33,7 @@ public class TransferDataBetweenTables extends CcpNextStep {
 			return new CcpStepResult(values, 200, this);
 		}
 		
-		this.target.save(remove);
+		this.target.createOrUpdate(remove);
 		CcpMapDecorator renameKey = tables.renameKey(this.origin.name(), this.target.name());
 		CcpMapDecorator put = values.put("_tables", renameKey);
 		return new CcpStepResult(put, 200, this);

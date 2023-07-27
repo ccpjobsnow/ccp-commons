@@ -8,9 +8,9 @@ import com.ccp.process.CcpProcess;
 public class FoundInTheTable {
 	private final CcpMapDecorator id;
 	private final CcpMapDecorator statements;
-	private final CcpDbCrud crud;
+	private final CcpDao crud;
 
-	FoundInTheTable(CcpMapDecorator id, CcpMapDecorator statements, CcpDbCrud crud) {
+	FoundInTheTable(CcpMapDecorator id, CcpMapDecorator statements, CcpDao crud) {
 		this.statements = statements;
 		this.crud = crud;
 		this.id = id;

@@ -3,14 +3,14 @@ package com.ccp.especifications.db.query;
 import java.util.Map;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.especifications.db.utils.CcpDbTableField;
+import com.ccp.especifications.db.utils.CcpField;
 
 public final class BucketAggregation extends Component {
 	
-	private final CcpDbTableField fieldName;
+	private final CcpField fieldName;
 	private final long size;
 	
-	BucketAggregation(Component parent, String name, CcpDbTableField fieldName, long size) {
+	BucketAggregation(Component parent, String name, CcpField fieldName, long size) {
 		super(parent, name);
 		this.fieldName = fieldName;
 		this.size = size;

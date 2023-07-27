@@ -3,7 +3,7 @@ package com.ccp.especifications.db.query;
 import java.util.Map;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.especifications.db.utils.CcpDbTableField;
+import com.ccp.especifications.db.utils.CcpField;
 
 
 public final class Aggregations extends Component{
@@ -20,29 +20,29 @@ public final class Aggregations extends Component{
 		return this.parent.addChild(this);
 	}
 
-	public Aggregations addMinAggregation(String aggregationName, CcpDbTableField fieldName) {
+	public Aggregations addMinAggregation(String aggregationName, CcpField fieldName) {
 		Aggregations copy = this.createAggregation(aggregationName, fieldName, "min");
 		return copy;
 	}
 
-	private Aggregations createAggregation(String aggregationName, CcpDbTableField fieldName, String key) {
+	private Aggregations createAggregation(String aggregationName, CcpField fieldName, String key) {
 		Aggregations copy = this.copy();
 		Map<String, Object> c1 = new CcpMapDecorator().put("field", fieldName).getContent();
 		Map<String, Object> c2 = new CcpMapDecorator().put(key, c1).getContent();
 		copy.values = copy.values.put(aggregationName, c2);
 		return copy;
 	}
-	public Aggregations addMaxAggregation(String aggregationName, CcpDbTableField fieldName) {
+	public Aggregations addMaxAggregation(String aggregationName, CcpField fieldName) {
 		Aggregations copy = this.createAggregation(aggregationName, fieldName, "max");
 		return copy;
 	}
 
-	public Aggregations addAvgAggregation(String aggregationName, CcpDbTableField fieldName) {
+	public Aggregations addAvgAggregation(String aggregationName, CcpField fieldName) {
 		Aggregations copy = this.createAggregation(aggregationName, fieldName, "avg");
 		return copy;
 	}
 
-	public BucketAggregation startBucket(String bucketName, CcpDbTableField fieldName, long size) {
+	public BucketAggregation startBucket(String bucketName, CcpField fieldName, long size) {
 		BucketAggregation bucketAggregation = new BucketAggregation(this, bucketName, fieldName, size);
 		return bucketAggregation;
 				
@@ -53,7 +53,7 @@ public final class Aggregations extends Component{
 		return (T)new Aggregations(this.parent);
 	}
 
-	public Aggregations addSumAggregation(String aggregationName, CcpDbTableField fieldName) {
+	public Aggregations addSumAggregation(String aggregationName, CcpField fieldName) {
 		Aggregations copy = this.createAggregation(aggregationName, fieldName, "sum");
 		return copy;
 	}
