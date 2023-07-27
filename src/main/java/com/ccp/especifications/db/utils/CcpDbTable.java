@@ -22,7 +22,8 @@ public interface CcpDbTable {
 	
 	String name();
 	
-	
+	String getId(CcpMapDecorator values);
+
 	default String getId(CcpMapDecorator values,TimeOption timeOptioption, CcpDbTableField...fields) {
 
 		Long time = values.getOrDefault("_time", System.currentTimeMillis());	
@@ -100,11 +101,8 @@ public interface CcpDbTable {
 
 	default CcpMapDecorator get(CcpMapDecorator data, CcpProcess ifNotFound) {
 		try {
-			TimeOption timeOption = this.getTimeOption();
-			CcpDbTableField[] fields = this.getFields();
-			String id = this.getId(data, timeOption, fields);
 			CcpDbCrud crud = this.getCrud();
-			CcpMapDecorator oneById = crud.getOneById(this, id);
+			CcpMapDecorator oneById = crud.getOneById(this, data);
 			return oneById;
 			
 		} catch (CcpRecordNotFound e) {
@@ -119,48 +117,32 @@ public interface CcpDbTable {
 	}
 	
 	default boolean exists(CcpMapDecorator data) {
-		String id = this.getId(data, this.getTimeOption(), this.getFields());
-		boolean exists = this.getCrud().exists(this, id);
+		boolean exists = this.getCrud().exists(this, data);
 		return exists;
 	}
 	
-	default CcpMapDecorator getOnlyExistingFields(CcpMapDecorator values) {
-		CcpDbTableField[] fields = this.getFields();
-		String[] array = Arrays.asList(fields).stream().map(x -> x.name()).collect(Collectors.toList()).toArray(new String[fields.length]);
-		CcpMapDecorator subMap = values.getSubMap(array);
-		return subMap;
-	}
+	CcpMapDecorator getOnlyExistingFields(CcpMapDecorator values) ;
 	
 	default CcpMapDecorator save(CcpMapDecorator values) {
 		CcpMapDecorator onlyExistingFields = this.getOnlyExistingFields(values);
 		CcpDbCrud crud = this.getCrud();
-		CcpDbTableField[] fields = this.getFields();
-		TimeOption timeOption = this.getTimeOption();
-		String id = this.getId(onlyExistingFields, timeOption, fields);
 
-		boolean updated = crud.updateOrSave(onlyExistingFields, this, id);
+		boolean updated = crud.updateOrSave(this, onlyExistingFields);
 
-		this.saveAuditory(id, this.name(), onlyExistingFields, updated);
+		this.saveAuditory(onlyExistingFields, updated);
 		
-		CcpMapDecorator put = onlyExistingFields.put("_updated",updated).put("_id", id);
 		
-		return put;
+		return onlyExistingFields;
 	}
 	
-	void saveAuditory(String id, String entityName, CcpMapDecorator values, boolean updated);
-
-	TimeOption getTimeOption();
-
-	CcpDbTableField[] getFields();
+	void saveAuditory(CcpMapDecorator values, boolean updated)
+	;
 
 	CcpDbCrud getCrud();
 	
 	default CcpMapDecorator remove(CcpMapDecorator values) {
-		CcpDbTableField[] fields = this.getFields();
-		TimeOption timeOption = this.getTimeOption();
-		String id = this.getId(values, timeOption, fields);
 		CcpDbCrud crud = this.getCrud();
-		CcpMapDecorator remove = crud.remove(id);
+		CcpMapDecorator remove = crud.remove(this, values);
 		return remove;
 	}
 	
@@ -170,7 +152,7 @@ public interface CcpDbTable {
 		int k = 0;
 		
 		for (CcpMapDecorator value : values) {
-			String id = this.getId(value, this.getTimeOption());
+			String id = this.getId(value);
 			ids[k++] = id;
 		}
 		CcpDbCrud crud = this.getCrud();

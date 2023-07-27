@@ -51,11 +51,11 @@ public class Finally {
 		for (CcpMapDecorator dataBaseRow : manyById) {
 			String tableName = dataBaseRow.getAsString("_index");
 
-			boolean recordFound = dataBaseRow.getAsBoolean("found");
+			boolean recordFound = dataBaseRow.getAsBoolean("_found");
 			
 			Optional<CcpMapDecorator> findFirst = Arrays.asList(roadMap).stream()
 					.filter(x -> x.getAsString("table").equals(tableName))
-					.filter(x -> x.getAsBoolean("found") == recordFound)
+					.filter(x -> x.getAsBoolean("_found") == recordFound)
 					.findFirst();
 
 			CcpMapDecorator record = dataBaseRow.getInternalMap("_source");

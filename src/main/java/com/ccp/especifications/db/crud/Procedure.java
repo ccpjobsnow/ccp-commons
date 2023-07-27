@@ -25,7 +25,7 @@ public class Procedure {
 		return new FoundInTheTable(this.id, addToList, this.crud);
 	}
 
-	public FoundInTheTable ifThisIdIsNotPresentInTableThen(CcpDbTable table) {
+	public FoundInTheTable ifThisIdIsNotPresentInTable(CcpDbTable table) {
 		CcpMapDecorator put = new CcpMapDecorator().put("found", false).put("table", table);
 		CcpMapDecorator addToList = this.statements.addToList("statements", put);
 		return new FoundInTheTable(this.id, addToList, this.crud);
