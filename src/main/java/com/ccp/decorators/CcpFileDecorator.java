@@ -11,14 +11,27 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class CcpFileDecorator {
 	public final String content;
-
+	public final CcpFileDecorator parent;
 	protected CcpFileDecorator(String content) {
+		this.parent = this.getParent(content);
 		this.content = content;
+	}
+
+	private CcpFileDecorator getParent(String content) {
+		File file = new File(content);
+		File parentFile = file.getParentFile();
+		if(parentFile == null) {
+			return null;
+		}
+		String absolutePath = parentFile.getAbsolutePath();
+		CcpFileDecorator ccpFileDecorator = new CcpFileDecorator(absolutePath);
+		return ccpFileDecorator;
 	}
 
 	public void zip() {
@@ -34,6 +47,11 @@ public class CcpFileDecorator {
 		}
 	}
 
+	public String getName() {
+		File file = new File(this.content);
+		String name = file.getName();
+		return name;
+	}
 	//ZipDecorator zipFile()
     private void zip(File fileToZip, ZipOutputStream zipOut) throws IOException {
         if (fileToZip.isHidden()) {
@@ -133,5 +151,17 @@ public class CcpFileDecorator {
 			throw new RuntimeException(e);
 		}
 	}
-
+	
+	public void readFiles(Consumer<CcpFileDecorator> consumer){
+		File[] listFiles = new File(this.content).listFiles();
+		for (File file : listFiles) {
+			String absolutePath = file.getAbsolutePath();
+			CcpFileDecorator f = new CcpFileDecorator(absolutePath);
+			consumer.accept(f);
+		}
+	}
+	@Override
+	public String toString() {
+		return this.content;
+	}
 }
