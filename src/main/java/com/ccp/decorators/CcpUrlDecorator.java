@@ -11,6 +11,11 @@ public class CcpUrlDecorator {
 	protected CcpUrlDecorator(String content) {
 		this.content = content;
 	}
+	
+	public String toString() {
+		return this.content;
+	}
+
 	public String asDecoded() {
 		String decode;
 		try {

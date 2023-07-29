@@ -150,4 +150,8 @@ public class CcpTextDecorator {
 			return false;
 		}
 	}
+	
+	public String toString() {
+		return this.content;
+	}
 }

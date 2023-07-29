@@ -37,6 +37,10 @@ public class CcpEmailDecorator {
 		this.content = content;
 	}
 
+	public String toString() {
+		return this.content;
+	}
+
 	public String stripAccents() {
 		if(this.isValid()) {
 			String[] split = this.content.split("@");

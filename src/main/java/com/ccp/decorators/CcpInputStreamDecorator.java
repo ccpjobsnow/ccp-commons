@@ -13,6 +13,10 @@ public class CcpInputStreamDecorator {
 		this.content = content;
 	}
 	
+	public String toString() {
+		return this.content;
+	}
+
 	public InputStream classLoader() {
 		try {
 			Class<? extends CcpInputStreamDecorator> class1 = this.getClass();

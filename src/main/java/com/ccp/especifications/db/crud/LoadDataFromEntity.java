@@ -2,12 +2,12 @@ package com.ccp.especifications.db.crud;
 
 import com.ccp.decorators.CcpMapDecorator;
 
-public class LoadDataFromTable {
+public class LoadDataFromEntity {
 	private final CcpMapDecorator id;
 	private final CcpMapDecorator statements;
 	private final CcpDao crud;
 
-	LoadDataFromTable(CcpMapDecorator id, CcpMapDecorator statements, CcpDao crud) {
+	LoadDataFromEntity(CcpMapDecorator id, CcpMapDecorator statements, CcpDao crud) {
 		this.statements = statements;
 		this.crud = crud;
 		this.id = id;

@@ -17,5 +17,4 @@ public interface CcpDbBulkExecutor {
 	CcpMapDecorator commit(List<CcpMapDecorator> records, CcpOperationType operation, CcpEntity entity);
 
 	void audit(List<CcpMapDecorator> records, CcpOperationType operation, CcpMapDecorator bulkResult, CcpEntity entity, CcpEntity auditEntity, CcpEntity errorEntity);
-	
 }

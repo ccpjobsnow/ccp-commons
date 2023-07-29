@@ -8,6 +8,9 @@ public class CcpPasswordDecorator {
 		this.content = content;
 	}
 
+	public String toString() {
+		return this.content;
+	}
 
 	public boolean isStrong() {
 		if (this.content.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$")){

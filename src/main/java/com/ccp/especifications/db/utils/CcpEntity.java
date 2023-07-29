@@ -33,6 +33,21 @@ public interface CcpEntity {
 		return md;
 	}
 	
+
+	default CcpMapDecorator getOneById(String id) {
+		try {
+			CcpDao dao = this.getDao();
+			CcpMapDecorator md = dao.getOneById(this, id);
+			return md;
+			
+		} catch (CcpRecordNotFound e) {
+			CcpMapDecorator put = new CcpMapDecorator().put("id", id).put("entity", this.name());
+			throw new CcpFlow(put, 404);
+		}
+	}
+	
+	
+	
 	default boolean exists(CcpMapDecorator data) {
 		boolean exists = this.getDao().exists(this, data);
 		return exists;

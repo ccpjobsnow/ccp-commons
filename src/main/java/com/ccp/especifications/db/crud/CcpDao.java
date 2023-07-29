@@ -7,26 +7,24 @@ import com.ccp.especifications.db.utils.CcpEntity;
 
 public interface CcpDao {
 
-	List<CcpMapDecorator> getManyById(List<CcpMapDecorator> values, CcpEntity... tables);
+	List<CcpMapDecorator> getManyById(List<CcpMapDecorator> values, CcpEntity... entities);
 	
-	List<CcpMapDecorator> getManyById(CcpMapDecorator values, CcpEntity... tables);
+	List<CcpMapDecorator> getManyById(CcpMapDecorator values, CcpEntity... entities);
 	
-	CcpMapDecorator createOrUpdate(CcpEntity tableName, CcpMapDecorator data);
+	CcpMapDecorator createOrUpdate(CcpEntity entity, CcpMapDecorator data);
 	
-	List<CcpMapDecorator> getManyByIds(CcpEntity tableName, String... ids);
+	List<CcpMapDecorator> getManyByIds(CcpEntity entity, String... ids);
 	
-	CcpMapDecorator getOneById(CcpEntity tableName, CcpMapDecorator values);
+	boolean exists(CcpEntity entity, CcpMapDecorator values);
 	
-	boolean exists(CcpEntity tableName, CcpMapDecorator values);
-	
-	CcpMapDecorator delete(CcpEntity tableName, CcpMapDecorator values);
+	CcpMapDecorator delete(CcpEntity entity, CcpMapDecorator values);
 	
 	default UseThisId useThisId(CcpMapDecorator id) {
 		return new UseThisId(id, new CcpMapDecorator(), this);
 	}
 	
-	default boolean anyMatch(CcpMapDecorator values, CcpEntity... tables) {
-		List<CcpMapDecorator> manyById = this.getManyById(values, tables);
+	default boolean anyMatch(CcpMapDecorator values, CcpEntity... entities) {
+		List<CcpMapDecorator> manyById = this.getManyById(values, entities);
 		for (CcpMapDecorator md : manyById) {
 			boolean found = md.getAsBoolean("_found");
 			
@@ -37,8 +35,8 @@ public interface CcpDao {
 		return false;
 	}
 
-	default boolean allMatch(CcpMapDecorator values, CcpEntity... tables) {
-		List<CcpMapDecorator> manyById = this.getManyById(values, tables);
+	default boolean allMatch(CcpMapDecorator values, CcpEntity... entities) {
+		List<CcpMapDecorator> manyById = this.getManyById(values, entities);
 		for (CcpMapDecorator md : manyById) {
 			boolean notFound = md.getAsBoolean("_found") == false;
 			
@@ -49,8 +47,8 @@ public interface CcpDao {
 		return true;
 	}
 
-	default boolean noMatches(CcpMapDecorator values, CcpEntity... tables) {
-		List<CcpMapDecorator> manyById = this.getManyById(values, tables);
+	default boolean noMatches(CcpMapDecorator values, CcpEntity... entities) {
+		List<CcpMapDecorator> manyById = this.getManyById(values, entities);
 		for (CcpMapDecorator md : manyById) {
 			boolean found = md.getAsBoolean("_found");
 			
@@ -59,6 +57,17 @@ public interface CcpDao {
 			}
 		}
 		return true;
+	}
+
+	CcpMapDecorator getOneById(CcpEntity entity, String id);
+
+	default CcpMapDecorator getOneById(CcpEntity entity, CcpMapDecorator values) {
+	
+		String id = entity.getId(values);
+		
+		CcpMapDecorator oneById = this.getOneById(entity, id);
+		
+		return oneById;
 	}
 
 }

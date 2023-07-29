@@ -37,24 +37,24 @@ public class Finally {
 
 	
 	private CcpMapDecorator findById(CcpMapDecorator values, CcpMapDecorator... roadMap) {
-		CcpEntity[]  tables = new CcpEntity[roadMap.length];
+		CcpEntity[]  entities = new CcpEntity[roadMap.length];
 		int k = 0;
-		List<CcpEntity> keySet = Arrays.asList(roadMap).stream().map(x -> (CcpEntity) x.getAsObject("table") ).collect(Collectors.toList());
+		List<CcpEntity> keySet = Arrays.asList(roadMap).stream().map(x -> (CcpEntity) x.getAsObject("entity") ).collect(Collectors.toList());
 		LinkedHashSet<CcpEntity> set = new LinkedHashSet<>(keySet);
-		for (CcpEntity ccpDbTable : set) {
-			tables[k++] = ccpDbTable;
+		for (CcpEntity ccpDbEntity : set) {
+			entities[k++] = ccpDbEntity;
 		}
 
-		List<CcpMapDecorator> manyById = this.crud.getManyById(values, tables);
+		List<CcpMapDecorator> manyById = this.crud.getManyById(values, entities);
 		k = 0;
 		
 		for (CcpMapDecorator dataBaseRow : manyById) {
-			String tableName = dataBaseRow.getAsString("_index");
+			String entity = dataBaseRow.getAsString("_index");
 
 			boolean recordFound = dataBaseRow.getAsBoolean("_found");
 			
 			Optional<CcpMapDecorator> findFirst = Arrays.asList(roadMap).stream()
-					.filter(x -> x.getAsString("table").equals(tableName))
+					.filter(x -> x.getAsString("entity").equals(entity))
 					.filter(x -> x.getAsBoolean("_found") == recordFound)
 					.findFirst();
 
@@ -68,7 +68,7 @@ public class Finally {
 					continue;
 				}
 				
-				values = values.putSubKey("_tables", tableName, record);
+				values = values.putSubKey("_entities", entity, record);
 				
 				continue;
 			}
@@ -97,7 +97,7 @@ public class Finally {
 				return execute;
 			}
 			
-			CcpMapDecorator context = values.putSubKey("_tables", tableName, record);
+			CcpMapDecorator context = values.putSubKey("_entities", entity, record);
 			CcpMapDecorator execute = action.execute(context);
 			return execute;
 		}

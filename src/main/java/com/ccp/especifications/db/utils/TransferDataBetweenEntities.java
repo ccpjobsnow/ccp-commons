@@ -4,12 +4,12 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
 
-public class TransferDataBetweenTables extends CcpNextStep {
+public class TransferDataBetweenEntities extends CcpNextStep {
 
 	private final CcpEntity origin;
 	private final CcpEntity target;
 	
-	public TransferDataBetweenTables(CcpEntity origin, CcpEntity target) {
+	public TransferDataBetweenEntities(CcpEntity origin, CcpEntity target) {
 		this.origin = origin;
 		this.target = target;
 	}
@@ -17,9 +17,9 @@ public class TransferDataBetweenTables extends CcpNextStep {
 	@Override
 	public CcpStepResult executeThisStep(CcpMapDecorator values) {
 		
-		CcpMapDecorator tables = values.getInternalMap("_tables");
+		CcpMapDecorator entities = values.getInternalMap("_entities");
 
-		boolean doNothing = tables.getInternalMap(this.origin.name()).isEmpty() ;
+		boolean doNothing = entities.getInternalMap(this.origin.name()).isEmpty() ;
 		
 		if(doNothing) {
 			return new CcpStepResult(values, 200, this);
@@ -34,8 +34,8 @@ public class TransferDataBetweenTables extends CcpNextStep {
 		}
 		
 		this.target.createOrUpdate(remove);
-		CcpMapDecorator renameKey = tables.renameKey(this.origin.name(), this.target.name());
-		CcpMapDecorator put = values.put("_tables", renameKey);
+		CcpMapDecorator renameKey = entities.renameKey(this.origin.name(), this.target.name());
+		CcpMapDecorator put = values.put("_entities", renameKey);
 		return new CcpStepResult(put, 200, this);
 	}
 

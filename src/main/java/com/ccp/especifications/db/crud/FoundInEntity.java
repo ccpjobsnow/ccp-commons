@@ -5,12 +5,12 @@ import java.util.List;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.process.CcpProcess;
 
-public class FoundInTheTable {
+public class FoundInEntity {
 	private final CcpMapDecorator id;
 	private final CcpMapDecorator statements;
 	private final CcpDao crud;
 
-	FoundInTheTable(CcpMapDecorator id, CcpMapDecorator statements, CcpDao crud) {
+	FoundInEntity(CcpMapDecorator id, CcpMapDecorator statements, CcpDao crud) {
 		this.statements = statements;
 		this.crud = crud;
 		this.id = id;

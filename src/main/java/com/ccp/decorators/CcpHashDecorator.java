@@ -13,6 +13,10 @@ public class CcpHashDecorator {
 		this.content = content;
 	}
 
+	public String toString() {
+		return this.content;
+	}
+
 	public String toThisHour() {
 		Calendar cal = new CcpTimeDecorator().getBrazilianCalendar();
 
