@@ -44,7 +44,9 @@ public interface CcpEntity {
 		CcpMapDecorator onlyExistingFields = this.getOnlyExistingFields(values);
 		CcpDao dao = this.getDao();
 
-		boolean created = dao.createOrUpdate(this.name(), onlyExistingFields);
+		CcpMapDecorator createOrUpdate = dao.createOrUpdate(this, onlyExistingFields);
+		String result = createOrUpdate.getAsString("result");
+		boolean created = "created".equals(result);
 		
 		this.saveAuditory(values, created ? CcpOperationType.create : CcpOperationType.update);
 

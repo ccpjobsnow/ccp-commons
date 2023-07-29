@@ -301,6 +301,14 @@ public class CcpMapDecorator {
 		CcpMapDecorator put = this.put(key, map.content);
 		return put;
 	}
+
+	public CcpMapDecorator putSubKey(String key, String subKey, CcpMapDecorator value) {
+		CcpMapDecorator internalMap = this.getInternalMap(key);
+		internalMap = internalMap.put(subKey, value);
+		CcpMapDecorator put = this.put(key, internalMap);
+		return put;
+	}
+
 	
 	public CcpMapDecorator putSubKey(String key, String subKey, Object value) {
 		CcpMapDecorator internalMap = this.getInternalMap(key);

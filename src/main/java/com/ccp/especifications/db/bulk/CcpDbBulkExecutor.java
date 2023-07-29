@@ -8,6 +8,14 @@ import com.ccp.especifications.db.utils.CcpOperationType;
 
 public interface CcpDbBulkExecutor {
 
-	CcpMapDecorator commit(List<CcpMapDecorator> records, CcpOperationType bulkOperation, CcpEntity entity, CcpBulkAudit audit);
+	default CcpMapDecorator commitAndAudit(List<CcpMapDecorator> records, CcpOperationType operation, CcpEntity entity, CcpEntity auditEntity, CcpEntity errorEntity) {
+		CcpMapDecorator bulkResult = this.commit(records, operation, entity);
+		this.audit(records, operation, bulkResult, entity, auditEntity, errorEntity);
+		return bulkResult;
+	}
+
+	CcpMapDecorator commit(List<CcpMapDecorator> records, CcpOperationType operation, CcpEntity entity);
+
+	void audit(List<CcpMapDecorator> records, CcpOperationType operation, CcpMapDecorator bulkResult, CcpEntity entity, CcpEntity auditEntity, CcpEntity errorEntity);
 	
 }

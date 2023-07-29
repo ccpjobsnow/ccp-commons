@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
@@ -85,18 +86,31 @@ public class CcpFileDecorator {
 		}
     }
 	public  String extractStringContent() {
-		String path = this.content;
-		String line;
-		StringBuilder sb = new StringBuilder();
-		try (FileReader fr = new FileReader(path); BufferedReader br = new BufferedReader(fr)) {
-			while ((line = br.readLine()) != null) {
-				sb.append(line).append("\n");
-			}
+		try {
+			
+			File file = new File(this.content);
+			Path path = file.toPath();
+			byte[] fileContent = Files.readAllBytes(path);
+			String string = new String(fileContent, "UTF-8");
+			return string;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		return sb.toString();
+		
+		//		String path = this.content;
+//		String line;
+//		StringBuilder sb = new StringBuilder();
+//		try (FileReader fr = new FileReader(path); BufferedReader br = new BufferedReader(fr)) {
+//			while ((line = br.readLine()) != null) {
+//				sb.append(line).append("\n");
+//			}
+//		} catch (Exception e) {
+//			throw new RuntimeException(e);
+//		}
+//		return sb.toString();
 	}
+	
+	
 	public  void append(String content) {
 		try {
 			File file = new File(this.content);

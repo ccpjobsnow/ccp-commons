@@ -11,7 +11,7 @@ public interface CcpDao {
 	
 	List<CcpMapDecorator> getManyById(CcpMapDecorator values, CcpEntity... tables);
 	
-	boolean createOrUpdate(String tableName, CcpMapDecorator data);
+	CcpMapDecorator createOrUpdate(CcpEntity tableName, CcpMapDecorator data);
 	
 	List<CcpMapDecorator> getManyByIds(CcpEntity tableName, String... ids);
 	
