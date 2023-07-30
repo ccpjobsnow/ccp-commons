@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 import com.ccp.constantes.CcpConstants;
 import com.ccp.process.CcpProcess;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class CcpMapDecorator {
@@ -25,6 +26,10 @@ public class CcpMapDecorator {
 	
 	public CcpMapDecorator() {
 		this.content = new HashMap<>();
+	}
+	
+	public CcpMapDecorator(Object obj) {
+		this(new Gson().toJson(obj));
 	}
 	
 	public CcpMapDecorator(InputStream is) {
@@ -92,7 +97,6 @@ public class CcpMapDecorator {
 		this.content = Collections.unmodifiableMap(content);
 	}
 
-	//ThrowableDecorator getErrorDetails()
 	private static CcpMapDecorator getErrorDetails(Throwable e) {
 
 		CcpMapDecorator jr = new CcpMapDecorator();

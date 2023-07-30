@@ -33,6 +33,7 @@ public final class CcpHttpHandler {
 		return executeHttpRequest;
 	}
 
+	@SuppressWarnings("unchecked")
 	public <V>V executeHttpRequest(String url, String method, CcpMapDecorator headers, String body, CcpHttpResponseTransform<V> transformer) {
 		
 		CcpHttpResponse response = this.ccpHttp.executeHttpRequest(url, method, headers, body);
@@ -45,17 +46,21 @@ public final class CcpHttpHandler {
 			throw new UnexpectedHttpStatus(response, url, method, this.flows.keySet().toString());
 		}
 	
-		boolean validSingleJson = response.isValidSingleJson();
+		boolean invalidSingleJson = response.isValidSingleJson() == false;
 		
-		if(validSingleJson) {
-			CcpMapDecorator asSingleJson = response.asSingleJson();
-			flow.execute(asSingleJson);
-			V tranform = transformer.transform(response);
+		V tranform = transformer.transform(response);
+
+		if(invalidSingleJson) {
 			return tranform;
 		}
 		
-		V tranform = transformer.transform(response);
-		return tranform;
+		if(tranform instanceof CcpMapDecorator == false) {
+			return tranform;
+		}
+
+		CcpMapDecorator execute = flow.execute((CcpMapDecorator)tranform);
+		return (V)execute;
+		
 	}
 	
 	

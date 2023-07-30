@@ -49,7 +49,8 @@ public interface CcpEntity {
 	
 	
 	default boolean exists(CcpMapDecorator data) {
-		boolean exists = this.getDao().exists(this, data);
+		CcpDao dao = this.getDao();
+		boolean exists = dao.exists(this, data);
 		return exists;
 	}
 	
@@ -105,4 +106,6 @@ public interface CcpEntity {
 		return this.getManyByIds(array);
 	}	
 	void saveAuditory(CcpMapDecorator values, CcpOperationType operation);
+	
+	boolean isAuditable();
 }

@@ -20,6 +20,9 @@ public class CcpHttpResponse {
 	}
 	
 	public boolean isValidSingleJson() {
+		if(this.httpResponse.trim().isEmpty()) {
+			return true;
+		}
 		CcpStringDecorator ccpStringDecorator = new CcpStringDecorator(this.httpResponse);
 		CcpTextDecorator text = ccpStringDecorator.text();
 		boolean validSingleJson = text.isValidSingleJson();
@@ -27,7 +30,11 @@ public class CcpHttpResponse {
 	}
 	
 	public CcpMapDecorator asSingleJson() {
-		return new CcpStringDecorator(this.httpResponse).map();
+		try {
+			return new CcpStringDecorator(this.httpResponse).map();
+		} catch (Exception e) {
+			return new CcpMapDecorator();
+		}
 	}
 	
 	@SuppressWarnings("unchecked")

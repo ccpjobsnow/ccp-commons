@@ -4,5 +4,5 @@ import com.ccp.decorators.CcpMapDecorator;
 
 public interface CcpEmailSender {
 
-	void send(CcpMapDecorator emailParameters) ;
+	CcpMapDecorator send(CcpMapDecorator emailParameters) ;
 }
