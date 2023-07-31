@@ -1,4 +1,4 @@
-package com.ccp.especifications.db.crud;
+package com.ccp.especifications.db.dao;
 
 import java.util.List;
 
@@ -7,8 +7,6 @@ import com.ccp.especifications.db.utils.CcpEntity;
 
 public interface CcpDao {
 
-	List<CcpMapDecorator> getManyById(List<CcpMapDecorator> values, CcpEntity... entities);
-	
 	List<CcpMapDecorator> getManyById(CcpMapDecorator values, CcpEntity... entities);
 	
 	CcpMapDecorator createOrUpdate(CcpEntity entity, CcpMapDecorator data);
@@ -70,4 +68,7 @@ public interface CcpDao {
 		return oneById;
 	}
 
+	CcpMapDecorator getAllData(CcpMapDecorator values, CcpEntity... entities);
+
+	List<CcpMapDecorator> getManyById(List<CcpMapDecorator> values, CcpEntity... entities); 
 }

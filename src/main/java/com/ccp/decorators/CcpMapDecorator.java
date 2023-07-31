@@ -198,15 +198,15 @@ public class CcpMapDecorator {
 		}
 	}
 	
-	public CcpMapDecorator putFilledTemplate(String templateKey, String newKey) {
+	public CcpMapDecorator putFilledTemplate(String fieldToSearch, String fieldToPut) {
 		
-		String asString = this.getAsString(templateKey);
+		String asString = this.getAsString(fieldToSearch);
 		
 		CcpTextDecorator ccpTextDecorator = new CcpTextDecorator(asString);
 		
 		String message = ccpTextDecorator.getMessage(this);
 		 
-		CcpMapDecorator put = this.put(newKey, message);
+		CcpMapDecorator put = this.put(fieldToPut, message);
 		
 		return put;
 	}

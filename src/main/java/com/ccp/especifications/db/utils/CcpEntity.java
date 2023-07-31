@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.especifications.db.crud.CcpDao;
+import com.ccp.especifications.db.dao.CcpDao;
 import com.ccp.exceptions.commons.CcpFlow;
 import com.ccp.exceptions.db.CcpRecordNotFound;
 import com.ccp.process.CcpProcess;
@@ -18,8 +18,8 @@ public interface CcpEntity {
 
 	default CcpMapDecorator getOneById(CcpMapDecorator data, CcpProcess ifNotFound) {
 		try {
-			CcpDao crud = this.getDao();
-			CcpMapDecorator oneById = crud.getOneById(this, data);
+			CcpDao dao = this.getDao();
+			CcpMapDecorator oneById = dao.getOneById(this, data);
 			return oneById;
 			
 		} catch (CcpRecordNotFound e) {
@@ -73,8 +73,8 @@ public interface CcpEntity {
 	CcpDao getDao();
 	
 	default CcpMapDecorator delete(CcpMapDecorator values) {
-		CcpDao crud = this.getDao();
-		CcpMapDecorator remove = crud.delete(this, values);
+		CcpDao dao = this.getDao();
+		CcpMapDecorator remove = dao.delete(this, values);
 		this.saveAuditory(values, CcpOperationType.delete);
 		return remove;
 	}
@@ -88,8 +88,8 @@ public interface CcpEntity {
 			String id = this.getId(value);
 			ids[k++] = id;
 		}
-		CcpDao crud = this.getDao();
-		List<CcpMapDecorator> manyByIds = crud.getManyByIds(this, ids);
+		CcpDao dao = this.getDao();
+		List<CcpMapDecorator> manyByIds = dao.getManyByIds(this, ids);
 	
 		k = 0;
 		List<CcpMapDecorator> response = new ArrayList<>();

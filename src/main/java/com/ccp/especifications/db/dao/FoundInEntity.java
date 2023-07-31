@@ -1,4 +1,4 @@
-package com.ccp.especifications.db.crud;
+package com.ccp.especifications.db.dao;
 
 import java.util.List;
 
@@ -8,11 +8,11 @@ import com.ccp.process.CcpProcess;
 public class FoundInEntity {
 	private final CcpMapDecorator id;
 	private final CcpMapDecorator statements;
-	private final CcpDao crud;
+	private final CcpDao dao;
 
-	FoundInEntity(CcpMapDecorator id, CcpMapDecorator statements, CcpDao crud) {
+	FoundInEntity(CcpMapDecorator id, CcpMapDecorator statements, CcpDao dao) {
 		this.statements = statements;
-		this.crud = crud;
+		this.dao = dao;
 		this.id = id;
 	}
 
@@ -31,7 +31,7 @@ public class FoundInEntity {
 		List<CcpMapDecorator> subList = list.subList(0, list.size() - 1);
 		subList.add(put);
 		CcpMapDecorator newStatements = this.statements.put("statements", subList);
-		return new NextStep(this.id, newStatements, this.crud);
+		return new NextStep(this.id, newStatements, this.dao);
 	}
 	
 }

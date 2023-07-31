@@ -1,4 +1,4 @@
-package com.ccp.especifications.db.crud;
+package com.ccp.especifications.db.dao;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -12,13 +12,13 @@ import com.ccp.exceptions.commons.CcpFlow;
 import com.ccp.process.CcpProcess;
 
 public class Finally {
-	private final CcpDao crud;
+	private final CcpDao dao;
 	private final CcpMapDecorator id;
 	private final CcpMapDecorator statements;
 	
-	Finally(CcpDao crud, CcpMapDecorator id, CcpMapDecorator statements) {
+	Finally(CcpDao dao, CcpMapDecorator id, CcpMapDecorator statements) {
 		this.id = id;
-		this.crud = crud;
+		this.dao = dao;
 		this.statements = statements;
 	}
 
@@ -45,7 +45,7 @@ public class Finally {
 			entities[k++] = ccpDbEntity;
 		}
 
-		List<CcpMapDecorator> manyById = this.crud.getManyById(values, entities);
+		List<CcpMapDecorator> manyById = this.dao.getManyById(values, entities);
 		k = 0;
 		
 		for (CcpMapDecorator dataBaseRow : manyById) {
