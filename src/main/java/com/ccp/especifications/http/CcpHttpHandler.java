@@ -2,7 +2,7 @@ package com.ccp.especifications.http;
 
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.exceptions.http.UnexpectedHttpStatus;
+import com.ccp.exceptions.http.CcpHttpUnexpectedStatus;
 import com.ccp.process.CcpProcess;
 
 public final class CcpHttpHandler {
@@ -43,7 +43,7 @@ public final class CcpHttpHandler {
 		CcpProcess flow = this.flows.getAsObject("" + status);
 	
 		if(flow == null) {
-			throw new UnexpectedHttpStatus(response, url, method, this.flows.keySet().toString());
+			throw new CcpHttpUnexpectedStatus(response, url, method, this.flows.keySet().toString());
 		}
 	
 		boolean invalidSingleJson = response.isValidSingleJson() == false;
