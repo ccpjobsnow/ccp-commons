@@ -1,6 +1,6 @@
 package com.ccp.exceptions.http;
 
 @SuppressWarnings("serial")
-public class CcpHttpInternalServerError extends CcpHttpError {
+public class CcpHttpServerError extends CcpHttpError {
 
 }
