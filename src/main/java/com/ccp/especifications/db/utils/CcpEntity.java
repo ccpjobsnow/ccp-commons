@@ -2,12 +2,13 @@ package com.ccp.especifications.db.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.especifications.db.dao.CcpDao;
 import com.ccp.exceptions.commons.CcpFlow;
 import com.ccp.exceptions.db.CcpRecordNotFound;
-import com.ccp.process.CcpProcess;
+
 
 public interface CcpEntity {
 
@@ -16,14 +17,14 @@ public interface CcpEntity {
 	String getId(CcpMapDecorator values);
 
 
-	default CcpMapDecorator getOneById(CcpMapDecorator data, CcpProcess ifNotFound) {
+	default CcpMapDecorator getOneById(CcpMapDecorator data, Function<CcpMapDecorator, CcpMapDecorator> ifNotFound) {
 		try {
 			CcpDao dao = this.getDao();
 			CcpMapDecorator oneById = dao.getOneById(this, data);
 			return oneById;
 			
 		} catch (CcpRecordNotFound e) {
-			CcpMapDecorator execute = ifNotFound.execute(data);
+			CcpMapDecorator execute = ifNotFound.apply(data);
 			return execute;
 		}
 	}

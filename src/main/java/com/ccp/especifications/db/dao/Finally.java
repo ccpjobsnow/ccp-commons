@@ -4,12 +4,13 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.exceptions.commons.CcpFlow;
-import com.ccp.process.CcpProcess;
+
 
 public class Finally {
 	private final CcpDao dao;
@@ -90,15 +91,15 @@ public class Finally {
 				throw new CcpFlow(values.put("_dataBaseRow", dataBaseRow), status , message);
 			}
 			
-			CcpProcess action = specification.getAsObject("action");
+			Function<CcpMapDecorator, CcpMapDecorator> action = specification.getAsObject("action");
 
 			if(recordFound == false) {
-				CcpMapDecorator execute = action.execute(values);
+				CcpMapDecorator execute = action.apply(values);
 				return execute;
 			}
 			
 			CcpMapDecorator context = values.putSubKey("_entities", entity, record);
-			CcpMapDecorator execute = action.execute(context);
+			CcpMapDecorator execute = action.apply(context);
 			return execute;
 		}
 		

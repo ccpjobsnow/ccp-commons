@@ -2,7 +2,7 @@ package com.ccp.process;
 
 import com.ccp.decorators.CcpMapDecorator;
 
-public class ThrowException implements CcpProcess{
+public class ThrowException implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
 
 	private final RuntimeException exception;
 	
@@ -10,7 +10,7 @@ public class ThrowException implements CcpProcess{
 		this.exception = exception;
 	}
 
-	public CcpMapDecorator execute(CcpMapDecorator values) {
+	public CcpMapDecorator apply(CcpMapDecorator values) {
 		throw this.exception;
 	}
 

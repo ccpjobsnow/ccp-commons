@@ -1,9 +1,13 @@
 package com.ccp.especifications.http;
 
+import java.util.function.Function;
+
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.exceptions.http.CcpHttpUnexpectedStatus;
-import com.ccp.process.CcpProcess;
+import com.ccp.exceptions.http.CcpHttpClientError;
+import com.ccp.exceptions.http.CcpHttpError;
+import com.ccp.exceptions.http.CcpHttpServerError;
+
 
 public final class CcpHttpHandler {
 
@@ -21,29 +25,37 @@ public final class CcpHttpHandler {
 		this.ccpHttp = ccpHttp;
 	}
 	
-	public <V> V executeHttpSimplifiedGet(String url, CcpHttpResponseTransform<V> transformer) {
-		V executeHttpRequest = this.executeHttpRequest(url, "GET", CcpConstants.EMPTY_JSON, CcpConstants.EMPTY_JSON, transformer);
+	public <V> V executeHttpSimplifiedGet(String url, CcpHttpResponseTransform<V> transformer, Enum<?> apiType) {
+		V executeHttpRequest = this.executeHttpRequest(url, "GET", CcpConstants.EMPTY_JSON, CcpConstants.EMPTY_JSON, transformer, apiType);
 		return executeHttpRequest;
 	}
 	
-	public <V> V executeHttpRequest(String url, String method, CcpMapDecorator headers, CcpMapDecorator body, CcpHttpResponseTransform<V> transformer) {
+	public <V> V executeHttpRequest(String url, String method, CcpMapDecorator headers, CcpMapDecorator body, CcpHttpResponseTransform<V> transformer, Enum<?> apiType) {
 		
 		String asJson = body.asJson();
-		V executeHttpRequest = this.executeHttpRequest(url, method, headers, asJson, transformer);
+		V executeHttpRequest = this.executeHttpRequest(url, method, headers, asJson, transformer, apiType);
 		return executeHttpRequest;
 	}
 
 	@SuppressWarnings("unchecked")
-	public <V>V executeHttpRequest(String url, String method, CcpMapDecorator headers, String body, CcpHttpResponseTransform<V> transformer) {
+	public <V>V executeHttpRequest(String url, String method, CcpMapDecorator headers, String request, CcpHttpResponseTransform<V> transformer, Enum<?> apiType) {
 		
-		CcpHttpResponse response = this.ccpHttp.executeHttpRequest(url, method, headers, body);
+		CcpHttpResponse response = this.ccpHttp.executeHttpRequest(url, method, headers, request);
 	
 		int status = response.httpStatus;
 		
-		CcpProcess flow = this.flows.getAsObject("" + status);
+		Function<CcpMapDecorator, CcpMapDecorator> flow = this.flows.getAsObject("" + status);
 	
 		if(flow == null) {
-			throw new CcpHttpUnexpectedStatus(response, url, method, this.flows.keySet().toString());
+			if(response.httpStatus >= 400 && response.httpStatus < 500) {
+				throw new CcpHttpClientError(url, method, headers, request, apiType, status, response.httpResponse, this.flows.keySet());
+			}
+
+			if(response.httpStatus >= 500 && response.httpStatus < 600) {
+				throw new CcpHttpServerError(url, method, headers, request, apiType, status, response.httpResponse, this.flows.keySet());
+			}
+			
+			throw new CcpHttpError(url, method, headers, request, apiType, status, response.httpResponse, this.flows.keySet());
 		}
 	
 		boolean invalidSingleJson = response.isValidSingleJson() == false;
@@ -58,7 +70,7 @@ public final class CcpHttpHandler {
 			return tranform;
 		}
 
-		CcpMapDecorator execute = flow.execute((CcpMapDecorator)tranform);
+		CcpMapDecorator execute = flow.apply((CcpMapDecorator)tranform);
 		return (V)execute;
 		
 	}

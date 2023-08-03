@@ -1,9 +1,10 @@
 package com.ccp.especifications.db.dao;
 
 import java.util.List;
+import java.util.function.Function;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.process.CcpProcess;
+
 
 public class FoundInEntity {
 	private final CcpMapDecorator id;
@@ -16,7 +17,7 @@ public class FoundInEntity {
 		this.id = id;
 	}
 
-	public NextStep executeAction(CcpProcess action) {
+	public NextStep executeAction(Function<CcpMapDecorator, CcpMapDecorator> action) {
 		return this.addStatement("action", action);
 	}
 

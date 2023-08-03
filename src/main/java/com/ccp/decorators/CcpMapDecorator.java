@@ -14,10 +14,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.ccp.constantes.CcpConstants;
-import com.ccp.process.CcpProcess;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -333,12 +333,12 @@ public class CcpMapDecorator {
 		return put;
 	}
 	
-	public CcpMapDecorator getTransformed(CcpProcess transformer) {
-		CcpMapDecorator execute = transformer.execute(this);
+	public CcpMapDecorator getTransformed(Function<CcpMapDecorator, CcpMapDecorator> transformer) {
+		CcpMapDecorator execute = transformer.apply(this);
 		return execute;
 	}
 	
-	public CcpMapDecorator put(String key, CcpProcess process) {
+	public CcpMapDecorator put(String key, Function<CcpMapDecorator, CcpMapDecorator> process) {
 		CcpMapDecorator put = this.put(key, (Object)process);
 		return put;
 	}
@@ -590,7 +590,7 @@ public class CcpMapDecorator {
 	}
 	
 
-	public CcpMapDecorator whenHasKey(String key, CcpProcess process) {
+	public CcpMapDecorator whenHasKey(String key, Function<CcpMapDecorator, CcpMapDecorator> process) {
 		
 		boolean hasNot = this.containsAllKeys(key) == false;
 		
@@ -599,12 +599,12 @@ public class CcpMapDecorator {
 			return response;
 		}
 		
-		CcpMapDecorator execute = process.execute(this);
+		CcpMapDecorator execute = process.apply(this);
 		
 		return execute;
 	}
 
-	public CcpMapDecorator whenHasNotKey(String key, CcpProcess process) {
+	public CcpMapDecorator whenHasNotKey(String key, Function<CcpMapDecorator, CcpMapDecorator> process) {
 		
 		boolean has = this.containsAllKeys(key);
 		
@@ -613,7 +613,7 @@ public class CcpMapDecorator {
 			return response;
 		}
 		
-		CcpMapDecorator execute = process.execute(this);
+		CcpMapDecorator execute = process.apply(this);
 		
 		return execute;
 	}
