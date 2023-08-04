@@ -1,4 +1,4 @@
-package com.ccp.process;
+package com.ccp.exceptions.commons;
 
 import com.ccp.decorators.CcpMapDecorator;
 

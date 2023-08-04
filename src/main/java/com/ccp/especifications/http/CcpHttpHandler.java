@@ -4,9 +4,7 @@ import java.util.function.Function;
 
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.exceptions.http.CcpHttpClientError;
 import com.ccp.exceptions.http.CcpHttpError;
-import com.ccp.exceptions.http.CcpHttpServerError;
 
 
 public final class CcpHttpHandler {
@@ -47,14 +45,6 @@ public final class CcpHttpHandler {
 		Function<CcpMapDecorator, CcpMapDecorator> flow = this.flows.getAsObject("" + status);
 	
 		if(flow == null) {
-			if(response.httpStatus >= 400 && response.httpStatus < 500) {
-				throw new CcpHttpClientError(url, method, headers, request, apiType, status, response.httpResponse, this.flows.keySet());
-			}
-
-			if(response.httpStatus >= 500 && response.httpStatus < 600) {
-				throw new CcpHttpServerError(url, method, headers, request, apiType, status, response.httpResponse, this.flows.keySet());
-			}
-			
 			throw new CcpHttpError(url, method, headers, request, apiType, status, response.httpResponse, this.flows.keySet());
 		}
 	

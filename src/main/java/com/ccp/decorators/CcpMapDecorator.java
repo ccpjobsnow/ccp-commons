@@ -107,14 +107,19 @@ public class CcpMapDecorator {
 
 		Throwable cause = e.getCause();
 		String message = e.getMessage();
-		List<String> stackTrace = Arrays.asList(e.getStackTrace())
-				.stream()
-				.map(x -> x.getFileName() + "." + x.getMethodName() + ":" + x.getLineNumber())
-				.collect(Collectors.toList())
-				;
+		StackTraceElement[] st = e.getStackTrace();
+		List<String> stackTrace = new ArrayList<>();
+		for (StackTraceElement ste : st) {
+			int lineNumber = ste.getLineNumber();
+			String methodName = ste.getMethodName();
+			String fileName = ste.getFileName();
+			String key = fileName.replace(".java", "") + "." + methodName + ":" + lineNumber;
+			stackTrace.add(key);
+		}
+		
 		CcpMapDecorator causeDetails = getErrorDetails(cause);
 
-		jr = jr.put("message", message).put("type", e.getClass().getName()).put("stackTrace", stackTrace).put("cause", causeDetails);
+		jr = jr.put("message", message).put("type", e.getClass().getName()).put("stackTrace", stackTrace.toString()).put("cause", causeDetails);
 		return jr;
 	}
 	
@@ -351,7 +356,7 @@ public class CcpMapDecorator {
 		return new CcpMapDecorator(content);
 	}  
 
-	public CcpMapDecorator copyKeyValueToKeyPaste(String keyToCopy, String keyToPaste) {
+	public CcpMapDecorator duplicateValueFromKey(String keyToCopy, String keyToPaste) {
 		Object value = this.get(keyToCopy);
 		CcpMapDecorator newMap = this.put(keyToPaste, value);
 		return newMap;

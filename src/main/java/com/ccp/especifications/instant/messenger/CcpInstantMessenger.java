@@ -7,7 +7,7 @@ public interface CcpInstantMessenger {
 	
 	Long getMembersCount(CcpMapDecorator parameters);
 	
-	Long sendMessage(CcpMapDecorator parameters);
+	CcpMapDecorator sendMessage(CcpMapDecorator parameters);
 	
 	String getFileName(CcpMapDecorator parameters);
 	
