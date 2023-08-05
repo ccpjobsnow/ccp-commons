@@ -56,7 +56,7 @@ public class Finally {
 			
 			Optional<CcpMapDecorator> findFirst = Arrays.asList(roadMap).stream()
 					.filter(x -> x.getAsString("entity").equals(entity))
-					.filter(x -> x.getAsBoolean("_found") == recordFound)
+					.filter(x -> x.getAsBoolean("found") == recordFound)
 					.findFirst();
 
 			CcpMapDecorator record = dataBaseRow.getInternalMap("_source");
