@@ -23,20 +23,20 @@ public final class CcpHttpHandler {
 		this.ccpHttp = ccpHttp;
 	}
 	
-	public <V> V executeHttpSimplifiedGet(String url, CcpHttpResponseTransform<V> transformer, Enum<?> apiType) {
-		V executeHttpRequest = this.executeHttpRequest(url, "GET", CcpConstants.EMPTY_JSON, CcpConstants.EMPTY_JSON, transformer, apiType);
+	public <V> V executeHttpSimplifiedGet(String url, CcpHttpResponseTransform<V> transformer) {
+		V executeHttpRequest = this.executeHttpRequest(url, "GET", CcpConstants.EMPTY_JSON, CcpConstants.EMPTY_JSON, transformer);
 		return executeHttpRequest;
 	}
 	
-	public <V> V executeHttpRequest(String url, String method, CcpMapDecorator headers, CcpMapDecorator body, CcpHttpResponseTransform<V> transformer, Enum<?> apiType) {
+	public <V> V executeHttpRequest(String url, String method, CcpMapDecorator headers, CcpMapDecorator body, CcpHttpResponseTransform<V> transformer) {
 		
 		String asJson = body.asJson();
-		V executeHttpRequest = this.executeHttpRequest(url, method, headers, asJson, transformer, apiType);
+		V executeHttpRequest = this.executeHttpRequest(url, method, headers, asJson, transformer);
 		return executeHttpRequest;
 	}
 
 	@SuppressWarnings("unchecked")
-	public <V>V executeHttpRequest(String url, String method, CcpMapDecorator headers, String request, CcpHttpResponseTransform<V> transformer, Enum<?> apiType) {
+	public <V>V executeHttpRequest(String url, String method, CcpMapDecorator headers, String request, CcpHttpResponseTransform<V> transformer) {
 		
 		CcpHttpResponse response = this.ccpHttp.executeHttpRequest(url, method, headers, request);
 	
@@ -45,7 +45,7 @@ public final class CcpHttpHandler {
 		Function<CcpMapDecorator, CcpMapDecorator> flow = this.flows.getAsObject("" + status);
 	
 		if(flow == null) {
-			throw new CcpHttpError(url, method, headers, request, apiType, status, response.httpResponse, this.flows.keySet());
+			throw new CcpHttpError(url, method, headers, request, status, response.httpResponse, this.flows.keySet());
 		}
 	
 		boolean invalidSingleJson = response.isValidSingleJson() == false;
