@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -113,13 +114,13 @@ public class CcpMapDecorator {
 			int lineNumber = ste.getLineNumber();
 			String methodName = ste.getMethodName();
 			String fileName = ste.getFileName();
-			String key = fileName.replace(".java", "") + "." + methodName + ":" + lineNumber;
+			String key = fileName.replace(".java", "") + "." + methodName + ":" + lineNumber+ "\n";
 			stackTrace.add(key);
 		}
 		
 		CcpMapDecorator causeDetails = getErrorDetails(cause);
 
-		jr = jr.put("message", message).put("type", e.getClass().getName()).put("stackTrace", stackTrace.toString()).put("cause", causeDetails);
+		jr = jr.put("type", e.getClass().getName()).put("stackTrace", stackTrace.toString()).put("message", message).put("cause", causeDetails);
 		return jr;
 	}
 	
@@ -297,7 +298,7 @@ public class CcpMapDecorator {
 	@Override
 	public String toString() {
 
-		String json = new GsonBuilder().setPrettyPrinting().create().toJson(this.content);
+		String json = new GsonBuilder().setPrettyPrinting().create().toJson(new TreeMap<>(this.content));
 		return json;
 	}
 	

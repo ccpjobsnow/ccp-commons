@@ -13,6 +13,7 @@ public interface CcpInstantMessenger {
 	
 	String extractTextFromMessage(CcpMapDecorator parameters);
 	
+	String getToken(CcpMapDecorator parameters);
 
 
 }
