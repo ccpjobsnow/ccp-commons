@@ -116,4 +116,10 @@ public interface CcpEntity {
 	void saveAuditory(CcpMapDecorator values, CcpOperationType operation);
 	
 	boolean isAuditable();
+	
+	default CcpMapDecorator createOrUpdate(CcpMapDecorator data, String id) {
+		CcpDao dao = this.getDao();
+		CcpMapDecorator createOrUpdate = dao.createOrUpdate(this, data, id);
+		return createOrUpdate;
+	}
 }

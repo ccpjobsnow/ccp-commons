@@ -77,5 +77,19 @@ public class CcpTimeDecorator {
 		Calendar cal = Calendar.getInstance(timeZone);
 		return (Calendar)cal.clone();
 	}
+	
+	public void sleep(int i) {
+		
+		if(i <= 0) {
+			return;
+		}
+		
+		try {
+			Thread.sleep(i);
+		} catch (Exception e) {
+		}
+
+	}
+
 
 }
