@@ -59,7 +59,6 @@ public class Finally {
 					.filter(x -> x.getAsBoolean("found") == recordFound)
 					.findFirst();
 
-			CcpMapDecorator record = dataBaseRow.getInternalMap("_source");
 			
 			boolean itWasNotForeseen = findFirst.isPresent() == false;
 			
@@ -69,7 +68,7 @@ public class Finally {
 					continue;
 				}
 				
-				values = values.putSubKey("_entities", entity, record);
+				values = values.putSubKey("_entities", entity, dataBaseRow);
 				
 				continue;
 			}
@@ -98,7 +97,7 @@ public class Finally {
 				return execute;
 			}
 			
-			CcpMapDecorator context = values.putSubKey("_entities", entity, record);
+			CcpMapDecorator context = values.putSubKey("_entities", entity, dataBaseRow);
 			CcpMapDecorator execute = action.apply(context);
 			return execute;
 		}

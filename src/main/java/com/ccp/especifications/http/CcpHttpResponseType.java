@@ -11,5 +11,6 @@ public interface CcpHttpResponseType {
 	CcpHttpResponseTransform<List<Object>> listObject = response -> response.asListObject();
 	CcpHttpResponseTransform<String> string = response -> response.httpResponse;
 	CcpHttpResponseTransform<String> base64 = response -> response.asBase64();
+	
 
 }
