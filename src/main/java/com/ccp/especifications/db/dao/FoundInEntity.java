@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.process.CcpProcessStatus;
 
 
 public class FoundInEntity {
@@ -21,8 +22,8 @@ public class FoundInEntity {
 		return this.addStatement("action", action);
 	}
 
-	public NextStep returnStatus(Integer status) {
-		return this.addStatement("status", status);
+	public NextStep returnStatus(CcpProcessStatus status) {
+		return this.addStatement("status", status.status());
 	}
 
 	private NextStep addStatement(String key, Object obj) {
