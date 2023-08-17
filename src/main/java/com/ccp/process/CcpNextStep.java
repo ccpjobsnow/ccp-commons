@@ -23,8 +23,8 @@ public abstract class CcpNextStep {
 		
 	}
 	
-	public CcpNextStep addStep(int status, CcpNextStep nextProcess) {
-		this.decisionTree.put(status, nextProcess);
+	public CcpNextStep addStep(CcpProcessStatus status, CcpNextStep nextProcess) {
+		this.decisionTree.put(status.status(), nextProcess);
 		return this;
 	}
 	
