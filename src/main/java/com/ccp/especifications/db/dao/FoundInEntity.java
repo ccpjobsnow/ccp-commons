@@ -23,7 +23,7 @@ public class FoundInEntity {
 	}
 
 	public NextStep returnStatus(CcpProcessStatus status) {
-		return this.addStatement("status", status.status());
+		return this.addStatement("status", status);
 	}
 
 	private NextStep addStatement(String key, Object obj) {
