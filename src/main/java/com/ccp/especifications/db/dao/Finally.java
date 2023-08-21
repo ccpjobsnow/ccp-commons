@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.exceptions.commons.CcpFlow;
+import com.ccp.process.CcpProcessStatus;
 
 
 public class Finally {
@@ -85,9 +86,9 @@ public class Finally {
 					continue;
 				}
 				
-				Integer status = specification.getAsIntegerNumber("status");
+				CcpProcessStatus status = specification.getAsObject("status");
 				String message = specification.getAsString("message");
-				throw new CcpFlow(values.put("_dataBaseRow", dataBaseRow), status , message);
+				throw new CcpFlow(values.put("_dataBaseRow", dataBaseRow.put("_status", status.toString())), status.status() , message);
 			}
 			
 			Function<CcpMapDecorator, CcpMapDecorator> action = specification.getAsObject("action");
