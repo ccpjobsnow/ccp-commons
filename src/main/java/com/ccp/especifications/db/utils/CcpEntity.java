@@ -10,12 +10,10 @@ import com.ccp.exceptions.commons.CcpFlow;
 import com.ccp.exceptions.db.CcpRecordNotFound;
 
 
-public interface CcpEntity {
+public interface CcpEntity extends CcpIdGenerator{
 
 	String name();
 	
-	String getId(CcpMapDecorator values);
-
 
 	default CcpMapDecorator getOneById(CcpMapDecorator data, Function<CcpMapDecorator, CcpMapDecorator> ifNotFound) {
 		try {
