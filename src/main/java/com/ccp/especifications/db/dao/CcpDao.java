@@ -17,9 +17,7 @@ public interface CcpDao {
 	
 	CcpMapDecorator delete(CcpEntity entity, CcpMapDecorator values);
 	
-	default UseThisId useThisId(CcpMapDecorator id) {
-		return new UseThisId(id, new CcpMapDecorator(), this);
-	}
+	
 	
 	default boolean anyMatch(CcpMapDecorator values, CcpEntity... entities) {
 		List<CcpMapDecorator> manyById = this.getManyById(values, entities);

@@ -18,11 +18,13 @@ import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.ccp.constantes.CcpConstants;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.ccp.dependency.injection.CcpInstanceInjection;
+import com.ccp.especifications.json.CcpJson;
 
 public class CcpMapDecorator {
+	
+	private static final CcpJson json = CcpInstanceInjection.getInstance(CcpJson.class);
+	
 	public final Map<String, Object> content;
 	
 	public CcpMapDecorator() {
@@ -30,7 +32,7 @@ public class CcpMapDecorator {
 	}
 	
 	public CcpMapDecorator(Object obj) {
-		this(new Gson().toJson(obj));
+		this(json.toJson(obj));
 	}
 	
 	public CcpMapDecorator(InputStream is) {
@@ -79,10 +81,10 @@ public class CcpMapDecorator {
 	public CcpMapDecorator(String json) {
 		this(getMap(json));
 	}
-	@SuppressWarnings("unchecked")
-	static Map<String, Object> getMap(String json) {
+
+	static Map<String, Object> getMap(String _json) {
 		try {
-			Map<String, Object> fromJson = CcpConstants.GSON.fromJson(json, Map.class);
+			Map<String, Object> fromJson = json.fromJson(_json);
 			return fromJson;
 			
 		} catch (Exception e) {
@@ -288,18 +290,18 @@ public class CcpMapDecorator {
 
 
 	public String asJson() {
-		return CcpConstants.GSON.toJson(this.content);
+		return json.toJson(this.content);
 	}
 	
 	public String asPrettyJson() {
-		return new GsonBuilder().setPrettyPrinting().create().toJson(this.content);
+		return json.asPrettyJson(this.content);
 	}
 	
 	@Override
 	public String toString() {
 
-		String json = new GsonBuilder().setPrettyPrinting().create().toJson(new TreeMap<>(this.content));
-		return json;
+		String _json = json.asPrettyJson(new TreeMap<>(this.content));
+		return _json;
 	}
 	
 

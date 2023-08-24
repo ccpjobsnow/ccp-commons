@@ -4,17 +4,17 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.dependency.injection.CcpInstanceInjection;
 
 public class CcpQueryExecutorDecorator {
 
-	private final CcpDbQueryExecutor requestExecutor;
+	private final CcpDbQueryExecutor requestExecutor = CcpInstanceInjection.getInstance(CcpDbQueryExecutor.class); 
 	
 	private final String[] resourcesNames;
 	
 	private final ElasticQuery elasticQuery;
 
-	protected CcpQueryExecutorDecorator(CcpDbQueryExecutor requestExecutor, ElasticQuery elasticQuery, String... resourcesNames) {
-		this.requestExecutor = requestExecutor;
+	protected CcpQueryExecutorDecorator(ElasticQuery elasticQuery, String... resourcesNames) {
 		this.resourcesNames = resourcesNames;
 		this.elasticQuery = elasticQuery;
 	}

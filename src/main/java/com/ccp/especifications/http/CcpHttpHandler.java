@@ -4,6 +4,7 @@ import java.util.function.Function;
 
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.dependency.injection.CcpInstanceInjection;
 import com.ccp.exceptions.http.CcpHttpError;
 
 
@@ -11,16 +12,14 @@ public final class CcpHttpHandler {
 
 	private final CcpMapDecorator flows;
 	
-	private final CcpHttpRequester ccpHttp;
+	private final CcpHttpRequester ccpHttp = CcpInstanceInjection.getInstance(CcpHttpRequester.class);
 
-	public CcpHttpHandler(CcpMapDecorator flows, CcpHttpRequester ccpHttp) {
+	public CcpHttpHandler(CcpMapDecorator flows) {
 		this.flows = flows;
-		this.ccpHttp = ccpHttp;
 	}
 
-	public CcpHttpHandler(Integer httpStatus, CcpHttpRequester ccpHttp) {
+	public CcpHttpHandler(Integer httpStatus) {
 		this.flows = new CcpMapDecorator().put(httpStatus.toString(), CcpConstants.DO_NOTHING);
-		this.ccpHttp = ccpHttp;
 	}
 	
 	public <V> V executeHttpSimplifiedGet(String url, CcpHttpResponseTransform<V> transformer) {

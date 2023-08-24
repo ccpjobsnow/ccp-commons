@@ -8,19 +8,19 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.dependency.injection.CcpInstanceInjection;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.exceptions.commons.CcpFlow;
 import com.ccp.process.CcpProcessStatus;
 
 
 public class Finally {
-	private final CcpDao dao;
+	private final CcpDao dao = CcpInstanceInjection.getInstance(CcpDao.class);
 	private final CcpMapDecorator id;
 	private final CcpMapDecorator statements;
 	
-	Finally(CcpDao dao, CcpMapDecorator id, CcpMapDecorator statements) {
+	Finally(CcpMapDecorator id, CcpMapDecorator statements) {
 		this.id = id;
-		this.dao = dao;
 		this.statements = statements;
 	}
 

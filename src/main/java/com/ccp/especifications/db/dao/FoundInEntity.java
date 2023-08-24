@@ -10,11 +10,9 @@ import com.ccp.process.CcpProcessStatus;
 public class FoundInEntity {
 	private final CcpMapDecorator id;
 	private final CcpMapDecorator statements;
-	private final CcpDao dao;
 
-	FoundInEntity(CcpMapDecorator id, CcpMapDecorator statements, CcpDao dao) {
+	FoundInEntity(CcpMapDecorator id, CcpMapDecorator statements) {
 		this.statements = statements;
-		this.dao = dao;
 		this.id = id;
 	}
 
@@ -33,7 +31,7 @@ public class FoundInEntity {
 		List<CcpMapDecorator> subList = list.subList(0, list.size() - 1);
 		subList.add(put);
 		CcpMapDecorator newStatements = this.statements.put("statements", subList);
-		return new NextStep(this.id, newStatements, this.dao);
+		return new NextStep(this.id, newStatements);
 	}
 	
 }

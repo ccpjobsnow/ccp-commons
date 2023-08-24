@@ -1,15 +1,15 @@
 package com.ccp.especifications.cache;
 
 import com.ccp.constantes.CcpConstants;
+import com.ccp.dependency.injection.CcpInstanceInjection;
 import com.ccp.process.CcpMapTransform;
 
 public class CcpCacheDecorator {
-	private final CcpCache cache;
+	private final CcpCache cache = CcpInstanceInjection.getInstance(CcpCache.class);
 	
 	private final String key;
 
-	public CcpCacheDecorator(CcpCache cache, String key) {
-		this.cache = cache;
+	public CcpCacheDecorator(String key) {
 		this.key = key;
 	}
 
@@ -39,7 +39,7 @@ public class CcpCacheDecorator {
 	
 	public CcpCacheDecorator incrementKey(String key, Object value) {
 		String _key = this.key + "." + key + "." + value;
-		CcpCacheDecorator ccpCacheDecorator = new CcpCacheDecorator(cache, _key);
+		CcpCacheDecorator ccpCacheDecorator = new CcpCacheDecorator(_key);
 		return ccpCacheDecorator;
 	}
 }

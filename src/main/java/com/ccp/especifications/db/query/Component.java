@@ -1,9 +1,11 @@
 package com.ccp.especifications.db.query;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.google.gson.GsonBuilder;
+import com.ccp.dependency.injection.CcpInstanceInjection;
+import com.ccp.especifications.json.CcpJson;
 
 abstract class Component {
+	private static final CcpJson json = CcpInstanceInjection.getInstance(CcpJson.class);
 
 	public CcpMapDecorator values = new CcpMapDecorator();
 	protected Component parent;
@@ -51,8 +53,8 @@ abstract class Component {
 	 @Override
 	public final String toString() {
 		 Object value = this.getValue();
-		String json = new GsonBuilder().setPrettyPrinting().create().toJson(value);
-		return json;
+		String _json = json.toJson(value);
+		return _json;
 	}
 	 
 	public boolean hasChildreen() {

@@ -4,7 +4,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.google.gson.Gson;
 
 public interface CcpConstants {
 
@@ -13,6 +12,5 @@ public interface CcpConstants {
 	CcpMapDecorator EMPTY_JSON = new CcpMapDecorator();
 	Consumer<String> EXECUTE_NOTHING = x -> {};
 	Function<CcpMapDecorator, CcpMapDecorator> DO_NOTHING = x -> x;
-	Gson GSON = new Gson();
 
 }
