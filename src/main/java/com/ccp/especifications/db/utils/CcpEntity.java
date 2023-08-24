@@ -12,8 +12,6 @@ import com.ccp.exceptions.db.CcpRecordNotFound;
 
 public interface CcpEntity extends CcpIdGenerator{
 
-	String name();
-	
 
 	default CcpMapDecorator getOneById(CcpMapDecorator data, Function<CcpMapDecorator, CcpMapDecorator> ifNotFound) {
 		try {
