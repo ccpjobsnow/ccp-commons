@@ -10,7 +10,6 @@ import com.ccp.dependency.injection.CcpInstanceInjection;
 import com.ccp.especifications.json.CcpJson;
 
 public class CcpHttpResponse {
-	private static final CcpJson json = CcpInstanceInjection.getInstance(CcpJson.class);
 
 	public final String httpResponse;
 	public final int httpStatus;
@@ -41,6 +40,7 @@ public class CcpHttpResponse {
 	
 	public List<CcpMapDecorator> asListRecord(){
 		try {
+			CcpJson json = CcpInstanceInjection.getInstance(CcpJson.class);
 			List<CcpMapDecorator> fromJson = json.fromJson(this.httpResponse);
 			return fromJson; 
 		} catch (Exception e) {
@@ -50,6 +50,7 @@ public class CcpHttpResponse {
 
 	public List<Object> asListObject(){
 		try {
+			CcpJson json = CcpInstanceInjection.getInstance(CcpJson.class);
 			List<Object> fromJson = json.fromJson(this.httpResponse);
 			return fromJson; 
 		} catch (Exception e) {

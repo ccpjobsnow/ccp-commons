@@ -23,7 +23,6 @@ import com.ccp.especifications.json.CcpJson;
 
 public class CcpMapDecorator {
 	
-	private static final CcpJson json = CcpInstanceInjection.getInstance(CcpJson.class);
 	
 	public final Map<String, Object> content;
 	
@@ -32,7 +31,7 @@ public class CcpMapDecorator {
 	}
 	
 	public CcpMapDecorator(Object obj) {
-		this(json.toJson(obj));
+		this(CcpInstanceInjection.getInstance(CcpJson.class).toJson(obj));
 	}
 	
 	public CcpMapDecorator(InputStream is) {
@@ -83,6 +82,7 @@ public class CcpMapDecorator {
 	}
 
 	static Map<String, Object> getMap(String _json) {
+		CcpJson json = CcpInstanceInjection.getInstance(CcpJson.class);
 		try {
 			Map<String, Object> fromJson = json.fromJson(_json);
 			return fromJson;
@@ -290,15 +290,18 @@ public class CcpMapDecorator {
 
 
 	public String asJson() {
+		CcpJson json = CcpInstanceInjection.getInstance(CcpJson.class);
 		return json.toJson(this.content);
 	}
 	
 	public String asPrettyJson() {
+		CcpJson json = CcpInstanceInjection.getInstance(CcpJson.class);
 		return json.asPrettyJson(this.content);
 	}
 	
 	@Override
 	public String toString() {
+		CcpJson json = CcpInstanceInjection.getInstance(CcpJson.class);
 
 		String _json = json.asPrettyJson(new TreeMap<>(this.content));
 		return _json;
