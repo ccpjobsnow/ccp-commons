@@ -23,6 +23,16 @@ public abstract class CcpNextStep {
 		
 	}
 	
+	public CcpNextStep addEmptyStep() {
+		return this.addStep(CcpProcessStatus.nextStep, new CcpNextStep() {
+			
+			@Override
+			public CcpStepResult executeThisStep(CcpMapDecorator values) {
+				return null;
+			}
+		});
+	}
+	
 	public CcpNextStep addStep(CcpProcessStatus status, CcpNextStep nextProcess) {
 		this.decisionTree.put(status.status(), nextProcess);
 		return this;
