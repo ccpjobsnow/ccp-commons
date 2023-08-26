@@ -22,6 +22,7 @@ public class CcpFlow extends RuntimeException{
 
 	}
 	public CcpFlow(CcpMapDecorator values, int status) {
+		super(values.put("status", status).asPrettyJson());
 		this.values = values;
 		this.status = status;
 	}

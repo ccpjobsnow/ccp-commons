@@ -26,7 +26,7 @@ public interface CcpEntity extends CcpIdGenerator{
 	}
 
 	default CcpMapDecorator getOneById(CcpMapDecorator data) {
-		CcpMapDecorator md = this.getOneById(data, x -> {throw new CcpFlow(x, 404);});
+		CcpMapDecorator md = this.getOneById(data, x -> {throw new CcpFlow(x.put("entity", this.name()), 404);});
 		return md;
 	}
 	
