@@ -3,11 +3,11 @@ package com.ccp.dependency.injection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CcpInstanceInjection {
+public class CcpDependencyInjection {
 
 	static Map<Class<?>, Object> instances = new HashMap<>();
 	
-	public static void loadAllInstances(CcpInstanceProvider... providers) {
+	public static void loadAllDependencies(CcpInstanceProvider... providers) {
 		
 		for (CcpInstanceProvider provider : providers) {
 			Object implementation = provider.getInstance();
@@ -18,13 +18,13 @@ public class CcpInstanceInjection {
 		}
 	}
 	
-	public static <T>boolean hasInstance(Class<T> interfaceClass) {
+	public static <T>boolean hasDependency(Class<T> interfaceClass) {
 		Object implementation = instances.get(interfaceClass);
 		return implementation != null;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static <T> T getInstance(Class<T> interfaceClass) {
+	public static <T> T getDependency(Class<T> interfaceClass) {
 		Object implementation = instances.get(interfaceClass);
 		if(implementation == null) {
 			throw new RuntimeException("It is missing an implementation of the class " + interfaceClass.getName());

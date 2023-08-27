@@ -6,13 +6,13 @@ import java.util.List;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.decorators.CcpTextDecorator;
-import com.ccp.dependency.injection.CcpInstanceInjection;
+import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.json.CcpJson;
 
 public class CcpHttpResponse {
 
 	public final String httpResponse;
-	public final int httpStatus;
+	final int httpStatus;
 	
 	
 	public CcpHttpResponse(String httpResponse, int httpStatus) {
@@ -40,7 +40,7 @@ public class CcpHttpResponse {
 	
 	public List<CcpMapDecorator> asListRecord(){
 		try {
-			CcpJson json = CcpInstanceInjection.getInstance(CcpJson.class);
+			CcpJson json = CcpDependencyInjection.getDependency(CcpJson.class);
 			List<CcpMapDecorator> fromJson = json.fromJson(this.httpResponse);
 			return fromJson; 
 		} catch (Exception e) {
@@ -50,7 +50,7 @@ public class CcpHttpResponse {
 
 	public List<Object> asListObject(){
 		try {
-			CcpJson json = CcpInstanceInjection.getInstance(CcpJson.class);
+			CcpJson json = CcpDependencyInjection.getDependency(CcpJson.class);
 			List<Object> fromJson = json.fromJson(this.httpResponse);
 			return fromJson; 
 		} catch (Exception e) {
@@ -70,5 +70,28 @@ public class CcpHttpResponse {
 				.put("httpStatus", this.httpStatus)
 				.put("httpResponse", this.httpResponse)
 				.toString();
+	}
+	
+	public void assertStatus(int expectedStatus) {
+		if(expectedStatus == this.httpStatus) {
+			return;
+		}
+		
+		throw new RuntimeException(
+				new CcpMapDecorator()
+				.put("expectedStatus", expectedStatus)
+				.put("realStatus", this.httpStatus)
+				.put("response", this.httpResponse)
+				.asPrettyJson());
+	}
+	
+	public boolean isClientError() {
+		if(this.httpStatus < 400) {
+			return false;
+		}
+		if(this.httpStatus>499) {
+			return false;
+		}
+		return true;
 	}
 }

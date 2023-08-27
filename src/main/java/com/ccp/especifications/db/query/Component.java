@@ -1,7 +1,7 @@
 package com.ccp.especifications.db.query;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.dependency.injection.CcpInstanceInjection;
+import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.json.CcpJson;
 
 abstract class Component {
@@ -53,7 +53,7 @@ abstract class Component {
 	public final String toString() {
 		 Object value = this.getValue();
 
-		 CcpJson json = CcpInstanceInjection.getInstance(CcpJson.class);
+		 CcpJson json = CcpDependencyInjection.getDependency(CcpJson.class);
 
 		 String _json = json.toJson(value);
 		return _json;

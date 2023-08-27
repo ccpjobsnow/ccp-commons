@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.dependency.injection.CcpInstanceInjection;
+import com.ccp.dependency.injection.CcpDependencyInjection;
 
 public class CcpQueryExecutorDecorator {
 
-	private final CcpDbQueryExecutor requestExecutor = CcpInstanceInjection.getInstance(CcpDbQueryExecutor.class); 
+	private final CcpDbQueryExecutor requestExecutor = CcpDependencyInjection.getDependency(CcpDbQueryExecutor.class); 
 	
 	private final String[] resourcesNames;
 	

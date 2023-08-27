@@ -43,7 +43,12 @@ public interface CcpEntity extends CcpIdGenerator{
 		}
 	}
 	
-	
+	default boolean exists(String id) {
+		CcpDao dao = this.getDao();
+		boolean exists = dao.exists(this, id);
+		return exists;
+		
+	}
 	
 	default boolean exists(CcpMapDecorator data) {
 		CcpDao dao = this.getDao();

@@ -8,14 +8,14 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.dependency.injection.CcpInstanceInjection;
+import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.exceptions.commons.CcpFlow;
 import com.ccp.process.CcpProcessStatus;
 
 
 public class Finally {
-	private final CcpDao dao = CcpInstanceInjection.getInstance(CcpDao.class);
+	private final CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
 	private final CcpMapDecorator id;
 	private final CcpMapDecorator statements;
 	

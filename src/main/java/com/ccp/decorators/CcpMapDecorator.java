@@ -18,7 +18,7 @@ import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.ccp.dependency.injection.CcpInstanceInjection;
+import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.json.CcpJson;
 
 public class CcpMapDecorator {
@@ -31,7 +31,7 @@ public class CcpMapDecorator {
 	}
 	
 	public CcpMapDecorator(Object obj) {
-		this(CcpInstanceInjection.getInstance(CcpJson.class).toJson(obj));
+		this(CcpDependencyInjection.getDependency(CcpJson.class).toJson(obj));
 	}
 	
 	public CcpMapDecorator(InputStream is) {
@@ -82,7 +82,7 @@ public class CcpMapDecorator {
 	}
 
 	static Map<String, Object> getMap(String _json) {
-		CcpJson json = CcpInstanceInjection.getInstance(CcpJson.class);
+		CcpJson json = CcpDependencyInjection.getDependency(CcpJson.class);
 		try {
 			Map<String, Object> fromJson = json.fromJson(_json);
 			return fromJson;
@@ -290,18 +290,18 @@ public class CcpMapDecorator {
 
 
 	public String asJson() {
-		CcpJson json = CcpInstanceInjection.getInstance(CcpJson.class);
+		CcpJson json = CcpDependencyInjection.getDependency(CcpJson.class);
 		return json.toJson(this.content);
 	}
 	
 	public String asPrettyJson() {
-		CcpJson json = CcpInstanceInjection.getInstance(CcpJson.class);
+		CcpJson json = CcpDependencyInjection.getDependency(CcpJson.class);
 		return json.asPrettyJson(this.content);
 	}
 	
 	@Override
 	public String toString() {
-		CcpJson json = CcpInstanceInjection.getInstance(CcpJson.class);
+		CcpJson json = CcpDependencyInjection.getDependency(CcpJson.class);
 
 		String _json = json.asPrettyJson(new TreeMap<>(this.content));
 		return _json;
@@ -373,8 +373,13 @@ public class CcpMapDecorator {
 		Map<String, Object> content = new HashMap<>();
 		content.putAll(this.content);
 		Object value = content.remove(oldKey);
+		CcpMapDecorator ccpMapDecorator = new CcpMapDecorator(content);
+		if(value == null) {
+			return ccpMapDecorator;
+		}
+		
 		content.put(newKey, value);
-		CcpMapDecorator mapDecorator = new CcpMapDecorator(content);
+		CcpMapDecorator mapDecorator = ccpMapDecorator;
 		return mapDecorator;
 		
 	}

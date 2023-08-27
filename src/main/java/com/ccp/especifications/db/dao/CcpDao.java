@@ -70,5 +70,7 @@ public interface CcpDao {
 
 	List<CcpMapDecorator> getManyById(List<CcpMapDecorator> values, CcpIdGenerator... entities);
 
-	CcpMapDecorator createOrUpdate(CcpIdGenerator entity, CcpMapDecorator data, String id); 
+	CcpMapDecorator createOrUpdate(CcpIdGenerator entity, CcpMapDecorator data, String id);
+
+	boolean exists(CcpIdGenerator entity, String id); 
 }

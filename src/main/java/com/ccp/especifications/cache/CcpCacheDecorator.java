@@ -1,11 +1,11 @@
 package com.ccp.especifications.cache;
 
 import com.ccp.constantes.CcpConstants;
-import com.ccp.dependency.injection.CcpInstanceInjection;
+import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.process.CcpMapTransform;
 
 public class CcpCacheDecorator {
-	private final CcpCache cache = CcpInstanceInjection.getInstance(CcpCache.class);
+	private final CcpCache cache = CcpDependencyInjection.getDependency(CcpCache.class);
 	
 	private final String key;
 

@@ -4,7 +4,7 @@ import java.util.function.Function;
 
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.dependency.injection.CcpInstanceInjection;
+import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.exceptions.http.CcpHttpError;
 
 
@@ -12,7 +12,7 @@ public final class CcpHttpHandler {
 
 	private final CcpMapDecorator flows;
 	
-	private final CcpHttpRequester ccpHttp = CcpInstanceInjection.getInstance(CcpHttpRequester.class);
+	private final CcpHttpRequester ccpHttp = CcpDependencyInjection.getDependency(CcpHttpRequester.class);
 
 	public CcpHttpHandler(CcpMapDecorator flows) {
 		this.flows = flows;
