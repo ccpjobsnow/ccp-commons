@@ -84,14 +84,27 @@ public class CcpHttpResponse {
 				.put("response", this.httpResponse)
 				.asPrettyJson());
 	}
-	
-	public boolean isClientError() {
-		if(this.httpStatus < 400) {
+
+	private boolean isInRange(int range) {
+		if(this.httpStatus < range) {
 			return false;
 		}
-		if(this.httpStatus>499) {
+		if(this.httpStatus > (range + 99)) {
 			return false;
 		}
 		return true;
+		
+	}
+	
+	public boolean isClientError() {
+		return this.isInRange(400);
+	}
+	
+	public boolean isServerError() {
+		return this.isInRange(500);
+	}
+
+	public boolean isSuccess() {
+		return this.isInRange(200);
 	}
 }
