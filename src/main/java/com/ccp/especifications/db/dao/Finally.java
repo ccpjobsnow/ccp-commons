@@ -1,5 +1,6 @@
 package com.ccp.especifications.db.dao;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -38,43 +39,66 @@ public class Finally {
 	}
 
 	
-	private CcpMapDecorator findById(CcpMapDecorator values, CcpMapDecorator... roadMap) {
-		CcpEntity[]  entities = new CcpEntity[roadMap.length];
-		int k = 0;
-		List<CcpEntity> keySet = Arrays.asList(roadMap).stream().map(x -> (CcpEntity) x.getAsObject("entity") ).collect(Collectors.toList());
+	private CcpMapDecorator findById(CcpMapDecorator values, CcpMapDecorator... specifications) {
+		int counter = 0;
+		List<CcpEntity> keySet = Arrays.asList(specifications).stream()
+				.filter(x -> x.getAsObject("entity") != null)
+				.map(x -> (CcpEntity) x.getAsObject("entity") )
+				.collect(Collectors.toList());
+		
 		LinkedHashSet<CcpEntity> set = new LinkedHashSet<>(keySet);
-		for (CcpEntity ccpDbEntity : set) {
-			entities[k++] = ccpDbEntity;
+
+		CcpEntity[]  entities = new CcpEntity[set.size()];
+		
+		for (CcpEntity ccpDbEntity : set) { 
+			entities[counter++] = ccpDbEntity;
 		}
 
 		List<CcpMapDecorator> manyById = this.dao.getManyById(values, entities);
-		k = 0;
+		counter = 0;
 		
-		for (CcpMapDecorator dataBaseRow : manyById) {
-			String entity = dataBaseRow.getAsString("_index");
-
-			boolean recordFound = dataBaseRow.getAsBoolean("_found");
+		for (CcpMapDecorator specification : specifications) {
 			
-			Optional<CcpMapDecorator> findFirst = Arrays.asList(roadMap).stream()
-					.filter(x -> x.getAsString("entity").equals(entity))
-					.filter(x -> x.getAsBoolean("found") == recordFound)
+			String entity = specification.getAsString("entity");
+			
+			boolean executeFreeAction = entity.trim().isEmpty();
+			
+			if(executeFreeAction) {
+				try {
+					Function<CcpMapDecorator, CcpMapDecorator> action = specification.getAsObject("action");
+					values = action.apply(values);
+					continue;
+					
+				}catch (CcpFlow e) {
+					throw e;
+				} 
+				catch (Exception e) {
+					continue;
+				}
+			}
+			
+			boolean recordFound = specification.getAsBoolean("found");
+			
+			Optional<CcpMapDecorator> findFirst = new ArrayList<>(manyById).stream()
+					.filter(x -> x.getAsString("_index").equals(entity))
 					.findFirst();
 
+			CcpMapDecorator dataBaseRow = findFirst.get();
 			
-			boolean itWasNotForeseen = findFirst.isPresent() == false;
+			boolean _found = dataBaseRow.getAsBoolean("_found");
+			boolean itWasNotForeseen = _found != recordFound;
 			
 			if(itWasNotForeseen) {
 
-				if(recordFound == false) {
+				if(_found == false) {
 					continue;
 				}
-				
+
 				values = values.putSubKey("_entities", entity, dataBaseRow);
 				
 				continue;
 			}
 			
-			CcpMapDecorator specification = findFirst.get();
 			
 			boolean willNotExecuteAction = specification.containsKey("action") == false;
 			

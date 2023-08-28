@@ -40,7 +40,7 @@ public abstract class CcpNextStep {
 	}
 	
 	public CcpNextStep addEmptyStep() {
-		return this.addStep(Status.nextStep, new CcpNextStep() {
+		return this.addAlternativeStep(Status.nextStep, new CcpNextStep() {
 			
 			@Override
 			public CcpStepResult executeThisStep(CcpMapDecorator values) {
@@ -48,10 +48,10 @@ public abstract class CcpNextStep {
 			}
 		});
 	}
-	public CcpNextStep addNextStep(CcpNextStep nextProcess) {
-		return this.addStep(Status.nextStep, nextProcess);
+	public CcpNextStep addMostExpectedStep(CcpNextStep nextProcess) {
+		return this.addAlternativeStep(Status.nextStep, nextProcess);
 	}
-	public CcpNextStep addStep(CcpProcessStatus status, CcpNextStep nextProcess) {
+	public CcpNextStep addAlternativeStep(CcpProcessStatus status, CcpNextStep nextProcess) {
 		this.decisionTree.put(status.status(), nextProcess);
 		return this;
 	}

@@ -25,15 +25,14 @@ public class TransferDataBetweenEntities extends CcpNextStep {
 			return new CcpStepResult(values, 200, this);
 		}
 		
-		CcpMapDecorator remove = this.origin.delete(values);
-
-		boolean theOriginDataIsMissing = remove.isEmpty();
+		boolean theOriginDataIsMissing = values.isEmpty();
 		
 		if(theOriginDataIsMissing) {
 			return new CcpStepResult(values, 200, this);
 		}
 		
-		this.target.createOrUpdate(remove);
+		this.origin.delete(values);
+		this.target.createOrUpdate(values);
 		CcpMapDecorator renameKey = entities.renameKey(this.origin.name(), this.target.name());
 		CcpMapDecorator put = values.put("_entities", renameKey);
 		return new CcpStepResult(put, 200, this);

@@ -2,7 +2,7 @@ package com.ccp.especifications.password;
 
 public interface CcpPasswordHandler {
 
-	boolean matches(String hash, String password);
+	boolean matches(String password, String hash);
 
 	String getPasswordHash(String password);
 

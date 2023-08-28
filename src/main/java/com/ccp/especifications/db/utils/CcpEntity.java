@@ -81,11 +81,19 @@ public interface CcpEntity extends CcpIdGenerator{
 
 	CcpDao getDao();
 	
-	default CcpMapDecorator delete(CcpMapDecorator values) {
+	default boolean delete(CcpMapDecorator values) {
 		CcpDao dao = this.getDao();
-		CcpMapDecorator remove = dao.delete(this, values);
+		boolean remove = dao.delete(this, values);
 		this.saveAuditory(values, CcpOperationType.delete);
 		return remove;
+	}
+	
+	default boolean delete(String id) {
+		CcpDao dao = this.getDao();
+		boolean remove = dao.delete(this, id);
+		//TODO SALVAR AUDITORIA
+		return remove;
+		
 	}
 	
 	default List<CcpMapDecorator> getManyByIds(CcpMapDecorator... values){
@@ -123,4 +131,6 @@ public interface CcpEntity extends CcpIdGenerator{
 		CcpMapDecorator createOrUpdate = dao.createOrUpdate(this, data, id);
 		return createOrUpdate;
 	}
+	
+	
 }

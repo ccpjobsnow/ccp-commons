@@ -1,5 +1,8 @@
 package com.ccp.especifications.db.dao;
 
+import java.util.List;
+import java.util.function.Function;
+
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.especifications.db.utils.CcpEntity;
 
@@ -27,4 +30,16 @@ public class Procedure {
 		CcpMapDecorator addToList = this.statements.addToList("statements", put);
 		return new FoundInEntity(this.id, addToList);
 	}
+	
+	public NextStep executeAction(Function<CcpMapDecorator, CcpMapDecorator> action) {
+		return this.addStatement("action", action);
+	}
+	
+	private NextStep addStatement(String key, Object obj) {
+		List<CcpMapDecorator> list = this.statements.getAsMapList("statements");
+		list.add(new CcpMapDecorator().put(key, obj));
+		CcpMapDecorator newStatements = this.statements.put("statements", list);
+		return new NextStep(this.id, newStatements);
+	}
+
  }

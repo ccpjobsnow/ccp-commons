@@ -9,15 +9,23 @@ public interface CcpDao {
 
 	List<CcpMapDecorator> getManyById(CcpMapDecorator values, CcpIdGenerator... entities);
 	
-	CcpMapDecorator createOrUpdate(CcpIdGenerator entity, CcpMapDecorator data);
+	default CcpMapDecorator createOrUpdate(CcpIdGenerator entity, CcpMapDecorator data) {
+		
+		String id = entity.getId(data);
+
+		CcpMapDecorator response = this.createOrUpdate(entity, data, id);
+		
+		return response;
+	}
 	
 	List<CcpMapDecorator> getManyByIds(CcpIdGenerator entity, String... ids);
 	
-	boolean exists(CcpIdGenerator entity, CcpMapDecorator values);
-	
-	CcpMapDecorator delete(CcpIdGenerator entity, CcpMapDecorator values);
-	
-	
+	default boolean exists(CcpIdGenerator entity, CcpMapDecorator values) {
+		String id = entity.getId(values);
+		
+		boolean exists = this.exists(entity, id);
+		return exists;
+	}
 	
 	default boolean anyMatch(CcpMapDecorator values, CcpIdGenerator... entities) {
 		List<CcpMapDecorator> manyById = this.getManyById(values, entities);
@@ -72,5 +80,15 @@ public interface CcpDao {
 
 	CcpMapDecorator createOrUpdate(CcpIdGenerator entity, CcpMapDecorator data, String id);
 
-	boolean exists(CcpIdGenerator entity, String id); 
+	boolean exists(CcpIdGenerator entity, String id);
+
+	boolean delete(CcpIdGenerator entity, String id); 
+	
+	default boolean delete(CcpIdGenerator entity, CcpMapDecorator values) {
+		String id = entity.getId(values);
+
+		boolean deleted = this.delete(entity, id);
+		return deleted;
+	}
+
 }
