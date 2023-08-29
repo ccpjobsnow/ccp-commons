@@ -7,7 +7,15 @@ public interface CcpHttpRequester {
 
 	default CcpHttpResponse executeHttpRequest(String url, String method, CcpMapDecorator headers, String body, int expectedStatus) {
 		CcpHttpResponse res = this.executeHttpRequest(url, method, headers, body);
-		res.assertStatus(expectedStatus);
-		return res;
+		if(expectedStatus == res.httpStatus) {
+			return res;
+		}
+		
+		throw new RuntimeException(
+				new CcpMapDecorator()
+				.put("expectedStatus", expectedStatus)
+				.put("realStatus", res.httpStatus)
+				.put("response", res.httpResponse)
+				.asPrettyJson());
 	}
 }

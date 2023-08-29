@@ -72,18 +72,6 @@ public class CcpHttpResponse {
 				.toString();
 	}
 	
-	public void assertStatus(int expectedStatus) {
-		if(expectedStatus == this.httpStatus) {
-			return;
-		}
-		
-		throw new RuntimeException(
-				new CcpMapDecorator()
-				.put("expectedStatus", expectedStatus)
-				.put("realStatus", this.httpStatus)
-				.put("response", this.httpResponse)
-				.asPrettyJson());
-	}
 
 	private boolean isInRange(int range) {
 		if(this.httpStatus < range) {
