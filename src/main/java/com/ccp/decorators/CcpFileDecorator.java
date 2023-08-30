@@ -53,8 +53,8 @@ public class CcpFileDecorator {
 		String name = file.getName();
 		return name;
 	}
-	//ZipDecorator zipFile()
-    private void zip(File fileToZip, ZipOutputStream zipOut) throws IOException {
+
+	private void zip(File fileToZip, ZipOutputStream zipOut) throws IOException {
         if (fileToZip.isHidden()) {
             return;
         }
@@ -97,17 +97,6 @@ public class CcpFileDecorator {
 			throw new RuntimeException(e);
 		}
 		
-		//		String path = this.content;
-//		String line;
-//		StringBuilder sb = new StringBuilder();
-//		try (FileReader fr = new FileReader(path); BufferedReader br = new BufferedReader(fr)) {
-//			while ((line = br.readLine()) != null) {
-//				sb.append(line).append("\n");
-//			}
-//		} catch (Exception e) {
-//			throw new RuntimeException(e);
-//		}
-//		return sb.toString();
 	}
 	
 	
@@ -177,5 +166,10 @@ public class CcpFileDecorator {
 	@Override
 	public String toString() {
 		return this.content;
+	}
+
+	public boolean exists() {
+		File file = new File(this.content);
+		return file.exists();
 	}
 }
