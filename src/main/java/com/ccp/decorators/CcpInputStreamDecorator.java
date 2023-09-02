@@ -25,7 +25,7 @@ public class CcpInputStreamDecorator {
 			InputStream stream = resource.openStream();
 			return stream;
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new RuntimeException("The file '" + this.content + "' is missing", e);
 		}
 	}
 	

@@ -118,13 +118,12 @@ public class Finally {
 			Function<CcpMapDecorator, CcpMapDecorator> action = specification.getAsObject("action");
 
 			if(recordFound == false) {
-				CcpMapDecorator execute = action.apply(values);
-				return execute;
+				values = action.apply(values);
+				continue;
 			}
 			
 			CcpMapDecorator context = values.putSubKey("_entities", entity, dataBaseRow);
-			CcpMapDecorator execute = action.apply(context);
-			return execute;
+			values = action.apply(context);
 		}
 		
 		return values;
