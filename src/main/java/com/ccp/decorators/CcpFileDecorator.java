@@ -157,6 +157,9 @@ public class CcpFileDecorator {
 	
 	public void readFiles(Consumer<CcpFileDecorator> consumer){
 		File[] listFiles = new File(this.content).listFiles();
+		if(listFiles == null) {
+			throw new RuntimeException("The folder '" + this.content + "' does not exist");
+		}
 		for (File file : listFiles) {
 			String absolutePath = file.getAbsolutePath();
 			CcpFileDecorator f = new CcpFileDecorator(absolutePath);
