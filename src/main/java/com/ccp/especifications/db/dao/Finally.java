@@ -112,7 +112,7 @@ public class Finally {
 				
 				CcpProcessStatus status = specification.getAsObject("status");
 				String message = specification.getAsString("message");
-				throw new CcpFlow(values.put("_dataBaseRow", dataBaseRow.put("_status", status.toString())), status.status() , message);
+				throw new CcpFlow(new CcpMapDecorator().put("message", status.name()), status.status() , message);
 			}
 			
 			Function<CcpMapDecorator, CcpMapDecorator> action = specification.getAsObject("action");

@@ -8,22 +8,6 @@ import com.ccp.exceptions.commons.CcpFlow;
 
 public abstract class CcpNextStep {
 	
-	private static enum Status implements CcpProcessStatus{
-		nextStep(200)
-		
-		;
-		int status;
-		private Status(int status) {
-			this.status = status;
-		}
-		@Override
-		public int status() {
-			return this.status;
-		}
-		
-	}
-
-	
 	public final String businessName;
 	
 	private final Map<Integer, CcpNextStep> decisionTree;
@@ -40,7 +24,7 @@ public abstract class CcpNextStep {
 	}
 	
 	public CcpNextStep addEmptyStep() {
-		return this.addAlternativeStep(Status.nextStep, new CcpNextStep() {
+		return this.addAlternativeStep(new SuccessStatus(), new CcpNextStep() {
 			
 			@Override
 			public CcpStepResult executeThisStep(CcpMapDecorator values) {
@@ -49,7 +33,7 @@ public abstract class CcpNextStep {
 		});
 	}
 	public CcpNextStep addMostExpectedStep(CcpNextStep nextProcess) {
-		return this.addAlternativeStep(Status.nextStep, nextProcess);
+		return this.addAlternativeStep(new SuccessStatus(), nextProcess);
 	}
 	public CcpNextStep addAlternativeStep(CcpProcessStatus status, CcpNextStep nextProcess) {
 		this.decisionTree.put(status.status(), nextProcess);
