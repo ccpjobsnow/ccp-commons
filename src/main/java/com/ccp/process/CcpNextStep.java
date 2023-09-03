@@ -24,13 +24,7 @@ public abstract class CcpNextStep {
 	}
 	
 	public CcpNextStep addEmptyStep() {
-		return this.addAlternativeStep(new SuccessStatus(), new CcpNextStep() {
-			
-			@Override
-			public CcpStepResult executeThisStep(CcpMapDecorator values) {
-				return null;
-			}
-		});
+		return this.addAlternativeStep(new SuccessStatus(), null);
 	}
 	public CcpNextStep addMostExpectedStep(CcpNextStep nextProcess) {
 		return this.addAlternativeStep(new SuccessStatus(), nextProcess);
@@ -65,6 +59,8 @@ public abstract class CcpNextStep {
 	public abstract CcpStepResult executeThisStep(CcpMapDecorator values);
 
 	
-	
+	public String toString() {
+		return this.businessName;
+	}
 	
 }
