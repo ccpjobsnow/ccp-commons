@@ -12,5 +12,4 @@ public interface CcpConstants {
 	CcpMapDecorator EMPTY_JSON = new CcpMapDecorator();
 	Consumer<String> EXECUTE_NOTHING = x -> {};
 	Function<CcpMapDecorator, CcpMapDecorator> DO_NOTHING = x -> x;
-
 }

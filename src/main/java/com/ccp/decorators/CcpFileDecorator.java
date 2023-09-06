@@ -156,6 +156,7 @@ public class CcpFileDecorator {
 	}
 	
 	public void readFiles(Consumer<CcpFileDecorator> consumer){
+		System.out.println("executando consumer " + consumer);
 		File[] listFiles = new File(this.content).listFiles();
 		if(listFiles == null) {
 			throw new RuntimeException("The folder '" + this.content + "' does not exist");
@@ -168,7 +169,7 @@ public class CcpFileDecorator {
 	}
 	@Override
 	public String toString() {
-		return this.content;
+		return new File(this.content).getName();
 	}
 
 	public boolean exists() {

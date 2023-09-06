@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.text.Normalizer;
 import java.util.Base64;
 import java.util.Base64.Decoder;
+import java.util.Base64.Encoder;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -153,5 +154,12 @@ public class CcpTextDecorator {
 	
 	public String toString() {
 		return this.content;
+	}
+	
+	public String asBase64() {
+		byte[] bytes = this.content.getBytes();
+		Encoder encoder = Base64.getEncoder();
+		String encodeToString = encoder.encodeToString(bytes);
+		return encodeToString;
 	}
 }
