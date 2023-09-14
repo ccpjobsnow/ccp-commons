@@ -1,5 +1,5 @@
 package com.ccp.dependency.injection;
 
-public interface CcpInstanceProvider {
+public interface CcpInstanceProvider { 
 	Object getInstance();
 }
