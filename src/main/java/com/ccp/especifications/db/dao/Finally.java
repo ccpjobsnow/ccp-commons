@@ -16,7 +16,6 @@ import com.ccp.process.CcpProcessStatus;
 
 
 public class Finally {
-	private final CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
 	private final CcpMapDecorator id;
 	private final CcpMapDecorator statements;
 	
@@ -54,7 +53,8 @@ public class Finally {
 			entities[counter++] = ccpDbEntity;
 		}
 
-		List<CcpMapDecorator> manyById = this.dao.getManyById(values, entities);
+		CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
+		List<CcpMapDecorator> manyById = dao.getManyById(values, entities);
 		counter = 0;
 		
 		for (CcpMapDecorator specification : specifications) {
