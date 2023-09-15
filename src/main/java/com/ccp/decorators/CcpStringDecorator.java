@@ -52,7 +52,12 @@ public class CcpStringDecorator {
 		InputStream is = this.inputStreamFrom().classLoader();
 		return new CcpMapDecorator(is);
 	}
-	
+
+	public CcpMapDecorator propertiesFileFromFile() {
+		InputStream is = this.inputStreamFrom().file();
+		return new CcpMapDecorator(is);
+	}
+
 	public CcpMapDecorator jsonFileFromClassLoader() {
 		InputStream is = this.inputStreamFrom().classLoader();
 		StringBuilder sb = new StringBuilder();
