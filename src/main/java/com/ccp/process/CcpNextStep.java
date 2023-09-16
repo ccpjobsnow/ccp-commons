@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.exceptions.commons.CcpFlow;
+import com.ccp.exceptions.process.CcpFlow;
 
 public abstract class CcpNextStep {
 	
@@ -24,10 +24,10 @@ public abstract class CcpNextStep {
 	}
 	
 	public CcpNextStep addEmptyStep() {
-		return this.addAlternativeStep(new SuccessStatus(), null);
+		return this.addAlternativeStep(new CcpSuccessStatus(), null);
 	}
 	public CcpNextStep addMostExpectedStep(CcpNextStep nextProcess) {
-		return this.addAlternativeStep(new SuccessStatus(), nextProcess);
+		return this.addAlternativeStep(new CcpSuccessStatus(), nextProcess);
 	}
 	public CcpNextStep addAlternativeStep(CcpProcessStatus status, CcpNextStep nextProcess) {
 		this.decisionTree.put(status.status(), nextProcess);

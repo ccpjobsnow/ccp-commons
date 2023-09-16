@@ -1,0 +1,106 @@
+package com.ccp.decorators;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.function.Consumer;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+public class CcpFolderDecorator {
+	public final String content;
+	public final CcpFolderDecorator parent;
+	protected CcpFolderDecorator(String content) {
+		this.parent = this.getParent(content);
+		this.content = content;
+	}
+
+	private CcpFolderDecorator getParent(String content) {
+		File file = new File(content);
+		File parentFile = file.getParentFile();
+		if(parentFile == null) {
+			return null;
+		}
+		String absolutePath = parentFile.getAbsolutePath();
+		CcpFolderDecorator ccpFileDecorator = new CcpFolderDecorator(absolutePath);
+		return ccpFileDecorator;
+	}
+	
+	public CcpFileDecorator asFile() {
+		CcpFileDecorator ccpFileDecorator = new CcpFileDecorator(this.content);
+		return ccpFileDecorator;
+	}
+
+	public void zip() {
+		
+		File fileToZip = new File(this.content);
+		
+		String fileName = fileToZip.getName();
+		
+		try(FileOutputStream fos = new FileOutputStream(fileName + ".zip");ZipOutputStream zipOut = new ZipOutputStream(fos);) {
+			this.zip(fileToZip, zipOut);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public String getName() {
+		File file = new File(this.content);
+		String name = file.getName();
+		return name;
+	}
+
+	private void zip(File fileToZip, ZipOutputStream zipOut) throws IOException {
+        if (fileToZip.isHidden()) {
+            return;
+        }
+        if (fileToZip.isDirectory()) {
+            String terminacao = "/";
+        	if (this.content.endsWith("/")) {
+        		terminacao = ""; 
+            } 
+            ZipEntry e = new ZipEntry(this.content + terminacao);
+			zipOut.putNextEntry(e);
+            zipOut.closeEntry();
+            File[] children = fileToZip.listFiles();
+            for (File childFile : children) {
+                new CcpFolderDecorator(this.content + "/" + childFile.getName()).zip(childFile, zipOut);
+            }
+            return;
+        }
+        try(FileInputStream fis = new FileInputStream(fileToZip)) {
+            ZipEntry zipEntry = new ZipEntry(this.content);
+            zipOut.putNextEntry(zipEntry);
+            byte[] bytes = new byte[1024];
+            int length;
+            while ((length = fis.read(bytes)) >= 0) {
+                zipOut.write(bytes, 0, length);
+            }
+			
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+    }
+	public void readFiles(Consumer<CcpFolderDecorator> consumer){
+		System.out.println("executando consumer " + consumer);
+		File[] listFiles = new File(this.content).listFiles();
+		if(listFiles == null) {
+			throw new RuntimeException("The folder '" + this.content + "' does not exist");
+		}
+		for (File file : listFiles) {
+			String absolutePath = file.getAbsolutePath();
+			CcpFolderDecorator f = new CcpFolderDecorator(absolutePath);
+			consumer.accept(f);
+		}
+	}
+	@Override
+	public String toString() {
+		return new File(this.content).getName();
+	}
+
+	public boolean exists() {
+		File file = new File(this.content);
+		return file.exists();
+	}
+}

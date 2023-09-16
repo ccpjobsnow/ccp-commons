@@ -8,13 +8,13 @@ import com.ccp.dependency.injection.CcpDependencyInjection;
 
 public class CcpQueryExecutorDecorator {
 
-	private final CcpDbQueryExecutor requestExecutor = CcpDependencyInjection.getDependency(CcpDbQueryExecutor.class); 
+	private final CcpQueryExecutor requestExecutor = CcpDependencyInjection.getDependency(CcpQueryExecutor.class); 
 	
 	private final String[] resourcesNames;
 	
-	private final ElasticQuery elasticQuery;
+	private final CcpDbQueryOptions elasticQuery;
 
-	protected CcpQueryExecutorDecorator(ElasticQuery elasticQuery, String... resourcesNames) {
+	protected CcpQueryExecutorDecorator(CcpDbQueryOptions elasticQuery, String... resourcesNames) {
 		this.resourcesNames = resourcesNames;
 		this.elasticQuery = elasticQuery;
 	}

@@ -4,11 +4,11 @@ import java.util.List;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.especifications.db.utils.CcpEntity;
-import com.ccp.especifications.db.utils.CcpOperationType;
+import com.ccp.especifications.db.utils.CcpEntityOperationType;
 
 public interface CcpDbBulkExecutor {
 
-	default CcpMapDecorator commitAndAuditAndSaveErrors(List<CcpMapDecorator> records, CcpOperationType operation, CcpEntity entity, CcpEntity auditEntity, CcpEntity errorEntity) {
+	default CcpMapDecorator commitAndAuditAndSaveErrors(List<CcpMapDecorator> records, CcpEntityOperationType operation, CcpEntity entity, CcpEntity auditEntity, CcpEntity errorEntity) {
 		
 		CcpMapDecorator errorsAndSuccess = this.commit(records, operation, entity);
 		
@@ -19,10 +19,10 @@ public interface CcpDbBulkExecutor {
 		return errorsAndSuccess;
 	}
 
-	CcpMapDecorator commit(List<CcpMapDecorator> records, CcpOperationType operation, CcpEntity entity);
+	CcpMapDecorator commit(List<CcpMapDecorator> records, CcpEntityOperationType operation, CcpEntity entity);
 
-	void audit(CcpEntity entity, CcpEntity auditEntity, CcpMapDecorator errorsAndSuccess,  CcpOperationType operation);
+	void audit(CcpEntity entity, CcpEntity auditEntity, CcpMapDecorator errorsAndSuccess,  CcpEntityOperationType operation);
 
-	void saveErrors(CcpEntity entity, CcpEntity errorEntity, CcpMapDecorator errorsAndSuccess,  CcpOperationType operation);
+	void saveErrors(CcpEntity entity, CcpEntity errorEntity, CcpMapDecorator errorsAndSuccess,  CcpEntityOperationType operation);
 
 }

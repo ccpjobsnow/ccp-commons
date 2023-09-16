@@ -16,13 +16,13 @@ public class CcpTimeDecorator {
 		this(System.currentTimeMillis());
 	}
 
-	public long getTotalDeSegundosDecorridosDesdeMeiaNoiteDesteDia() {
-		Long meiaNoite = this.getMeiaNoite();
+	public long getSecondsEnlapsedSinceMidnight() {
+		Long meiaNoite = this.getMidnight();
 		long tempo = (this.time - meiaNoite) / 1000L;
 		return tempo;
 	}
 	
-	public Long getMeiaNoite() {
+	public Long getMidnight() {
 		Calendar cal = this.getBrazilianCalendar();
 		cal.set(Calendar.HOUR_OF_DAY, 0);
 		cal.set(Calendar.MINUTE, 0);
@@ -33,9 +33,9 @@ public class CcpTimeDecorator {
 		
 	}
 	
-	public long getPrimeiroDiaDesseMesEmMilisegundos(int mes) {
-		Calendar cal = this.getBrazilianCalendar();
-		cal.add(Calendar.MONTH, mes);
+	public long getFirstDayOfThisMonthInMilliseconds(int month) {
+		Calendar cal = this.getBrazilianCalendar();//TODO talvez tenha que parametrizar isso no futuro
+		cal.add(Calendar.MONTH, month);
 		cal.set(Calendar.DAY_OF_MONTH, 1);
 		cal.set(Calendar.HOUR_OF_DAY, 0);
 		cal.set(Calendar.MINUTE, 0);
@@ -45,9 +45,9 @@ public class CcpTimeDecorator {
 		return timeInMillis;
 	}
 	
-	public long getUltimoDiaDesseMesEmMilisegundos(int mes) {
+	public long getLastDayOfThisMonthInMilliseconds(int month) {
 		Calendar cal = this.getBrazilianCalendar();
-		cal.add(Calendar.MONTH, mes);
+		cal.add(Calendar.MONTH, month);
 		cal.getLeastMaximum(Calendar.MONTH);
 		cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DATE));
 		cal.set(Calendar.HOUR_OF_DAY, 23);

@@ -12,7 +12,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -155,18 +154,6 @@ public class CcpFileDecorator {
 		}
 	}
 	
-	public void readFiles(Consumer<CcpFileDecorator> consumer){
-		System.out.println("executando consumer " + consumer);
-		File[] listFiles = new File(this.content).listFiles();
-		if(listFiles == null) {
-			throw new RuntimeException("The folder '" + this.content + "' does not exist");
-		}
-		for (File file : listFiles) {
-			String absolutePath = file.getAbsolutePath();
-			CcpFileDecorator f = new CcpFileDecorator(absolutePath);
-			consumer.accept(f);
-		}
-	}
 	@Override
 	public String toString() {
 		return new File(this.content).getName();
@@ -175,5 +162,19 @@ public class CcpFileDecorator {
 	public boolean exists() {
 		File file = new File(this.content);
 		return file.exists();
+	}
+	public boolean isFile() {
+		if(this.exists() == false) {
+			return false;
+		}
+		File file = new File(this.content);
+		boolean directory = file.isDirectory();
+		if(directory) {
+			return false;
+		}
+		return true;
+	}
+	public CcpFolderDecorator asFolder() {
+		return new CcpFolderDecorator(this.content);
 	}
 }

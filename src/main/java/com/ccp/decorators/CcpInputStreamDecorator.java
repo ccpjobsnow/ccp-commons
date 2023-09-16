@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
 
+import com.ccp.exceptions.process.CcpMissingInputStream;
+
 public class CcpInputStreamDecorator {
 	
 	private final String content;
@@ -17,19 +19,51 @@ public class CcpInputStreamDecorator {
 		return this.content;
 	}
 
+	public InputStream environmentVariables() {
+		
+		String getenv = System.getenv(this.content);
+		
+		if(getenv == null) {
+			throw new CcpMissingInputStream(this.content);
+		}
+
+		if(getenv.trim().isEmpty()) {
+			throw new CcpMissingInputStream(this.content);
+		}
+
+		CcpStringDecorator csd = new CcpStringDecorator(getenv);
+		CcpFileDecorator file = csd.file();
+		
+		if(file.isFile()) {
+			CcpInputStreamDecorator inputStreamFrom = csd.inputStreamFrom();
+			InputStream file2 = inputStreamFrom.file();
+			return file2;
+		}
+		
+		byte[] bytes = getenv.getBytes();
+		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+		return byteArrayInputStream;
+	}
+	
 	public InputStream classLoader() {
+		Class<? extends CcpInputStreamDecorator> class1 = this.getClass();
+		ClassLoader classLoader = class1.getClassLoader();
+		URL resource = classLoader.getResource(this.content);
+		if(resource == null) {
+			throw new CcpMissingInputStream(this.content);
+		}
 		try {
-			Class<? extends CcpInputStreamDecorator> class1 = this.getClass();
-			ClassLoader classLoader = class1.getClassLoader();
-			URL resource = classLoader.getResource(this.content);
 			InputStream stream = resource.openStream();
 			return stream;
 		} catch (Exception e) {
-			throw new RuntimeException("The file '" + this.content + "' is missing", e);
+			throw new RuntimeException(e);
 		}
 	}
 	
 	public InputStream file() {
+		if(new CcpStringDecorator(this.content).file().exists() == false) {
+			throw new CcpMissingInputStream(this.content);
+		}
 		try {
 			FileInputStream fileInputStream = new FileInputStream(this.content);
 			return fileInputStream;
@@ -42,5 +76,24 @@ public class CcpInputStreamDecorator {
 		byte[] bytes = this.content.getBytes();
 		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
 		return byteArrayInputStream;
+	}
+	
+	public InputStream fromEnvironmentVariablesOrClassLoaderOrFile() {
+
+		try {
+			InputStream is = this.environmentVariables();
+			return is;
+		} catch (CcpMissingInputStream e) {
+
+		}
+		
+		try {
+			InputStream is = this.classLoader();
+			return is;
+		} catch (CcpMissingInputStream e) {
+
+		}
+		InputStream is = this.file();
+		return is;
 	}
 }

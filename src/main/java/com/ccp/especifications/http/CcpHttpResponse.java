@@ -7,7 +7,7 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.decorators.CcpTextDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
-import com.ccp.especifications.json.CcpJson;
+import com.ccp.especifications.json.CcpJsonHandler;
 
 public class CcpHttpResponse {
 
@@ -40,7 +40,7 @@ public class CcpHttpResponse {
 	
 	public List<CcpMapDecorator> asListRecord(){
 		try {
-			CcpJson json = CcpDependencyInjection.getDependency(CcpJson.class);
+			CcpJsonHandler json = CcpDependencyInjection.getDependency(CcpJsonHandler.class);
 			List<CcpMapDecorator> fromJson = json.fromJson(this.httpResponse);
 			return fromJson; 
 		} catch (Exception e) {
@@ -50,7 +50,7 @@ public class CcpHttpResponse {
 
 	public List<Object> asListObject(){
 		try {
-			CcpJson json = CcpDependencyInjection.getDependency(CcpJson.class);
+			CcpJsonHandler json = CcpDependencyInjection.getDependency(CcpJsonHandler.class);
 			List<Object> fromJson = json.fromJson(this.httpResponse);
 			return fromJson; 
 		} catch (Exception e) {

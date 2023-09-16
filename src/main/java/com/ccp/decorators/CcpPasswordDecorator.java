@@ -4,7 +4,7 @@ public class CcpPasswordDecorator {
 
 	public final String content;
 
-	public CcpPasswordDecorator(String content) {
+	protected CcpPasswordDecorator(String content) {
 		this.content = content;
 	}
 

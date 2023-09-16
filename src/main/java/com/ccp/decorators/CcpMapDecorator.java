@@ -19,7 +19,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.ccp.dependency.injection.CcpDependencyInjection;
-import com.ccp.especifications.json.CcpJson;
+import com.ccp.especifications.json.CcpJsonHandler;
 
 public class CcpMapDecorator {
 	
@@ -31,7 +31,7 @@ public class CcpMapDecorator {
 	}
 	
 	public CcpMapDecorator(Object obj) {
-		this(CcpDependencyInjection.getDependency(CcpJson.class).toJson(obj));
+		this(CcpDependencyInjection.getDependency(CcpJsonHandler.class).toJson(obj));
 	}
 	
 	public CcpMapDecorator(InputStream is) {
@@ -82,7 +82,7 @@ public class CcpMapDecorator {
 	}
 
 	static Map<String, Object> getMap(String _json) {
-		CcpJson json = CcpDependencyInjection.getDependency(CcpJson.class);
+		CcpJsonHandler json = CcpDependencyInjection.getDependency(CcpJsonHandler.class);
 		try {
 			Map<String, Object> fromJson = json.fromJson(_json);
 			return fromJson;
@@ -290,18 +290,18 @@ public class CcpMapDecorator {
 
 
 	public String asJson() {
-		CcpJson json = CcpDependencyInjection.getDependency(CcpJson.class);
+		CcpJsonHandler json = CcpDependencyInjection.getDependency(CcpJsonHandler.class);
 		return json.toJson(this.content);
 	}
 	
 	public String asPrettyJson() {
-		CcpJson json = CcpDependencyInjection.getDependency(CcpJson.class);
+		CcpJsonHandler json = CcpDependencyInjection.getDependency(CcpJsonHandler.class);
 		return json.asPrettyJson(this.content);
 	}
 	
 	@Override
 	public String toString() {
-		CcpJson json = CcpDependencyInjection.getDependency(CcpJson.class);
+		CcpJsonHandler json = CcpDependencyInjection.getDependency(CcpJsonHandler.class);
 
 		String _json = json.asPrettyJson(new TreeMap<>(this.content));
 		return _json;

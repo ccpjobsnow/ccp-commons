@@ -3,43 +3,43 @@ package com.ccp.especifications.db.query;
 import java.util.Map;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.especifications.db.utils.CcpField;
+import com.ccp.especifications.db.utils.CcpEntityField;
 
-public final class BucketAggregation extends Component {
+public final class BucketAggregation extends CcpDbQueryComponent {
 	
-	private final CcpField fieldName;
+	private final CcpEntityField fieldName;
 	private final long size;
 	
-	BucketAggregation(Component parent, String name, CcpField fieldName, long size) {
+	BucketAggregation(CcpDbQueryComponent parent, String name, CcpEntityField fieldName, long size) {
 		super(parent, name);
 		this.fieldName = fieldName;
 		this.size = size;
 	}
 
-	public Aggregations endTermsBuckedAndBackToAggregations() {
-		Aggregations addChild = this.getStatisRequest("size", "terms");
+	public CcpDbQueryAggregations endTermsBuckedAndBackToAggregations() {
+		CcpDbQueryAggregations addChild = this.getStatisRequest("size", "terms");
 		return addChild;
 	}
 
-	public Aggregations endHistogramBuckedAndBackToAggregations() {
-		Aggregations addChild = this.getStatisRequest("interval", "histogram");
+	public CcpDbQueryAggregations endHistogramBuckedAndBackToAggregations() {
+		CcpDbQueryAggregations addChild = this.getStatisRequest("interval", "histogram");
 		return addChild;
 	}
 
-	private Aggregations getStatisRequest(String p1, String p2) {
-		Component copy = this.copy();
+	private CcpDbQueryAggregations getStatisRequest(String p1, String p2) {
+		CcpDbQueryComponent copy = this.copy();
 		Map<String, Object> content = new CcpMapDecorator().put("field", this.fieldName).put(p1, this.size).getContent();
 		copy.values = copy.values.put(p2, content);
-		Aggregations addChild = this.parent.addChild(copy);
+		CcpDbQueryAggregations addChild = this.parent.addChild(copy);
 		return addChild;
 	}
 	
-	public Aggregations startAggregations() {
-		return new Aggregations(this);
+	public CcpDbQueryAggregations startAggregations() {
+		return new CcpDbQueryAggregations(this);
 	}
 
 	@SuppressWarnings("unchecked")
-	protected <T extends Component> T getInstanceCopy() {
+	protected <T extends CcpDbQueryComponent> T getInstanceCopy() {
 		return (T)new BucketAggregation(this.parent, this.name, this.fieldName, this.size);
 	}
 
