@@ -3,9 +3,11 @@ package com.ccp.decorators;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.text.Normalizer;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.Base64.Encoder;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -162,4 +164,51 @@ public class CcpTextDecorator {
 		String encodeToString = encoder.encodeToString(bytes);
 		return encodeToString;
 	}
+	
+	public String toCamelCase() {
+		String[] split = this.content.split("_");
+		List<String> asList = Arrays.asList(split);
+		StringBuilder sb = new StringBuilder();
+		for (String string : asList) {
+			String capitalize = new CcpStringDecorator(string).text().capitalize();
+			sb.append(capitalize);
+		}
+		return sb.toString();
+	}
+
+	public String toSnackCase() {
+		char[] charArray = this.content.toCharArray();
+		StringBuilder sb = new StringBuilder(this.content);
+		int k = 0;
+		for (char c : charArray) {
+			if(k == 0) {
+				k++;
+				continue;
+			}
+			
+			if(c < 'A') {
+				k++;
+				continue;
+			}
+			if(c > 'Z') {
+				k++;
+				continue;
+			}
+			sb.insert(k++, "_");
+		}
+		return sb.toString().toLowerCase();
+	}
+	
+	public String capitalize() {
+		
+		if(this.content.trim().isEmpty()) {
+			return "";
+		}
+		String firstLetter = this.content.substring(0, 1);
+		String substring = this.content.substring(1);
+		String upperCase = firstLetter.toUpperCase();
+		String lowerCase = substring.toLowerCase();
+		return upperCase + lowerCase;
+	}
+
 }
