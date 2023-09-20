@@ -90,7 +90,7 @@ public interface CcpEntity extends CcpEntityIdGenerator{
 	default boolean delete(String id) {
 		CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
 		boolean remove = dao.delete(this, id);
-		//TODO SALVAR AUDITORIA
+		//TODO SALVAR AUDITORIA???
 		return remove;
 		
 	}

@@ -14,5 +14,4 @@ public interface CcpDbRequester {
 	<V> V executeHttpRequest(String url, String method, Integer expectedStatus, CcpMapDecorator body, CcpHttpResponseTransform<V> transformer);
 
 	CcpMapDecorator getConnectionDetails();
-	
 }
