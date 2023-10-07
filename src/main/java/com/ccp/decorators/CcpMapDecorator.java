@@ -634,6 +634,16 @@ public class CcpMapDecorator {
 		return execute;
 	}
 
+	public CcpMapDecorator putIfNotContains(String key, Object value) {
+
+		if(this.containsAllKeys(key)) {
+			return this;
+		}
+		
+		CcpMapDecorator put = this.put(key, value);
+		return put;
+	}
+
 	
 
 }

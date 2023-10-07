@@ -1,8 +1,8 @@
 package com.ccp.decorators;
 
-import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.util.Properties;
 
 public class CcpPropertiesDecorator {
 
@@ -13,19 +13,14 @@ public class CcpPropertiesDecorator {
 	}
 
 	private CcpMapDecorator getMap(InputStream is) {
-		StringBuilder sb = new StringBuilder();
-		InputStreamReader in = new InputStreamReader(is);
-		BufferedReader br = new BufferedReader(in);
-		String read;
+
+		Properties properties = new Properties();
 		try {
-			while ((read=br.readLine()) != null) {
-				sb.append(read);
-			}
-			
-		} catch (Exception e) {
+			properties.load(is);
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		CcpMapDecorator response = new CcpMapDecorator(sb.toString());
+		CcpMapDecorator response = new CcpMapDecorator(properties);
 		return response;
 
 	}

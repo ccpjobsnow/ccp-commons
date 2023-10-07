@@ -180,6 +180,7 @@ public class CcpTextDecorator {
 		char[] charArray = this.content.toCharArray();
 		StringBuilder sb = new StringBuilder(this.content);
 		int k = 0;
+		int m = 0;
 		for (char c : charArray) {
 			if(k == 0) {
 				k++;
@@ -194,7 +195,7 @@ public class CcpTextDecorator {
 				k++;
 				continue;
 			}
-			sb.insert(k++, "_");
+			sb.insert(k++ + m++, "_");
 		}
 		return sb.toString().toLowerCase();
 	}
