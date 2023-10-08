@@ -9,4 +9,6 @@ public interface CcpJsonHandler {
 	
 	<T> T fromJson(String md);
 	
+	boolean isValidJson(String src);
+	
 }

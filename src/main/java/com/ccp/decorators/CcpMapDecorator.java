@@ -1,7 +1,10 @@
 package com.ccp.decorators;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,13 +38,27 @@ public class CcpMapDecorator {
 	}
 	
 	public CcpMapDecorator(InputStream is) {
-		
+
 		this.content = new HashMap<>();
+		String result = this.extractJson(is);
+		CcpJsonHandler handler = CcpDependencyInjection.getDependency(CcpJsonHandler.class);
+
+		boolean validJson = handler.isValidJson(result);
+		
+		if(validJson) {
+			CcpJsonHandler json = CcpDependencyInjection.getDependency(CcpJsonHandler.class);
+			Map<String, Object> map = json.fromJson(result);
+			this.content.putAll(map);
+			return;
+		}
+
 		
 		Properties props = new Properties();
 		
 		try {
-			props.load(is);
+			byte[] bytes = result.getBytes();
+			ByteArrayInputStream inStream = new ByteArrayInputStream(bytes);
+			props.load(inStream);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -52,6 +69,12 @@ public class CcpMapDecorator {
 			this.content.put("" + key, value);
 		}
 
+	}
+
+	private String extractJson(InputStream is) {
+		InputStreamReader in = new InputStreamReader(is);
+		String result = new BufferedReader(in).lines().collect(Collectors.joining("\n"));
+		return result;
 	}
 	
 	public CcpMapDecorator(List<CcpMapDecorator> list, String key, String value) {

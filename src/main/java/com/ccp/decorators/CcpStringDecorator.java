@@ -1,5 +1,8 @@
 package com.ccp.decorators;
 
+import com.ccp.dependency.injection.CcpDependencyInjection;
+import com.ccp.especifications.json.CcpJsonHandler;
+
 public class CcpStringDecorator {
 
 	public final String content;
@@ -51,6 +54,12 @@ public class CcpStringDecorator {
 	public CcpPropertiesDecorator propertiesFrom() {
 		CcpPropertiesDecorator ccpPropertiesDecorator = new CcpPropertiesDecorator(this.content);
 		return ccpPropertiesDecorator;
+	}
+	
+	public boolean isValidJSon() {
+		CcpJsonHandler json = CcpDependencyInjection.getDependency(CcpJsonHandler.class);
+		boolean validJson = json.isValidJson(this.content);
+		return validJson;
 	}
 	
 	public String toString() {
