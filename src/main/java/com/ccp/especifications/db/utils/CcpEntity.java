@@ -131,5 +131,11 @@ public interface CcpEntity extends CcpEntityIdGenerator{
 		return createOrUpdate;
 	}
 	
+	default CcpMapDecorator transferData(CcpMapDecorator values, CcpEntity target) {
+		this.delete(values);
+		target.create(values);
+		return values;
+	}
+	
 	
 }

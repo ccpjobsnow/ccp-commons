@@ -73,7 +73,7 @@ public class CcpDaoFinally {
 					throw e;
 				} 
 				catch (Exception e) {
-					continue;
+					throw new RuntimeException(e);
 				}
 			}
 			

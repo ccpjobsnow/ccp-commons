@@ -31,8 +31,7 @@ public class CcpEntityTransferData extends CcpNextStep {
 			return new CcpStepResult(values, 200, this);
 		}
 		
-		this.origin.delete(values);
-		this.target.createOrUpdate(values);
+		this.origin.transferData(values, this.target);
 		CcpMapDecorator renameKey = entities.renameKey(this.origin.name(), this.target.name());
 		CcpMapDecorator put = values.put("_entities", renameKey);
 		return new CcpStepResult(put, 200, this);

@@ -83,7 +83,6 @@ public class CcpFolderDecorator {
 		}
     }
 	public void readFiles(Consumer<CcpFolderDecorator> consumer){
-		System.out.println("executando consumer " + consumer);
 		File[] listFiles = new File(this.content).listFiles();
 		if(listFiles == null) {
 			throw new RuntimeException("The folder '" + this.content + "' does not exist");
