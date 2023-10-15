@@ -10,12 +10,6 @@ public class CcpFlow extends RuntimeException{
 	
 	public final int status;
 
-	public CcpFlow(CcpMapDecorator values, int status, String message, Throwable cause) {
-		super(message, cause);
-		this.values = values;
-		this.status = status;
-	}
-	
 	public CcpFlow (CcpStepResult stepResult) {
 		this.values = stepResult.getData();
 		this.status = stepResult.status;
@@ -28,7 +22,7 @@ public class CcpFlow extends RuntimeException{
 	}
 
 	public CcpFlow(CcpMapDecorator values, Integer status, String message) {
-		super(message.trim().isEmpty() ? new CcpMapDecorator().put("values", values).put("status", status).asJson():message);
+		super(message);
 		this.values = values;
 		this.status = status;
 	}
