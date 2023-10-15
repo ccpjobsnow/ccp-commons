@@ -64,17 +64,9 @@ public class CcpDaoFinally {
 			boolean executeFreeAction = entity.trim().isEmpty();
 			
 			if(executeFreeAction) {
-				try {
-					Function<CcpMapDecorator, CcpMapDecorator> action = specification.getAsObject("action");
-					values = action.apply(values);
-					continue;
-					
-				}catch (CcpFlow e) {
-					throw e;
-				} 
-				catch (Exception e) {
-					throw new RuntimeException(e);
-				}
+				Function<CcpMapDecorator, CcpMapDecorator> action = specification.getAsObject("action");
+				values = action.apply(values);
+				continue;
 			}
 			
 			boolean recordFound = specification.getAsBoolean("found");
@@ -111,8 +103,8 @@ public class CcpDaoFinally {
 				}
 				
 				CcpProcessStatus status = specification.getAsObject("status");
-				String message = specification.getAsString("message");
-				throw new CcpFlow(new CcpMapDecorator().put("_message", status.name()).putAll(values), status.status() , message);
+				String message = specification.getOrDefault("message", status.name());
+				throw new CcpFlow(values, status.status() , message);
 			}
 			
 			Function<CcpMapDecorator, CcpMapDecorator> action = specification.getAsObject("action");
