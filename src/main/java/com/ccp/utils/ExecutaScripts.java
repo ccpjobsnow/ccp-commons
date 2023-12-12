@@ -13,9 +13,9 @@ public class ExecutaScripts {
 		String mensagemDeCommit = JOptionPane.showInputDialog("Digite sua mensagem de commit.");
 		StringBuilder respostaDoAdd = executarComando("git add .");
 		System.out.println(respostaDoAdd);
-		String command = "git commit -m '"
+		String command = "git commit -m \""
 				+ mensagemDeCommit
-				+ "'";
+				+ "\"";
 		StringBuilder respostaDoCommit = executarComando(command);
 		System.out.println(respostaDoCommit);
 		StringBuilder respostaDoPush = executarComando("git push");
