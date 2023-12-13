@@ -2,14 +2,13 @@ package com.ccp.utils;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import javax.swing.JOptionPane;
 
 public class ExecutaScripts {
-	public static void main(String[] args) throws IOException, InterruptedException {
+	public static void main(String[] args) throws Exception {
 
 		String mensagemDeCommit = JOptionPane.showInputDialog("Digite sua mensagem de commit.");
 		String path = new File("").getAbsolutePath();
@@ -26,22 +25,30 @@ public class ExecutaScripts {
 			if (naoEhPasta) {
 				continue;
 			}
-			String absolutePath = file.getAbsolutePath().replace("\\", "/");
-			System.setProperty("user.dir", absolutePath);			
-			executarComando("git add .");
-			String command = "git commit -m \""
+			String pathDoGit = "C:\\Program Files\\Git\\cmd\\git";
+			executarComando(pathDoGit
+					+ " add .", file);
+			String command = pathDoGit + " commit -m \""
 					+ mensagemDeCommit
 					+ "\"";
-			executarComando(command);
-			executarComando("git push");
+			executarComando(command, file);
+			executarComando(pathDoGit + " push", file);
 		}
 		
 	}
+	
+	private static StringBuilder executarComando(String command) throws Exception {
+		StringBuilder executarComando = executarComando(command, new File(""));
+		return executarComando;
+	}
 
-	private static StringBuilder executarComando(String command) throws IOException {
-		Runtime runtime = Runtime.getRuntime();
-		Process proc = runtime.exec(command);
-		InputStream stdIn = proc.getInputStream();
+	private static StringBuilder executarComando(String command, File novoDiretorio) throws Exception {
+        ProcessBuilder builder = new ProcessBuilder(command);
+        builder.directory(novoDiretorio);
+        Process processo = builder.start();
+        processo.waitFor(); // Aguardar o término do processo, se necessário
+        System.out.println("Comando executado no diretório: " + novoDiretorio.getAbsolutePath());		
+        InputStream stdIn = processo.getInputStream();
 		InputStreamReader isr = new InputStreamReader(stdIn);
 		BufferedReader br = new BufferedReader(isr);
 
