@@ -1,6 +1,7 @@
 package com.ccp.utils;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -11,15 +12,29 @@ public class ExecutaScripts {
 	public static void main(String[] args) throws IOException, InterruptedException {
 
 		String mensagemDeCommit = JOptionPane.showInputDialog("Digite sua mensagem de commit.");
-		StringBuilder respostaDoAdd = executarComando("git add .");
-		System.out.println(respostaDoAdd);
-		String command = "git commit -m \""
-				+ mensagemDeCommit
-				+ "\"";
-		StringBuilder respostaDoCommit = executarComando(command);
-		System.out.println(respostaDoCommit);
-		StringBuilder respostaDoPush = executarComando("git push");
-		System.out.println(respostaDoPush);
+		String path = new File("").getAbsolutePath();
+		File parentFile = new File(path).getParentFile();
+		String name = parentFile.getName();
+		File[] listFiles = parentFile.listFiles();
+		for (File file : listFiles) {
+			String folderName = file.getName();
+			boolean pastaNadaAVer = folderName.startsWith(name) == false;
+			if (pastaNadaAVer) {
+				continue;
+			}
+			boolean naoEhPasta = file.isDirectory() == false;
+			if (naoEhPasta) {
+				continue;
+			}
+			String absolutePath = file.getAbsolutePath().replace("\\", "/");
+			System.setProperty("user.dir", absolutePath);			
+			executarComando("git add .");
+			String command = "git commit -m \""
+					+ mensagemDeCommit
+					+ "\"";
+			executarComando(command);
+			executarComando("git push");
+		}
 		
 	}
 
