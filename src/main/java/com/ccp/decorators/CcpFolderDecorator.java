@@ -82,17 +82,31 @@ public class CcpFolderDecorator {
 			throw new RuntimeException(e);
 		}
     }
-	public void readFiles(Consumer<CcpFolderDecorator> consumer){
-		File[] listFiles = new File(this.content).listFiles();
-		if(listFiles == null) {
+	
+	public void readFolders(Consumer<CcpFolderDecorator> consumer){
+		File[] files = new File(this.content).listFiles();
+		if(files == null) {
 			throw new RuntimeException("The folder '" + this.content + "' does not exist");
 		}
-		for (File file : listFiles) {
+		for (File file : files) {
 			String absolutePath = file.getAbsolutePath();
 			CcpFolderDecorator f = new CcpFolderDecorator(absolutePath);
 			consumer.accept(f);
 		}
 	}
+	
+	public void readFiles(Consumer<CcpFileDecorator> consumer){
+		File[] files = new File(this.content).listFiles();
+		if(files == null) {
+			throw new RuntimeException("The folder '" + this.content + "' does not exist");
+		}
+		for (File file : files) {
+			String absolutePath = file.getAbsolutePath();
+			CcpFileDecorator f = new CcpFileDecorator(absolutePath);
+			consumer.accept(f);
+		}
+	}
+
 	@Override
 	public String toString() {
 		return new File(this.content).getName();
