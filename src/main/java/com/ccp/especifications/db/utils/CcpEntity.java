@@ -1,17 +1,100 @@
 package com.ccp.especifications.db.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.dao.CcpDao;
+import com.ccp.exceptions.db.CcpEntityMissingKeys;
 import com.ccp.exceptions.db.CcpEntityRecordNotFound;
 import com.ccp.exceptions.process.CcpFlow;
 
 
 public interface CcpEntity extends CcpEntityIdGenerator{
+
+	
+	CcpTimeOption getTimeOption();
+	
+	CcpEntityField[] getFields();
+	
+	default String getId(CcpMapDecorator values) {
+		CcpTimeOption timeOption = this.getTimeOption();
+		Long time = System.currentTimeMillis();
+		String formattedCurrentDate = timeOption.getFormattedCurrentDate(time);
+		CcpEntityField[] fields = this.getFields();
+		if(fields.length == 0) {
+			
+			if(CcpTimeOption.none != timeOption) {
+				return formattedCurrentDate;
+			}
+			
+			return UUID.randomUUID().toString();
+		}
+		
+		List<CcpEntityField> missingKeys = Arrays.asList(fields).stream().filter(key -> this.isEmptyPrimaryKey(key, values))
+				.collect(Collectors.toList());
+		
+		boolean isMissingKeys = missingKeys.isEmpty() == false;
+		
+		if(isMissingKeys) {
+			throw new CcpEntityMissingKeys(this, missingKeys, values);
+		}
+		
+		
+		List<String> onlyPrimaryKeys = Arrays.asList(fields).stream().filter(key -> key.isPrimaryKey()).map(key -> this.getPrimaryKeyFieldValue(key, values)).collect(Collectors.toList());
+
+		if(onlyPrimaryKeys.isEmpty()) {
+			String hash = new CcpStringDecorator(formattedCurrentDate).hash().asString("SHA1");
+			return hash;
+		}
+		
+		Collections.sort(onlyPrimaryKeys);
+		onlyPrimaryKeys = new ArrayList<>(onlyPrimaryKeys);
+
+		if(formattedCurrentDate.trim().isEmpty() == false) {
+			onlyPrimaryKeys.add(0, formattedCurrentDate);
+		}
+		
+		String replace = onlyPrimaryKeys.toString().replace("[", "").replace("]", "");
+		String hash = new CcpStringDecorator(replace).hash().asString("SHA1");
+		return hash;
+	}
+	default boolean isEmptyPrimaryKey(CcpEntityField key, CcpMapDecorator values) {
+		
+		if(key.isPrimaryKey() == false) {
+			return false;
+		}
+		
+		String primaryKeyFieldValue = this.getPrimaryKeyFieldValue(key, values);
+		if("_".equals(primaryKeyFieldValue)) {
+			return true;
+		}
+		
+		return false;
+	}
+	default String getPrimaryKeyFieldValue(CcpEntityField key, CcpMapDecorator values) {
+		
+		boolean notCollection = values.get(key.name()) instanceof Collection<?> == false;
+		
+		if(notCollection) {
+			String primaryKeyFieldValue = values.getAsString(key.name()).trim() + "_";
+			return primaryKeyFieldValue;
+		}
+		
+		Collection<?> col = values.getAsObject(key.name());
+		ArrayList<?> list = new ArrayList<>(col);
+		list.sort((a, b) -> ("" + a).compareTo("" + b));
+		String primaryKeyFieldValue = list.stream().map(x -> x.toString().trim()).collect(Collectors.toList()).toString() + "_";
+		return primaryKeyFieldValue;
+	}
 
 
 	default CcpMapDecorator getOneById(CcpMapDecorator data, Function<CcpMapDecorator, CcpMapDecorator> ifNotFound) {
