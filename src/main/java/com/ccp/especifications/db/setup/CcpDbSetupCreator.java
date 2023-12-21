@@ -13,5 +13,12 @@ public interface CcpDbSetupCreator {
 		this.createTables(createFolder);
 		this.insertValues(prefix, insertFolder);
 	}
+	
+	void deleteAllData();
+	
+	default void resetAllData(String prefix, String folder) {
+		this.deleteAllData();
+		this.insertValues(folder, prefix);
+	}
 
 }
