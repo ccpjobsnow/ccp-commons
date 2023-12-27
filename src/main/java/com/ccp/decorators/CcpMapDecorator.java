@@ -158,7 +158,7 @@ public class CcpMapDecorator {
 				return ((Date)object).getTime();
 			}
 			
-			return new Double ("" + object).longValue();
+			return Double.valueOf("" + object).longValue();
 		} catch (Exception e) {
 			if(object instanceof String) {
 				try {
