@@ -95,11 +95,15 @@ public class CcpFileDecorator {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+	public CcpFileDecorator write(String content) {
+		this.reset();
+		CcpFileDecorator append = this.append(content);
+		return append;
 		
 	}
 	
-	
-	public  void append(String content) {
+	public CcpFileDecorator append(String content) {
 		try {
 			File file = new File(this.content);
 			if (file.exists() == false) {
@@ -107,16 +111,18 @@ public class CcpFileDecorator {
 			}
 			byte[] bytes = (content + "\n").getBytes();
 			Files.write(Paths.get(this.content), bytes, StandardOpenOption.APPEND);
+			return this;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
-	public void reset() {
+	public CcpFileDecorator reset() {
 
 		File f = new File(this.content);
 		f.delete();
 		try {
 			f.createNewFile();
+			return this;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

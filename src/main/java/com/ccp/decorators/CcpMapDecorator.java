@@ -89,7 +89,7 @@ public class CcpMapDecorator {
 	
 	
 	public String getHash(String algorithm) {
-		String asJson = this.asJson();
+		String asJson = this.asUgglyJson();
 		CcpStringDecorator ccpStringDecorator = new CcpStringDecorator(asJson);
 		CcpHashDecorator hash = ccpStringDecorator.hash();
 		String asString = hash.asString(algorithm);
@@ -312,7 +312,7 @@ public class CcpMapDecorator {
 	}
 
 
-	public String asJson() {
+	public String asUgglyJson() {
 		CcpJsonHandler json = CcpDependencyInjection.getDependency(CcpJsonHandler.class);
 		return json.toJson(this.content);
 	}
@@ -357,7 +357,7 @@ public class CcpMapDecorator {
 	public CcpMapDecorator putSubKeyAsString(String key, String subKey, Object value) {
 		CcpMapDecorator internalMap = this.getInternalMap(key);
 		internalMap = internalMap.put(subKey, value);
-		CcpMapDecorator put = this.put(key, internalMap.asJson());
+		CcpMapDecorator put = this.put(key, internalMap.asUgglyJson());
 		return put;
 	}
 

@@ -116,4 +116,14 @@ public class CcpFolderDecorator {
 		File file = new File(this.content);
 		return file.exists();
 	}
+
+	public CcpFolderDecorator createNewFolderIfNotExists(String folderName) {
+		String path = this.content + folderName;
+		new File(path).mkdir();
+		return new CcpFolderDecorator(path);
+	}
+	
+	public CcpFileDecorator writeInTheFile(String fileName, String fileContent) {
+		return new CcpFileDecorator(this.content +"\\" + fileName).write(fileContent);
+	}
 }

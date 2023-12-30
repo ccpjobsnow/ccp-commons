@@ -29,7 +29,7 @@ public final class CcpHttpHandler {
 	
 	public <V> V executeHttpRequest(String url, String method, CcpMapDecorator headers, CcpMapDecorator body, CcpHttpResponseTransform<V> transformer) {
 		
-		String asJson = body.asJson();
+		String asJson = body.asUgglyJson();
 		V executeHttpRequest = this.executeHttpRequest(url, method, headers, asJson, transformer);
 		return executeHttpRequest;
 	}
