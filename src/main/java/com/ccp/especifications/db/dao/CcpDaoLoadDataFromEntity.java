@@ -1,12 +1,12 @@
 package com.ccp.especifications.db.dao;
 
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.decorators.CcpJsonRepresentation;
 
 public class CcpDaoLoadDataFromEntity {
-	private final CcpMapDecorator id;
-	private final CcpMapDecorator statements;
+	private final CcpJsonRepresentation id;
+	private final CcpJsonRepresentation statements;
 
-	CcpDaoLoadDataFromEntity(CcpMapDecorator id, CcpMapDecorator statements) {
+	CcpDaoLoadDataFromEntity(CcpJsonRepresentation id, CcpJsonRepresentation statements) {
 		this.statements = statements;
 		this.id = id;
 
@@ -16,8 +16,8 @@ public class CcpDaoLoadDataFromEntity {
 		return new CcpDaoProcedure(this.id, this.statements);
 	}
 	
-	public CcpDaoFinally andFinally() {
-		return new CcpDaoFinally(this.id, this.statements);
+	public CcpDaoFinally andFinally(String... fields) {
+		return new CcpDaoFinally(this.id, this.statements, fields);
 	}
 	
 

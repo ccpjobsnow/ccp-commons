@@ -1,19 +1,19 @@
 package com.ccp.especifications.instant.messenger;
 
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.decorators.CcpJsonRepresentation;
 
 public interface CcpInstantMessenger {
 
 	
-	Long getMembersCount(CcpMapDecorator parameters);
+	Long getMembersCount(CcpJsonRepresentation parameters);
 	
-	CcpMapDecorator sendMessage(CcpMapDecorator parameters);
+	CcpJsonRepresentation sendMessage(CcpJsonRepresentation parameters);
 	
-	String getFileName(CcpMapDecorator parameters);
+	String getFileName(CcpJsonRepresentation parameters);
 	
-	String extractTextFromMessage(CcpMapDecorator parameters);
+	String extractTextFromMessage(CcpJsonRepresentation parameters);
 	
-	String getToken(CcpMapDecorator parameters);
+	String getToken(CcpJsonRepresentation parameters);
 
 
 }

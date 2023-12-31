@@ -8,7 +8,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.constantes.CcpConstants;
+import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.exceptions.process.CcpFlow;
@@ -16,29 +17,31 @@ import com.ccp.process.CcpProcessStatus;
 
 
 public class CcpDaoFinally {
-	private final CcpMapDecorator id;
-	private final CcpMapDecorator statements;
-	
-	CcpDaoFinally(CcpMapDecorator id, CcpMapDecorator statements) {
+	private final CcpJsonRepresentation id;
+	private final CcpJsonRepresentation statements;
+	private final String[] fields;
+	CcpDaoFinally(CcpJsonRepresentation id, CcpJsonRepresentation statements, String[] fields) {
 		this.id = id;
+		this.fields = fields;
 		this.statements = statements;
+
 	}
 
 	public void endThisProcedure() {
-		List<CcpMapDecorator> statements = this.statements.getAsMapList("statements");
-		CcpMapDecorator[] array = statements.toArray(new CcpMapDecorator[statements.size()]);
+		List<CcpJsonRepresentation> statements = this.statements.getJsonList("statements");
+		CcpJsonRepresentation[] array = statements.toArray(new CcpJsonRepresentation[statements.size()]);
 		this.findById(this.id, array);
 	}
 
-	public CcpMapDecorator endThisProcedureRetrievingTheResultingData() {
-		List<CcpMapDecorator> statements = this.statements.getAsMapList("statements");
-		CcpMapDecorator[] array = statements.toArray(new CcpMapDecorator[statements.size()]);
-		CcpMapDecorator findById = this.findById(this.id, array);
-		return findById.removeKeys("_entities", "pastSteps");
+	public CcpJsonRepresentation endThisProcedureRetrievingTheResultingData() {
+		List<CcpJsonRepresentation> statements = this.statements.getJsonList("statements");
+		CcpJsonRepresentation[] array = statements.toArray(new CcpJsonRepresentation[statements.size()]);
+		CcpJsonRepresentation findById = this.findById(this.id, array);
+		return findById;
 	}
 
 	
-	private CcpMapDecorator findById(CcpMapDecorator values, CcpMapDecorator... specifications) {
+	private CcpJsonRepresentation findById(CcpJsonRepresentation values, CcpJsonRepresentation... specifications) {
 		int counter = 0;
 		List<CcpEntity> keySet = Arrays.asList(specifications).stream()
 				.filter(x -> x.getAsObject("entity") != null)
@@ -54,28 +57,28 @@ public class CcpDaoFinally {
 		}
 
 		CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
-		List<CcpMapDecorator> manyById = dao.getManyById(values, entities);
+		List<CcpJsonRepresentation> manyById = dao.getManyById(values, entities);
 		counter = 0;
 		
-		for (CcpMapDecorator specification : specifications) {
+		for (CcpJsonRepresentation specification : specifications) {
 			
 			String entity = specification.getAsString("entity");
 			
 			boolean executeFreeAction = entity.trim().isEmpty();
 			
 			if(executeFreeAction) {
-				Function<CcpMapDecorator, CcpMapDecorator> action = specification.getAsObject("action");
+				Function<CcpJsonRepresentation, CcpJsonRepresentation> action = specification.getAsObject("action");
 				values = action.apply(values);
 				continue;
 			}
 			
 			boolean recordFound = specification.getAsBoolean("found");
 			
-			Optional<CcpMapDecorator> findFirst = new ArrayList<>(manyById).stream()
+			Optional<CcpJsonRepresentation> findFirst = new ArrayList<>(manyById).stream()
 					.filter(x -> x.getAsString("_index").equals(entity))
 					.findFirst();
 
-			CcpMapDecorator dataBaseRow = findFirst.get();
+			CcpJsonRepresentation dataBaseRow = findFirst.get();
 			
 			boolean _found = dataBaseRow.getAsBoolean("_found");
 			boolean itWasNotForeseen = _found != recordFound;
@@ -104,21 +107,26 @@ public class CcpDaoFinally {
 				
 				CcpProcessStatus status = specification.getAsObject("status");
 				String message = specification.getOrDefault("message", status.name());
-				throw new CcpFlow(values, status.status() , message);
+				throw new CcpFlow(values, status.status() , message, this.fields);
 			}
 			
-			Function<CcpMapDecorator, CcpMapDecorator> action = specification.getAsObject("action");
+			Function<CcpJsonRepresentation, CcpJsonRepresentation> action = specification.getAsObject("action");
 
 			if(recordFound == false) {
 				values = action.apply(values);
 				continue;
 			}
 			
-			CcpMapDecorator context = values.putSubKey("_entities", entity, dataBaseRow);
+			CcpJsonRepresentation context = values.putSubKey("_entities", entity, dataBaseRow);
 			values = action.apply(context);
 		}
 		
-		return values.removeKeys("_entities", "pastSteps");
+		if(this.fields.length <= 0) {
+			return CcpConstants.EMPTY_JSON;
+		}
+		
+		CcpJsonRepresentation subMap = values.getJsonPiece(this.fields);
+		return subMap;
 	}
 
 	

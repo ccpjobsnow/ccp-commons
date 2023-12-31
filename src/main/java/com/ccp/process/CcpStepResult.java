@@ -1,10 +1,10 @@
 package com.ccp.process;
 
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.decorators.CcpJsonRepresentation;
 
 public class CcpStepResult{
 
-	public final CcpMapDecorator values;
+	public final CcpJsonRepresentation values;
 	
 	public final String business;
 
@@ -12,9 +12,9 @@ public class CcpStepResult{
 
 	public final int status;
 
-	public CcpStepResult(CcpMapDecorator data, int status, CcpNextStep currentStep) {
+	public CcpStepResult(CcpJsonRepresentation data, int status, CcpNextStep currentStep) {
 
-		CcpMapDecorator pastSteps = data.getInternalMap("pastSteps");
+		CcpJsonRepresentation pastSteps = data.getInnerJson("pastSteps");
 		
 		String step = currentStep.getClass().getName();
 		
@@ -26,7 +26,7 @@ public class CcpStepResult{
 		this.step = step;
 	}
 
-	public CcpMapDecorator getData() {
+	public CcpJsonRepresentation getData() {
 		return this.values.put("business", this.business).put("step", this.step);
 	}
 	

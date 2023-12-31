@@ -2,34 +2,34 @@ package com.ccp.especifications.db.dao;
 
 import java.util.List;
 
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.utils.CcpEntityIdGenerator;
 
 public interface CcpDao {
 
-	List<CcpMapDecorator> getManyById(CcpMapDecorator values, CcpEntityIdGenerator... entities);
+	List<CcpJsonRepresentation> getManyById(CcpJsonRepresentation values, CcpEntityIdGenerator... entities);
 	
-	default CcpMapDecorator createOrUpdate(CcpEntityIdGenerator entity, CcpMapDecorator data) {
+	default CcpJsonRepresentation createOrUpdate(CcpEntityIdGenerator entity, CcpJsonRepresentation data) {
 		
 		String id = entity.getId(data);
 
-		CcpMapDecorator response = this.createOrUpdate(entity, data, id);
+		CcpJsonRepresentation response = this.createOrUpdate(entity, data, id);
 		
 		return response;
 	}
 	
-	List<CcpMapDecorator> getManyByIds(CcpEntityIdGenerator entity, String... ids);
+	List<CcpJsonRepresentation> getManyByIds(CcpEntityIdGenerator entity, String... ids);
 	
-	default boolean exists(CcpEntityIdGenerator entity, CcpMapDecorator values) {
+	default boolean exists(CcpEntityIdGenerator entity, CcpJsonRepresentation values) {
 		String id = entity.getId(values);
 		
 		boolean exists = this.exists(entity, id);
 		return exists;
 	}
 	
-	default boolean anyMatch(CcpMapDecorator values, CcpEntityIdGenerator... entities) {
-		List<CcpMapDecorator> manyById = this.getManyById(values, entities);
-		for (CcpMapDecorator md : manyById) {
+	default boolean anyMatch(CcpJsonRepresentation values, CcpEntityIdGenerator... entities) {
+		List<CcpJsonRepresentation> manyById = this.getManyById(values, entities);
+		for (CcpJsonRepresentation md : manyById) {
 			boolean found = md.getAsBoolean("_found");
 			
 			if(found) {
@@ -39,9 +39,9 @@ public interface CcpDao {
 		return false;
 	}
 
-	default boolean allMatch(CcpMapDecorator values, CcpEntityIdGenerator... entities) {
-		List<CcpMapDecorator> manyById = this.getManyById(values, entities);
-		for (CcpMapDecorator md : manyById) {
+	default boolean allMatch(CcpJsonRepresentation values, CcpEntityIdGenerator... entities) {
+		List<CcpJsonRepresentation> manyById = this.getManyById(values, entities);
+		for (CcpJsonRepresentation md : manyById) {
 			boolean notFound = md.getAsBoolean("_found") == false;
 			
 			if(notFound) {
@@ -51,9 +51,9 @@ public interface CcpDao {
 		return true;
 	}
 
-	default boolean noMatches(CcpMapDecorator values, CcpEntityIdGenerator... entities) {
-		List<CcpMapDecorator> manyById = this.getManyById(values, entities);
-		for (CcpMapDecorator md : manyById) {
+	default boolean noMatches(CcpJsonRepresentation values, CcpEntityIdGenerator... entities) {
+		List<CcpJsonRepresentation> manyById = this.getManyById(values, entities);
+		for (CcpJsonRepresentation md : manyById) {
 			boolean found = md.getAsBoolean("_found");
 			
 			if(found) {
@@ -63,28 +63,28 @@ public interface CcpDao {
 		return true;
 	}
 
-	CcpMapDecorator getOneById(CcpEntityIdGenerator entity, String id);
+	CcpJsonRepresentation getOneById(CcpEntityIdGenerator entity, String id);
 
-	default CcpMapDecorator getOneById(CcpEntityIdGenerator entity, CcpMapDecorator values) {
+	default CcpJsonRepresentation getOneById(CcpEntityIdGenerator entity, CcpJsonRepresentation values) {
 	
 		String id = entity.getId(values);
 		
-		CcpMapDecorator oneById = this.getOneById(entity, id);
+		CcpJsonRepresentation oneById = this.getOneById(entity, id);
 		
 		return oneById;
 	}
 
-	CcpMapDecorator getAllData(CcpMapDecorator values, CcpEntityIdGenerator... entities);
+	CcpJsonRepresentation getAllData(CcpJsonRepresentation values, CcpEntityIdGenerator... entities);
 
-	List<CcpMapDecorator> getManyById(List<CcpMapDecorator> values, CcpEntityIdGenerator... entities);
+	List<CcpJsonRepresentation> getManyById(List<CcpJsonRepresentation> values, CcpEntityIdGenerator... entities);
 
-	CcpMapDecorator createOrUpdate(CcpEntityIdGenerator entity, CcpMapDecorator data, String id);
+	CcpJsonRepresentation createOrUpdate(CcpEntityIdGenerator entity, CcpJsonRepresentation data, String id);
 
 	boolean exists(CcpEntityIdGenerator entity, String id);
 
 	boolean delete(CcpEntityIdGenerator entity, String id); 
 	
-	default boolean delete(CcpEntityIdGenerator entity, CcpMapDecorator values) {
+	default boolean delete(CcpEntityIdGenerator entity, CcpJsonRepresentation values) {
 		String id = entity.getId(values);
 
 		boolean deleted = this.delete(entity, id);

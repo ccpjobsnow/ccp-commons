@@ -1,8 +1,8 @@
 package com.ccp.exceptions.process;
 
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.decorators.CcpJsonRepresentation;
 
-public class CcpThrowException implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
+public class CcpThrowException implements  java.util.function.Function<CcpJsonRepresentation, CcpJsonRepresentation>{
 
 	private final RuntimeException exception;
 	
@@ -10,7 +10,7 @@ public class CcpThrowException implements  java.util.function.Function<CcpMapDec
 		this.exception = exception;
 	}
 
-	public CcpMapDecorator apply(CcpMapDecorator values) {
+	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
 		throw this.exception;
 	}
 

@@ -5,7 +5,8 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.constantes.CcpConstants;
+import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.utils.CcpEntityField;
 
 abstract class CcpDbQueryBooleanOperator extends CcpDbQueryComponent{
@@ -60,8 +61,8 @@ abstract class CcpDbQueryBooleanOperator extends CcpDbQueryComponent{
 			return (T)clone;
 		}
 		
-		Map<String, Object> map = new CcpMapDecorator().put(field, value).getContent();
-		Map<String, Object> outerMap = new CcpMapDecorator().put(key, map).getContent();
+		Map<String, Object> map = CcpConstants.EMPTY_JSON.put(field, value).getContent();
+		Map<String, Object> outerMap = CcpConstants.EMPTY_JSON.put(key, map).getContent();
 		
 		clone.items.addAll(this.items);
 		clone.items.add(outerMap);
@@ -76,14 +77,14 @@ abstract class CcpDbQueryBooleanOperator extends CcpDbQueryComponent{
 			return (T)clone;
 		}
 		
-		CcpMapDecorator put = new CcpMapDecorator().put("query", value).put("boost", boost);
+		CcpJsonRepresentation put = CcpConstants.EMPTY_JSON.put("query", value).put("boost", boost);
 		if(operator != null && operator.trim().isEmpty() == false) {
 			put = put.put("operator", operator);
 		}
 		Map<String, Object> map = put.getContent();
-		Map<String, Object> mapField = new CcpMapDecorator().put(field, map).getContent();	
-		new CcpMapDecorator().put(key, mapField).getContent();
-		Map<String, Object> outerMap = new CcpMapDecorator().put(key, mapField).getContent();
+		Map<String, Object> mapField = CcpConstants.EMPTY_JSON.put(field, map).getContent();	
+		CcpConstants.EMPTY_JSON.put(key, mapField).getContent();
+		Map<String, Object> outerMap = CcpConstants.EMPTY_JSON.put(key, mapField).getContent();
 		
 		clone.items.addAll(this.items);
 		clone.items.add(outerMap);
@@ -101,7 +102,7 @@ abstract class CcpDbQueryBooleanOperator extends CcpDbQueryComponent{
 		CcpDbQueryBooleanOperator copy = this.copy();
 		copy.items.addAll(this.items);
 		Object childValue = child.getValue();
-		Map<String, Object> childContent = new CcpMapDecorator().put(child.name, childValue).getContent();
+		Map<String, Object> childContent = CcpConstants.EMPTY_JSON.put(child.name, childValue).getContent();
 		copy.items.add(childContent);
 		return (T)copy;
 	}

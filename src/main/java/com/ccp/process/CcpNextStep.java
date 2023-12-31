@@ -3,7 +3,7 @@ package com.ccp.process;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.exceptions.process.CcpFlow;
 
 public abstract class CcpNextStep {
@@ -34,7 +34,7 @@ public abstract class CcpNextStep {
 		return this;
 	}
 	
-	public final CcpStepResult goToTheNextStep(CcpMapDecorator currentValues) {
+	public final CcpStepResult goToTheNextStep(CcpJsonRepresentation currentValues) {
 		
 		CcpStepResult stepResult = this.executeThisStep(currentValues);
 		
@@ -56,7 +56,7 @@ public abstract class CcpNextStep {
 		return execute;
 	}
 
-	public abstract CcpStepResult executeThisStep(CcpMapDecorator values);
+	public abstract CcpStepResult executeThisStep(CcpJsonRepresentation values);
 
 	
 	public String toString() {

@@ -1,8 +1,8 @@
 package com.ccp.especifications.email;
 
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.decorators.CcpJsonRepresentation;
 
 public interface CcpEmailSender {
 
-	CcpMapDecorator send(CcpMapDecorator emailApiParameters) ;
+	CcpJsonRepresentation send(CcpJsonRepresentation emailApiParameters) ;
 }

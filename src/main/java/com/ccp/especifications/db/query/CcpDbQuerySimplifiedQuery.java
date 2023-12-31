@@ -2,7 +2,8 @@ package com.ccp.especifications.db.query;
    
 import java.util.Map;
 
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.constantes.CcpConstants;
+import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.utils.CcpEntityField;
 
 public final class CcpDbQuerySimplifiedQuery  extends CcpDbQueryBooleanOperator {
@@ -76,11 +77,11 @@ public final class CcpDbQuerySimplifiedQuery  extends CcpDbQueryBooleanOperator 
 		
 		@SuppressWarnings("unchecked")
 		protected CcpDbQuerySimplifiedQuery addCondition(String field, Object value, String key) {
-			Map<String, Object> map = new CcpMapDecorator().put(field, value).getContent();
-			Map<String, Object> outerMap = new CcpMapDecorator().put(key, map).getContent();
+			Map<String, Object> map = CcpConstants.EMPTY_JSON.put(field, value).getContent();
+			Map<String, Object> outerMap = CcpConstants.EMPTY_JSON.put(key, map).getContent();
 			
 			CcpDbQuerySimplifiedQuery clone = this.copy();
-			clone.values = new CcpMapDecorator(outerMap);
+			clone.values = new CcpJsonRepresentation(outerMap);
 			return clone;
 		}
 		

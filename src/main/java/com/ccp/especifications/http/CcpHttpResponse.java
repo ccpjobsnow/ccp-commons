@@ -3,7 +3,8 @@ package com.ccp.especifications.http;
 import java.util.Base64;
 import java.util.List;
 
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.constantes.CcpConstants;
+import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.decorators.CcpTextDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
@@ -30,18 +31,18 @@ public class CcpHttpResponse {
 		return validSingleJson;
 	}
 	
-	public CcpMapDecorator asSingleJson() {
+	public CcpJsonRepresentation asSingleJson() {
 		try {
 			return new CcpStringDecorator(this.httpResponse).map();
 		} catch (Exception e) {
-			return new CcpMapDecorator();
+			return CcpConstants.EMPTY_JSON;
 		}
 	}
 	
-	public List<CcpMapDecorator> asListRecord(){
+	public List<CcpJsonRepresentation> asListRecord(){
 		try {
 			CcpJsonHandler json = CcpDependencyInjection.getDependency(CcpJsonHandler.class);
-			List<CcpMapDecorator> fromJson = json.fromJson(this.httpResponse);
+			List<CcpJsonRepresentation> fromJson = json.fromJson(this.httpResponse);
 			return fromJson; 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -66,7 +67,7 @@ public class CcpHttpResponse {
 	
 	@Override
 	public String toString() {
-		return new CcpMapDecorator()
+		return CcpConstants.EMPTY_JSON
 				.put("httpStatus", this.httpStatus)
 				.put("httpResponse", this.httpResponse)
 				.toString();

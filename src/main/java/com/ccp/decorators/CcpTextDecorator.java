@@ -84,7 +84,7 @@ public class CcpTextDecorator {
 		return byteArrayInputStream;
 
 	}
-	public String getMessage(CcpMapDecorator parameters) {
+	public String getMessage(CcpJsonRepresentation parameters) {
 
 		Map<String, Object> content = parameters.getContent();
 		Set<String> keySet = content.keySet();
@@ -147,7 +147,7 @@ public class CcpTextDecorator {
 	
 	public boolean isValidSingleJson() {
 		try {
-			new CcpMapDecorator(this.content);
+			new CcpJsonRepresentation(this.content);
 			return true;
 		} catch (Exception e) {
 			return false;

@@ -9,7 +9,8 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.constantes.CcpConstants;
+import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.dao.CcpDao;
@@ -25,7 +26,7 @@ public interface CcpEntity extends CcpEntityIdGenerator{
 	
 	CcpEntityField[] getFields();
 	
-	default String getId(CcpMapDecorator values) {
+	default String getId(CcpJsonRepresentation values) {
 		CcpTimeOption timeOption = this.getTimeOption();
 		Long time = System.currentTimeMillis();
 		String formattedCurrentDate = timeOption.getFormattedCurrentDate(time);
@@ -67,7 +68,7 @@ public interface CcpEntity extends CcpEntityIdGenerator{
 		String hash = new CcpStringDecorator(replace).hash().asString("SHA1");
 		return hash;
 	}
-	default boolean isEmptyPrimaryKey(CcpEntityField key, CcpMapDecorator values) {
+	default boolean isEmptyPrimaryKey(CcpEntityField key, CcpJsonRepresentation values) {
 		
 		if(key.isPrimaryKey() == false) {
 			return false;
@@ -80,7 +81,7 @@ public interface CcpEntity extends CcpEntityIdGenerator{
 		
 		return false;
 	}
-	default String getPrimaryKeyFieldValue(CcpEntityField key, CcpMapDecorator values) {
+	default String getPrimaryKeyFieldValue(CcpEntityField key, CcpJsonRepresentation values) {
 		
 		boolean notCollection = values.get(key.name()) instanceof Collection<?> == false;
 		
@@ -97,32 +98,32 @@ public interface CcpEntity extends CcpEntityIdGenerator{
 	}
 
 
-	default CcpMapDecorator getOneById(CcpMapDecorator data, Function<CcpMapDecorator, CcpMapDecorator> ifNotFound) {
+	default CcpJsonRepresentation getOneById(CcpJsonRepresentation data, Function<CcpJsonRepresentation, CcpJsonRepresentation> ifNotFound) {
 		try {
 			CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
-			CcpMapDecorator oneById = dao.getOneById(this, data);
+			CcpJsonRepresentation oneById = dao.getOneById(this, data);
 			return oneById;
 			
 		} catch (CcpEntityRecordNotFound e) {
-			CcpMapDecorator execute = ifNotFound.apply(data);
+			CcpJsonRepresentation execute = ifNotFound.apply(data);
 			return execute;
 		}
 	}
 
-	default CcpMapDecorator getOneById(CcpMapDecorator data) {
-		CcpMapDecorator md = this.getOneById(data, x -> {throw new CcpFlow(x.put("entity", this.name()), 404);});
+	default CcpJsonRepresentation getOneById(CcpJsonRepresentation data) {
+		CcpJsonRepresentation md = this.getOneById(data, x -> {throw new CcpFlow(x.put("entity", this.name()), 404);});
 		return md;
 	}
 	
 
-	default CcpMapDecorator getOneById(String id) {
+	default CcpJsonRepresentation getOneById(String id) {
 		try {
 			CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
-			CcpMapDecorator md = dao.getOneById(this, id);
+			CcpJsonRepresentation md = dao.getOneById(this, id);
 			return md;
 			
 		} catch (CcpEntityRecordNotFound e) {
-			CcpMapDecorator put = new CcpMapDecorator().put("id", id).put("entity", this.name());
+			CcpJsonRepresentation put = CcpConstants.EMPTY_JSON.put("id", id).put("entity", this.name());
 			throw new CcpFlow(put, 404);
 		}
 	}
@@ -134,16 +135,16 @@ public interface CcpEntity extends CcpEntityIdGenerator{
 		
 	}
 	
-	default boolean exists(CcpMapDecorator data) {
+	default boolean exists(CcpJsonRepresentation data) {
 		CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
 		boolean exists = dao.exists(this, data);
 		return exists;
 	}
 	
-	CcpMapDecorator getOnlyExistingFields(CcpMapDecorator values) ;
+	CcpJsonRepresentation getOnlyExistingFields(CcpJsonRepresentation values) ;
 	
-	default CcpMapDecorator createOrUpdate(CcpMapDecorator values) {
-		CcpMapDecorator onlyExistingFields = this.getOnlyExistingFields(values);
+	default CcpJsonRepresentation createOrUpdate(CcpJsonRepresentation values) {
+		CcpJsonRepresentation onlyExistingFields = this.getOnlyExistingFields(values);
 		boolean created = this.create(values);
 		
 		this.saveAuditory(values, created ? CcpEntityOperationType.create : CcpEntityOperationType.update);
@@ -151,11 +152,11 @@ public interface CcpEntity extends CcpEntityIdGenerator{
 		return onlyExistingFields;
 	}
 
-	default boolean create(CcpMapDecorator values) {
-		CcpMapDecorator onlyExistingFields = this.getOnlyExistingFields(values);
+	default boolean create(CcpJsonRepresentation values) {
+		CcpJsonRepresentation onlyExistingFields = this.getOnlyExistingFields(values);
 		CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
 
-		CcpMapDecorator createOrUpdate = dao.createOrUpdate(this, onlyExistingFields);
+		CcpJsonRepresentation createOrUpdate = dao.createOrUpdate(this, onlyExistingFields);
 		String result = createOrUpdate.getAsString("result");
 		boolean created = "created".equals(result);
 		
@@ -163,7 +164,7 @@ public interface CcpEntity extends CcpEntityIdGenerator{
 	}
 	
 
-	default boolean delete(CcpMapDecorator values) {
+	default boolean delete(CcpJsonRepresentation values) {
 		CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
 		boolean remove = dao.delete(this, values);
 		this.saveAuditory(values, CcpEntityOperationType.delete);
@@ -178,43 +179,43 @@ public interface CcpEntity extends CcpEntityIdGenerator{
 		
 	}
 	
-	default List<CcpMapDecorator> getManyByIds(CcpMapDecorator... values){
+	default List<CcpJsonRepresentation> getManyByIds(CcpJsonRepresentation... values){
 		String[] ids = new String[values.length];
 		
 		int k = 0;
 		
-		for (CcpMapDecorator value : values) {
+		for (CcpJsonRepresentation value : values) {
 			String id = this.getId(value);
 			ids[k++] = id;
 		}
 		CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
-		List<CcpMapDecorator> manyByIds = dao.getManyByIds(this, ids);
+		List<CcpJsonRepresentation> manyByIds = dao.getManyByIds(this, ids);
 	
 		k = 0;
-		List<CcpMapDecorator> response = new ArrayList<>();
-		for (CcpMapDecorator value : values) {
-			CcpMapDecorator md = manyByIds.get(k++);
+		List<CcpJsonRepresentation> response = new ArrayList<>();
+		for (CcpJsonRepresentation value : values) {
+			CcpJsonRepresentation md = manyByIds.get(k++);
 			md = md.put("_id", value);
 			response.add(md);
 		}
 		return response;
 	}
 	
-	default List<CcpMapDecorator> getManyByIds(List< CcpMapDecorator> values){
-		CcpMapDecorator[] array = values.toArray(new CcpMapDecorator[values.size()]);
+	default List<CcpJsonRepresentation> getManyByIds(List< CcpJsonRepresentation> values){
+		CcpJsonRepresentation[] array = values.toArray(new CcpJsonRepresentation[values.size()]);
 		return this.getManyByIds(array);
 	}	
-	void saveAuditory(CcpMapDecorator values, CcpEntityOperationType operation);
+	void saveAuditory(CcpJsonRepresentation values, CcpEntityOperationType operation);
 	
 	boolean isAuditable();
 	
-	default CcpMapDecorator createOrUpdate(CcpMapDecorator data, String id) {
+	default CcpJsonRepresentation createOrUpdate(CcpJsonRepresentation data, String id) {
 		CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
-		CcpMapDecorator createOrUpdate = dao.createOrUpdate(this, data, id);
+		CcpJsonRepresentation createOrUpdate = dao.createOrUpdate(this, data, id);
 		return createOrUpdate;
 	}
 	
-	default CcpMapDecorator transferData(CcpMapDecorator values, CcpEntity target) {
+	default CcpJsonRepresentation transferData(CcpJsonRepresentation values, CcpEntity target) {
 		this.delete(values);
 		target.create(values);
 		return values;

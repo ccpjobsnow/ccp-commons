@@ -10,33 +10,33 @@ public class CcpPropertiesDecorator {
 		this.cisd = new CcpInputStreamDecorator(content);
 	}
 
-	private CcpMapDecorator getMapInInputStream(InputStream is) {
-		CcpMapDecorator response = new CcpMapDecorator(is);
+	private CcpJsonRepresentation getMapInInputStream(InputStream is) {
+		CcpJsonRepresentation response = new CcpJsonRepresentation(is);
 		return response;
 
 	}
 	
-	public CcpMapDecorator environmentVariables() {
+	public CcpJsonRepresentation environmentVariables() {
 		InputStream is = this.cisd.environmentVariables();
-		CcpMapDecorator result = this.getMapInInputStream(is);
+		CcpJsonRepresentation result = this.getMapInInputStream(is);
 		return result;
 	}
 
-	public CcpMapDecorator classLoader() {
+	public CcpJsonRepresentation classLoader() {
 		InputStream is = this.cisd.classLoader();
-		CcpMapDecorator result = this.getMapInInputStream(is);
+		CcpJsonRepresentation result = this.getMapInInputStream(is);
 		return result;
 	}
 
-	public CcpMapDecorator file() {
+	public CcpJsonRepresentation file() {
 		InputStream is = this.cisd.file();
-		CcpMapDecorator result = this.getMapInInputStream(is);
+		CcpJsonRepresentation result = this.getMapInInputStream(is);
 		return result;
 	}
 
-	public CcpMapDecorator environmentVariablesOrClassLoaderOrFile() {
+	public CcpJsonRepresentation environmentVariablesOrClassLoaderOrFile() {
 		InputStream is = this.cisd.fromEnvironmentVariablesOrClassLoaderOrFile();
-		CcpMapDecorator result = this.getMapInInputStream(is);
+		CcpJsonRepresentation result = this.getMapInInputStream(is);
 		return result;
 	}
 	

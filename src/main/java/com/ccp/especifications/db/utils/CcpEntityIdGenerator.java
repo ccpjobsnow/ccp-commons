@@ -1,12 +1,12 @@
 package com.ccp.especifications.db.utils;
 
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.decorators.CcpJsonRepresentation;
 
 public interface CcpEntityIdGenerator {
 
-	CcpMapDecorator getOnlyExistingFields(CcpMapDecorator values);
+	CcpJsonRepresentation getOnlyExistingFields(CcpJsonRepresentation values);
 
-	String getId(CcpMapDecorator values);
+	String getId(CcpJsonRepresentation values);
 
 	String name();
 	

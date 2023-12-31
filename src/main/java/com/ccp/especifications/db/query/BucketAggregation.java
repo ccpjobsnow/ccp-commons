@@ -2,7 +2,7 @@ package com.ccp.especifications.db.query;
 
 import java.util.Map;
 
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.constantes.CcpConstants;
 import com.ccp.especifications.db.utils.CcpEntityField;
 
 public final class BucketAggregation extends CcpDbQueryComponent {
@@ -28,7 +28,7 @@ public final class BucketAggregation extends CcpDbQueryComponent {
 
 	private CcpDbQueryAggregations getStatisRequest(String p1, String p2) {
 		CcpDbQueryComponent copy = this.copy();
-		Map<String, Object> content = new CcpMapDecorator().put("field", this.fieldName).put(p1, this.size).getContent();
+		Map<String, Object> content = CcpConstants.EMPTY_JSON.put("field", this.fieldName).put(p1, this.size).getContent();
 		copy.values = copy.values.put(p2, content);
 		CcpDbQueryAggregations addChild = this.parent.addChild(copy);
 		return addChild;

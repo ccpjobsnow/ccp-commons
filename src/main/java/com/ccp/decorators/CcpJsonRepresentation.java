@@ -21,23 +21,28 @@ import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.ccp.constantes.CcpConstants;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.json.CcpJsonHandler;
 
-public class CcpMapDecorator {
+public class CcpJsonRepresentation {
 	
 	
 	public final Map<String, Object> content;
 	
-	public CcpMapDecorator() {
+	protected CcpJsonRepresentation() {
 		this.content = new HashMap<>();
 	}
 	
-	public CcpMapDecorator(Object obj) {
+	public static CcpJsonRepresentation getEmptyJson() {
+		return new CcpJsonRepresentation();
+	}
+	
+	public CcpJsonRepresentation(Object obj) {
 		this(CcpDependencyInjection.getDependency(CcpJsonHandler.class).toJson(obj));
 	}
 	
-	public CcpMapDecorator(InputStream is) {
+	public CcpJsonRepresentation(InputStream is) {
 
 		this.content = new HashMap<>();
 		String result = this.extractJson(is);
@@ -77,9 +82,9 @@ public class CcpMapDecorator {
 		return result;
 	}
 	
-	public CcpMapDecorator(List<CcpMapDecorator> list, String key, String value) {
-		CcpMapDecorator obj = new CcpMapDecorator();
-		for (CcpMapDecorator md : list) {
+	public CcpJsonRepresentation(List<CcpJsonRepresentation> list, String key, String value) {
+		CcpJsonRepresentation obj = CcpConstants.EMPTY_JSON;
+		for (CcpJsonRepresentation md : list) {
 			String _key = md.getAsString(key);
 			Object _value = md.get(value);
 			obj = obj.put(_key, _value);
@@ -96,11 +101,11 @@ public class CcpMapDecorator {
 		return asString;
 	}
 	
-	public CcpMapDecorator(Throwable e) {
+	public CcpJsonRepresentation(Throwable e) {
 		this(getErrorDetails(e));
 	}
 
-	public CcpMapDecorator(String json) {
+	public CcpJsonRepresentation(String json) {
 		this(getMap(json));
 	}
 
@@ -115,17 +120,17 @@ public class CcpMapDecorator {
 		}
 	}
 	
-	public CcpMapDecorator(CcpMapDecorator md) {
+	public CcpJsonRepresentation(CcpJsonRepresentation md) {
 		this(md.content);
 	}
 	
-	public CcpMapDecorator(Map<String, Object> content) {
+	public CcpJsonRepresentation(Map<String, Object> content) {
 		this.content = Collections.unmodifiableMap(content);
 	}
 
-	private static CcpMapDecorator getErrorDetails(Throwable e) {
+	private static CcpJsonRepresentation getErrorDetails(Throwable e) {
 
-		CcpMapDecorator jr = new CcpMapDecorator();
+		CcpJsonRepresentation jr = CcpConstants.EMPTY_JSON;
 
 		if (e == null) {
 			return jr;
@@ -143,7 +148,7 @@ public class CcpMapDecorator {
 			stackTrace.add(key);
 		}
 		
-		CcpMapDecorator causeDetails = getErrorDetails(cause);
+		CcpJsonRepresentation causeDetails = getErrorDetails(cause);
 
 		jr = jr.put("type", e.getClass().getName()).put("stackTrace", stackTrace.toString()).put("message", message).put("cause", causeDetails);
 		return jr;
@@ -229,7 +234,7 @@ public class CcpMapDecorator {
 		}
 	}
 	
-	public CcpMapDecorator putFilledTemplate(String fieldToSearch, String fieldToPut) {
+	public CcpJsonRepresentation putFilledTemplate(String fieldToSearch, String fieldToPut) {
 		
 		String asString = this.getAsString(fieldToSearch);
 		
@@ -237,7 +242,7 @@ public class CcpMapDecorator {
 		
 		String message = ccpTextDecorator.getMessage(this);
 		 
-		CcpMapDecorator put = this.put(fieldToPut, message);
+		CcpJsonRepresentation put = this.put(fieldToPut, message);
 		
 		return put;
 	}
@@ -299,7 +304,7 @@ public class CcpMapDecorator {
 		return asDoubleNumber == null ? 0d : asDoubleNumber;
 	}
 	
-	public CcpMapDecorator getSubMap(String...keys) {
+	public CcpJsonRepresentation getJsonPiece(String...keys) {
 		
 		Map<String, Object> subMap = new LinkedHashMap<>();
 		
@@ -308,7 +313,7 @@ public class CcpMapDecorator {
 			subMap.put(key, value);
 		}
 		
-		return new CcpMapDecorator(subMap);
+		return new CcpJsonRepresentation(subMap);
 	}
 
 
@@ -335,97 +340,97 @@ public class CcpMapDecorator {
 		return this.content.keySet();
 	}
 
-	public CcpMapDecorator put(String key, CcpMapDecorator map) {
-		CcpMapDecorator put = this.put(key, map.content);
+	public CcpJsonRepresentation put(String key, CcpJsonRepresentation map) {
+		CcpJsonRepresentation put = this.put(key, map.content);
 		return put;
 	}
 
-	public CcpMapDecorator putSubKey(String key, String subKey, CcpMapDecorator value) {
-		CcpMapDecorator internalMap = this.getInternalMap(key);
+	public CcpJsonRepresentation putSubKey(String key, String subKey, CcpJsonRepresentation value) {
+		CcpJsonRepresentation internalMap = this.getInnerJson(key);
 		internalMap = internalMap.put(subKey, value);
-		CcpMapDecorator put = this.put(key, internalMap);
+		CcpJsonRepresentation put = this.put(key, internalMap);
 		return put;
 	}
 
 	
-	public CcpMapDecorator putSubKey(String key, String subKey, Object value) {
-		CcpMapDecorator internalMap = this.getInternalMap(key);
+	public CcpJsonRepresentation putSubKey(String key, String subKey, Object value) {
+		CcpJsonRepresentation internalMap = this.getInnerJson(key);
 		internalMap = internalMap.put(subKey, value);
-		CcpMapDecorator put = this.put(key, internalMap);
+		CcpJsonRepresentation put = this.put(key, internalMap);
 		return put;
 	}
-	public CcpMapDecorator putSubKeyAsString(String key, String subKey, Object value) {
-		CcpMapDecorator internalMap = this.getInternalMap(key);
+	public CcpJsonRepresentation putSubKeyAsString(String key, String subKey, Object value) {
+		CcpJsonRepresentation internalMap = this.getInnerJson(key);
 		internalMap = internalMap.put(subKey, value);
-		CcpMapDecorator put = this.put(key, internalMap.asUgglyJson());
+		CcpJsonRepresentation put = this.put(key, internalMap.asUgglyJson());
 		return put;
 	}
 
-	public CcpMapDecorator put(String key, Collection<CcpMapDecorator> list) {
+	public CcpJsonRepresentation put(String key, Collection<CcpJsonRepresentation> list) {
 		List<Map<String, Object>> collect = list.stream().map(x -> x.content).collect(Collectors.toList());
-		CcpMapDecorator put = this.put(key, collect);
+		CcpJsonRepresentation put = this.put(key, collect);
 		return put;
 	}
 	
-	public CcpMapDecorator getTransformed(Function<CcpMapDecorator, CcpMapDecorator> transformer) {
-		CcpMapDecorator execute = transformer.apply(this);
+	public CcpJsonRepresentation getTransformed(Function<CcpJsonRepresentation, CcpJsonRepresentation> transformer) {
+		CcpJsonRepresentation execute = transformer.apply(this);
 		return execute;
 	}
 	
-	public CcpMapDecorator put(String key, Function<CcpMapDecorator, CcpMapDecorator> process) {
-		CcpMapDecorator put = this.put(key, (Object)process);
+	public CcpJsonRepresentation put(String key, Function<CcpJsonRepresentation, CcpJsonRepresentation> process) {
+		CcpJsonRepresentation put = this.put(key, (Object)process);
 		return put;
 	}
 	
-	public CcpMapDecorator put(String key, Object value) {
+	public CcpJsonRepresentation put(String key, Object value) {
 		
 		Map<String, Object> content = new LinkedHashMap<>();
 		content.putAll(this.content);
 		content.put(key, value);
-		return new CcpMapDecorator(content);
+		return new CcpJsonRepresentation(content);
 	}  
 
-	public CcpMapDecorator duplicateValueFromKey(String keyToCopy, String keyToPaste) {
+	public CcpJsonRepresentation duplicateValueFromKey(String keyToCopy, String keyToPaste) {
 		Object value = this.get(keyToCopy);
-		CcpMapDecorator newMap = this.put(keyToPaste, value);
+		CcpJsonRepresentation newMap = this.put(keyToPaste, value);
 		return newMap;
 	}
 	
 	
-	public CcpMapDecorator renameKey(String oldKey, String newKey) {
+	public CcpJsonRepresentation renameKey(String oldKey, String newKey) {
 		Map<String, Object> content = new HashMap<>();
 		content.putAll(this.content);
 		Object value = content.remove(oldKey);
-		CcpMapDecorator ccpMapDecorator = new CcpMapDecorator(content);
+		CcpJsonRepresentation ccpMapDecorator = new CcpJsonRepresentation(content);
 		if(value == null) {
 			return ccpMapDecorator;
 		}
 		
 		content.put(newKey, value);
-		CcpMapDecorator mapDecorator = ccpMapDecorator;
+		CcpJsonRepresentation mapDecorator = ccpMapDecorator;
 		return mapDecorator;
 		
 	}
 	
-	public CcpMapDecorator removeKey(String key) {
+	public CcpJsonRepresentation removeKey(String key) {
 		Map<String, Object> copy = new HashMap<>(this.getContent());
 		copy.remove(key);
-		CcpMapDecorator mapDecorator = new CcpMapDecorator(copy);
+		CcpJsonRepresentation mapDecorator = new CcpJsonRepresentation(copy);
 		return mapDecorator;
 	}
 	
-	public CcpMapDecorator removeKeys(String... keys) {
-		CcpMapDecorator modifiedCopy = this;
+	public CcpJsonRepresentation removeKeys(String... keys) {
+		CcpJsonRepresentation modifiedCopy = this;
 		for (String key : keys) {
 			modifiedCopy = modifiedCopy.removeKey(key);
 		}
 		return modifiedCopy;
 	}
 
-	public CcpMapDecorator cloneKey(String key, String newKey) {
+	public CcpJsonRepresentation cloneKey(String key, String newKey) {
 		Map<String, Object> copy = new HashMap<>(this.getContent());
 		Object value = copy.get(key);
-		CcpMapDecorator mapDecorator = new CcpMapDecorator(copy).put(newKey, value);
+		CcpJsonRepresentation mapDecorator = new CcpJsonRepresentation(copy).put(newKey, value);
 		return mapDecorator;
 	}
 
@@ -433,34 +438,34 @@ public class CcpMapDecorator {
 		return this.content;
 	}
 	
-	public CcpMapDecorator copy() {
-		return new CcpMapDecorator(this.getContent());
+	public CcpJsonRepresentation copy() {
+		return new CcpJsonRepresentation(this.getContent());
 	}
 
 	@SuppressWarnings("unchecked")
-	public CcpMapDecorator getInternalMap(String key) {
+	public CcpJsonRepresentation getInnerJson(String key) {
 		Object object = this.content.get(key);
 	
 		
-		if(object instanceof CcpMapDecorator) {
-			return (CcpMapDecorator) object;
+		if(object instanceof CcpJsonRepresentation) {
+			return (CcpJsonRepresentation) object;
 		}
 		
 		if(object instanceof String) {
-			return new CcpMapDecorator("" + object);
+			return new CcpJsonRepresentation("" + object);
 		}
 		
 
 		if((object instanceof Map) == false) {
-			return new CcpMapDecorator();
+			return CcpConstants.EMPTY_JSON;
 		}
 
-		CcpMapDecorator mapDecorator = new CcpMapDecorator((Map<String, Object>) object);
+		CcpJsonRepresentation mapDecorator = new CcpJsonRepresentation((Map<String, Object>) object);
 		return mapDecorator;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<CcpMapDecorator> getAsMapList(String name) {
+	public List<CcpJsonRepresentation> getJsonList(String name) {
 		
 		Object object = this.content.get(name);
 		 
@@ -474,7 +479,7 @@ public class CcpMapDecorator {
 		
 		Collection<Object> list = (Collection<Object>) object;
 		
-		List<CcpMapDecorator> collect = list.stream().map(obj -> new CcpMapDecorator((Map<String, Object>) obj))
+		List<CcpJsonRepresentation> collect = list.stream().map(obj -> new CcpJsonRepresentation((Map<String, Object>) obj))
 				.collect(Collectors.toList());
 		
 		return collect;
@@ -523,15 +528,15 @@ public class CcpMapDecorator {
 		return new ArrayList<>(list);
 	}
 	
-	public CcpMapDecorator putAll(Map<String, Object> map) {
+	public CcpJsonRepresentation putAll(Map<String, Object> map) {
 		Map<String, Object> content = new HashMap<>(this.getContent());
 		content.putAll(map);
-		CcpMapDecorator mapDecorator = new CcpMapDecorator(content);
+		CcpJsonRepresentation mapDecorator = new CcpJsonRepresentation(content);
 		return mapDecorator;
 	}
 
-	public CcpMapDecorator putAll(CcpMapDecorator md) {
-		CcpMapDecorator mapDecorator = this.putAll(md.content);
+	public CcpJsonRepresentation putAll(CcpJsonRepresentation md) {
+		CcpJsonRepresentation mapDecorator = this.putAll(md.content);
 		return mapDecorator;
 	}
 	
@@ -564,7 +569,7 @@ public class CcpMapDecorator {
 		return empty;
 	}
 	
-	public CcpMapDecorator addToList(String key, Object value) {
+	public CcpJsonRepresentation addToList(String key, Object value) {
 		List<Object> list = this.getAsObject(key);
 		
 		if(list == null) {
@@ -573,11 +578,11 @@ public class CcpMapDecorator {
 		
 		list = new ArrayList<>(list);
 		list.add(value);
-		CcpMapDecorator put = this.put(key, list);
+		CcpJsonRepresentation put = this.put(key, list);
 		return put;
 	}
 
-	public CcpMapDecorator addToList(String key, CcpMapDecorator value) {
+	public CcpJsonRepresentation addToList(String key, CcpJsonRepresentation value) {
 		List<Object> list = this.getAsObject(key);
 		
 		if(list == null) {
@@ -586,15 +591,15 @@ public class CcpMapDecorator {
 		
 		list = new ArrayList<>(list);
 		list.add(value.content);
-		CcpMapDecorator put = this.put(key, list);
+		CcpJsonRepresentation put = this.put(key, list);
 		return put;
 	}
 
-	public CcpMapDecorator addToItem(String key, String subKey, Object value) {
-		CcpMapDecorator itemAsMap = this.getInternalMap(key);
+	public CcpJsonRepresentation addToItem(String key, String subKey, Object value) {
+		CcpJsonRepresentation itemAsMap = this.getInnerJson(key);
 		itemAsMap = itemAsMap.put(subKey, value);
 		
-		CcpMapDecorator put = this.put(key, itemAsMap.content);
+		CcpJsonRepresentation put = this.put(key, itemAsMap.content);
 		return put;
 	}
 	
@@ -625,45 +630,45 @@ public class CcpMapDecorator {
 	}
 	
 	public static interface Transformer<T>{
-		T transform(CcpMapDecorator md);
+		T transform(CcpJsonRepresentation md);
 	}
 	
 
-	public CcpMapDecorator whenHasKey(String key, Function<CcpMapDecorator, CcpMapDecorator> process) {
+	public CcpJsonRepresentation whenHasKey(String key, Function<CcpJsonRepresentation, CcpJsonRepresentation> process) {
 		
 		boolean hasNot = this.containsAllKeys(key) == false;
 		
 		if(hasNot) {
-			CcpMapDecorator response = new CcpMapDecorator(this);
+			CcpJsonRepresentation response = new CcpJsonRepresentation(this);
 			return response;
 		}
 		
-		CcpMapDecorator execute = process.apply(this);
+		CcpJsonRepresentation execute = process.apply(this);
 		
 		return execute;
 	}
 
-	public CcpMapDecorator whenHasNotKey(String key, Function<CcpMapDecorator, CcpMapDecorator> process) {
+	public CcpJsonRepresentation whenHasNotKey(String key, Function<CcpJsonRepresentation, CcpJsonRepresentation> process) {
 		
 		boolean has = this.containsAllKeys(key);
 		
 		if(has) {
-			CcpMapDecorator response = new CcpMapDecorator(this);
+			CcpJsonRepresentation response = new CcpJsonRepresentation(this);
 			return response;
 		}
 		
-		CcpMapDecorator execute = process.apply(this);
+		CcpJsonRepresentation execute = process.apply(this);
 		
 		return execute;
 	}
 
-	public CcpMapDecorator putIfNotContains(String key, Object value) {
+	public CcpJsonRepresentation putIfNotContains(String key, Object value) {
 
 		if(this.containsAllKeys(key)) {
 			return this;
 		}
 		
-		CcpMapDecorator put = this.put(key, value);
+		CcpJsonRepresentation put = this.put(key, value);
 		return put;
 	}
 
