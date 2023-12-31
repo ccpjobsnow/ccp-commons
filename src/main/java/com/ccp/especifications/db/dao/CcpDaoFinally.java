@@ -34,7 +34,7 @@ public class CcpDaoFinally {
 		List<CcpMapDecorator> statements = this.statements.getAsMapList("statements");
 		CcpMapDecorator[] array = statements.toArray(new CcpMapDecorator[statements.size()]);
 		CcpMapDecorator findById = this.findById(this.id, array);
-		return findById.removeKey("_entities");
+		return findById.removeKeys("_entities", "pastSteps");
 	}
 
 	
@@ -118,7 +118,7 @@ public class CcpDaoFinally {
 			values = action.apply(context);
 		}
 		
-		return values;
+		return values.removeKeys("_entities", "pastSteps");
 	}
 
 	
