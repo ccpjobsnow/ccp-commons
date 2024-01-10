@@ -8,7 +8,7 @@ public interface CcpDbSetupCreator {
 	
 	void dropAllTables();
 
-	default void setup(String prefix, String createFolder, String insertFolder) {
+	default void recreateAllTables(String prefix, String createFolder, String insertFolder) {
 		this.dropAllTables();
 		this.createTables(createFolder);
 		this.insertValues(prefix, insertFolder);
@@ -16,7 +16,7 @@ public interface CcpDbSetupCreator {
 	
 	void deleteAllData();
 	
-	default void resetAllData(String prefix, String folder) {
+	default void reinsertAllTables(String prefix, String folder) {
 		this.deleteAllData();
 		this.insertValues(prefix, folder);
 	}
