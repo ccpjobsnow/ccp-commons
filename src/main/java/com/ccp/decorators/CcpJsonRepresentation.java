@@ -674,7 +674,9 @@ public class CcpJsonRepresentation {
 
 	public CcpJsonRepresentation putIfNotContains(String key, Object value) {
 
-		if(this.containsAllKeys(key)) {
+		boolean containsAllKeys = this.containsAllKeys(key);
+		
+		if(containsAllKeys) {
 			return this;
 		}
 		
@@ -682,5 +684,13 @@ public class CcpJsonRepresentation {
 		return put;
 	}
 
-
+	public CcpValueDecorator getAsMetadata(String key) {
+		CcpValueDecorator ccpValueDecorator = new CcpValueDecorator(this, key);
+		return ccpValueDecorator;
+	}
+	
+	public CccpCollectionDecorator getAsArrayMetadata(String key) {
+		CccpCollectionDecorator cccpCollectionDecorator = new CccpCollectionDecorator(this, key);
+		return cccpCollectionDecorator;
+	}
 }

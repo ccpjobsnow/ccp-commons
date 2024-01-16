@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class CccpCollectionDecorator implements Iterable<Object>{
 
@@ -26,33 +26,33 @@ public class CccpCollectionDecorator implements Iterable<Object>{
 
 	public boolean isLongNumberList() {
 		
-		boolean validList = this.isValidList(x -> Long.valueOf(x));
+		boolean validList = this.isValidList(x -> x.isLongNumber());
 		return validList;
 	}
 
 	public boolean isDoubleNumberList() {
 		
-		boolean validList = this.isValidList(x -> Double.valueOf(x));
+		boolean validList = this.isValidList(x -> x.isDoubleNumber());
 		return validList;
 	}
 
 	public boolean isBooleanList() {
 		
-		boolean validList = this.isValidList(x -> Boolean.valueOf(x));
+		boolean validList = this.isValidList(x -> x.isBoolean());
 		return validList;
 	}
 	public boolean isJsonList() {
 		
-		boolean validList = this.isValidList(x -> CcpJsonRepresentation.getMap(x));
+		boolean validList = this.isValidList(x -> x.isJson());
 		return validList;
 	}
 
-	private boolean isValidList(Consumer<String> consumer) {
+	private boolean isValidList(Predicate<CcpValueDecorator> predicate) {
 		
 		for (Object object : this.content) {
-			try {
-				consumer.accept("" + object);
-			} catch (Exception e) {
+			CcpValueDecorator t = new CcpValueDecorator("" + object);
+			boolean failed = predicate.test(t) == false;
+			if(failed) {
 				return false;
 			}
 		}
@@ -66,6 +66,8 @@ public class CccpCollectionDecorator implements Iterable<Object>{
 	}
 	
 	
-	
+	public boolean isEmpty() {
+		return this.content.isEmpty();
+	}
 	
 }

@@ -1,6 +1,10 @@
 package com.ccp.decorators;
 
+import java.util.Collection;
 import java.util.function.Consumer;
+
+import com.ccp.dependency.injection.CcpDependencyInjection;
+import com.ccp.especifications.json.CcpJsonHandler;
 
 public class CcpValueDecorator {
 
@@ -31,7 +35,7 @@ public class CcpValueDecorator {
 		return valid;
 	}
 	
-	public boolean isValidInnerJson() {
+	public boolean isJson() {
 		boolean valid = this.isValid(x -> CcpJsonRepresentation.getMap(x));
 		return valid;
 	}
@@ -43,6 +47,15 @@ public class CcpValueDecorator {
 		} catch (Exception e) {
 			return false;
 		}
+		
+	}
+	
+	@SuppressWarnings("unused")
+	public boolean isList() {
+		boolean valid = this.isValid(x ->  {
+			Collection<?> fromJson = CcpDependencyInjection.getDependency(CcpJsonHandler.class).fromJson(x);
+		});
+		return valid;
 		
 	}
 
