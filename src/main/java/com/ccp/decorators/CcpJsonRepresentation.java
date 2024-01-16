@@ -545,13 +545,23 @@ public class CcpJsonRepresentation {
 	}
 
 	public boolean containsAllKeys(String... keys) {
+		boolean containsKeys = this.containsKeys(false, keys);
+		return containsKeys;
+	}
+
+	public boolean containsAnyKeys(String... keys) {
+		boolean containsKeys = this.containsKeys(true, keys);
+		return containsKeys;
+	}
+
+	private boolean containsKeys(boolean assertion,String... keys) {
 		for (String key : keys) {
 			boolean containsKey = this.containsKey(key);
-			if(containsKey == false) {
-				return false;
+			if(containsKey == assertion) {
+				return assertion;
 			}
 		}
-		return true;
+		return assertion == false;
 	}
 	
 	public Object get(String key) {
@@ -672,6 +682,5 @@ public class CcpJsonRepresentation {
 		return put;
 	}
 
-	
 
 }
