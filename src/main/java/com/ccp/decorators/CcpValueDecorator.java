@@ -21,7 +21,7 @@ public class CcpValueDecorator {
 
 
 	public boolean isLongNumber() {
-		boolean valid = this.isValid(x -> Long.valueOf(x));
+		boolean valid = this.isValid(x -> Double.valueOf(x));
 		return valid;
 	}
 
@@ -31,7 +31,15 @@ public class CcpValueDecorator {
 	}
 
 	public boolean isBoolean() {
-		boolean valid = this.isValid(x -> Boolean.valueOf(x));
+		boolean valid = this.isValid(x -> {
+			if ("true".equalsIgnoreCase(x)) {
+				return;
+			}
+			if ("false".equalsIgnoreCase(x)) {
+				return;
+			}
+			throw new RuntimeException();
+		});
 		return valid;
 	}
 	
