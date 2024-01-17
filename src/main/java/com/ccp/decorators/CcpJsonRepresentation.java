@@ -689,8 +689,8 @@ public class CcpJsonRepresentation {
 		return ccpValueDecorator;
 	}
 	
-	public CccpCollectionDecorator getAsArrayMetadata(String key) {
-		CccpCollectionDecorator cccpCollectionDecorator = new CccpCollectionDecorator(this, key);
+	public CcpCollectionDecorator getAsArrayMetadata(String key) {
+		CcpCollectionDecorator cccpCollectionDecorator = new CcpCollectionDecorator(this, key);
 		return cccpCollectionDecorator;
 	}
 }

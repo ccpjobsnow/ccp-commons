@@ -6,20 +6,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class CccpCollectionDecorator implements Iterable<Object>{
+public class CcpCollectionDecorator implements Iterable<Object>{
 
 	private final Collection<Object> content;
 	
-	public CccpCollectionDecorator(Collection<Object> content) {
+	public CcpCollectionDecorator(Collection<Object> content) {
 		this.content = content;
 	}
 	
-	public CccpCollectionDecorator(Object...array) {
+	public CcpCollectionDecorator(Object...array) {
 		this.content = Arrays.asList(array);
 	}
 	
 	
-	public CccpCollectionDecorator(CcpJsonRepresentation json, String key) {
+	public CcpCollectionDecorator(CcpJsonRepresentation json, String key) {
 		List<Object> asObjectList = json.getAsObjectList(key);
 		this.content = asObjectList;
 	}
@@ -70,4 +70,7 @@ public class CccpCollectionDecorator implements Iterable<Object>{
 		return this.content.isEmpty();
 	}
 	
+	public CcpNumberDecorator size() {
+		return new CcpNumberDecorator("" + this.content.size());
+	}
 }
