@@ -29,5 +29,14 @@ public class CcpNumberDecorator {
 	public boolean isEqualsTo(int x) {
 		return this.content == x ;
 	}
+	
+	public boolean belongsToDomain(double...domain) {
+		for (double x : domain) {
+			if(x == this.content) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 }

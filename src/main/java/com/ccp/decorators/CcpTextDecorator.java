@@ -205,7 +205,6 @@ public class CcpTextDecorator {
 				return true;
 			}
 		}
-		
 		return false;
 	}
 }
