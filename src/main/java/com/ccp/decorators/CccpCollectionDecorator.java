@@ -43,14 +43,14 @@ public class CccpCollectionDecorator implements Iterable<Object>{
 	}
 	public boolean isJsonList() {
 		
-		boolean validList = this.isValidList(x -> x.isJson());
+		boolean validList = this.isValidList(x -> x.text().isValidSingleJson());
 		return validList;
 	}
 
-	private boolean isValidList(Predicate<CcpValueDecorator> predicate) {
+	private boolean isValidList(Predicate<CcpStringDecorator> predicate) {
 		
 		for (Object object : this.content) {
-			CcpValueDecorator t = new CcpValueDecorator("" + object);
+			CcpStringDecorator t = new CcpStringDecorator("" + object);
 			boolean failed = predicate.test(t) == false;
 			if(failed) {
 				return false;

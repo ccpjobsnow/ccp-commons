@@ -127,23 +127,6 @@ public class CcpTextDecorator {
 		return removed;
 	}
 
-	public boolean isLongNumber() {
-		try {
-			Long.valueOf(this.content);
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
-	}
-
-	public boolean isDoubleNumber() {
-		try {
-			Double.valueOf(this.content);
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
-	}
 	
 	public boolean isValidSingleJson() {
 		try {
@@ -211,5 +194,18 @@ public class CcpTextDecorator {
 		String lowerCase = substring.toLowerCase();
 		return upperCase + lowerCase;
 	}
-
+	
+	public CcpNumberDecorator lenght() {
+		return new CcpNumberDecorator("" + content.length());
+	}
+	
+	public boolean belongsToDomain(String...domain) {
+		for (String string : domain) {
+			if(string.equals(this.content)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
 }
