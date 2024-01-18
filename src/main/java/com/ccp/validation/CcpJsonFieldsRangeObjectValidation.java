@@ -17,7 +17,7 @@ public class CcpJsonFieldsRangeObjectValidation {
 		return new CcpJsonFieldsRangeObjectNumberValidation(this.content, this.fields);
 	}
 	
-	public CcpJsonFieldsRangeObjectStringValidation asStringWithLenght() {
+	public CcpJsonFieldsRangeObjectStringValidation asStringWithLenghtThat() {
 		return new CcpJsonFieldsRangeObjectStringValidation(this.content, this.fields);
 	}
 	
