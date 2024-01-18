@@ -24,10 +24,10 @@ import java.util.stream.Collectors;
 import com.ccp.constantes.CcpConstants;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.json.CcpJsonHandler;
+import com.ccp.validation.CcpJsonValidation;
 
 public class CcpJsonRepresentation {
-	
-	
+
 	public final Map<String, Object> content;
 	
 	protected CcpJsonRepresentation() {
@@ -692,5 +692,18 @@ public class CcpJsonRepresentation {
 	public CcpCollectionDecorator getAsArrayMetadata(String key) {
 		CcpCollectionDecorator cccpCollectionDecorator = new CcpCollectionDecorator(this, key);
 		return cccpCollectionDecorator;
+	}
+	
+	public CcpJsonValidation validateTheFollowingFields(String...fields) {
+		return new CcpJsonValidation(this, fields);
+	}
+	
+	public static interface ValueExtractor<T>{
+		T getExtractedValue(String key, CcpJsonRepresentation json);
+	}
+	
+	public <T> T get(String key, ValueExtractor<T> valueExtractor) {
+		T extractedValue = valueExtractor.getExtractedValue(key, this);
+		return extractedValue;
 	}
 }

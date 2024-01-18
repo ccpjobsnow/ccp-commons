@@ -64,7 +64,7 @@ public class CcpStringDecorator {
 		return ccpPropertiesDecorator;
 	}
 	
-	public boolean isValidJSon() {
+	public boolean isJSon() {
 		CcpJsonHandler json = CcpDependencyInjection.getDependency(CcpJsonHandler.class);
 		boolean validJson = json.isValidJson(this.content);
 		return validJson;

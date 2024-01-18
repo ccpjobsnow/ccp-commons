@@ -1,42 +1,50 @@
 package com.ccp.decorators;
 
+import java.util.Collection;
+
 public class CcpNumberDecorator {
 	public final double content;
 
-	protected CcpNumberDecorator(String content) {
+	public CcpNumberDecorator(String content) {
 		this.content = Double.valueOf(content);
 	}
 
 	public String toString() {
 		return "" + this.content;
 	}
-	public boolean isGreaterThan(int x) {
+	public boolean greaterThan(int x) {
 		return this.content > x ;
 	}
 
-	public boolean isGreaterOrEqualsThan(int x) {
+	public boolean greaterOrEqualsTo(int x) {
 		return this.content >= x ;
 	}
 
-	public boolean isLessThan(int x) {
+	public boolean lessThan(int x) {
 		return this.content < x ;
 	}
 
-	public boolean isLessOrEqualsThan(int x) {
+	public boolean lessOrEqualsTo(int x) {
 		return this.content <= x ;
 	}
 
-	public boolean isEqualsTo(int x) {
+	public boolean equalsTo(int x) {
 		return this.content == x ;
 	}
 	
-	public boolean belongsToDomain(double...domain) {
-		for (double x : domain) {
-			if(x == this.content) {
+	public boolean belongsToRestrictedValues(Double...restrictedValues) {
+		for (double restricted : restrictedValues) {
+			if(restricted == this.content) {
 				return true;
 			}
 		}
 		return false;
 	}
 
+	public boolean belongsToRestrictedValues(Collection<Double> restrictedValues) {
+		int size = restrictedValues.size();
+		Double[] a = new Double[size];
+		Double[] array = restrictedValues.toArray(a);
+		return this.belongsToRestrictedValues(array);
+	}	
 }

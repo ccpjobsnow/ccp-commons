@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.Base64.Encoder;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -199,12 +200,19 @@ public class CcpTextDecorator {
 		return new CcpNumberDecorator("" + content.length());
 	}
 	
-	public boolean belongsToDomain(String...domain) {
-		for (String string : domain) {
-			if(string.equals(this.content)) {
+	public boolean belongsToCustomValues(String...customValues) {
+		for (String customValue : customValues) {
+			if(customValue.equals(this.content)) {
 				return true;
 			}
 		}
 		return false;
+	}
+	
+	public boolean belongsToCustomValues(Collection<String> customValues) {
+		String[] a = new String[customValues.size()];
+		String[] array = customValues.toArray(a);
+		boolean belongsToDomain = this.belongsToCustomValues(array);
+		return belongsToDomain;
 	}
 }
