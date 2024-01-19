@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 import com.ccp.constantes.CcpConstants;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.json.CcpJsonHandler;
-import com.ccp.validation.CcpJsonValidation;
+import com.ccp.validation.ItIsTruthThatTheFollowingFields;
 
 public class CcpJsonRepresentation {
 
@@ -694,8 +694,8 @@ public class CcpJsonRepresentation {
 		return cccpCollectionDecorator;
 	}
 	
-	public CcpJsonValidation validateTheFollowingFields(String...fields) {
-		return new CcpJsonValidation(this, fields);
+	public ItIsTruthThatTheFollowingFields itIsTruthThatTheFollowingFields(String...fields) {
+		return new ItIsTruthThatTheFollowingFields(this, fields);
 	}
 	
 	public static interface ValueExtractor<T>{
