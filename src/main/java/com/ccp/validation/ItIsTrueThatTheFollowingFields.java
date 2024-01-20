@@ -1,8 +1,10 @@
 package com.ccp.validation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.decorators.CcpNumberDecorator;
@@ -14,19 +16,20 @@ public class ItIsTrueThatTheFollowingFields {
 
 	public ItIsTrueThatTheFollowingFields(CcpJsonRepresentation content, String[] fields) {
 		this.content = content;
-		this.fields = fields;
+		List<String> collect = Arrays.asList(fields).stream().filter(x -> content.containsKey(x)).collect(Collectors.toList());
+		this.fields = collect.toArray(new String[collect.size()]);
 	}
 
-	public AreOfTheType areOfTheType() {
+	public AreOfTheType areAllOfTheType() {
 		Function<String[], String[]> arrayProducerOfItems = ItIsTrueThatTheFollowingFields.getArrayProducerOfItems(this.content);
 		return new AreOfTheType(arrayProducerOfItems, this.fields);
 	}
 
-	public IfTheyAreArrayValuesSoEachOne ifTheyAreArrayValuesThenEachOne() {
+	public IfTheyAreArrayValuesSoEachOne ifTheyAreAllArrayValuesThenEachOne() {
 		return new IfTheyAreArrayValuesSoEachOne(this.content, this.fields);
 	}
 
-	public IfTheyAre ifTheyAre() {
+	public IfTheyAre ifTheyAreAll() {
 		return new IfTheyAre(this.content, this.fields);
 	}
 	
