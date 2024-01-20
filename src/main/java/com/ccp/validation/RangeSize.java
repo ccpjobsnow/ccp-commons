@@ -1,39 +1,55 @@
 package com.ccp.validation;
 
-import com.ccp.decorators.CcpJsonRepresentation;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
+import com.ccp.decorators.CcpNumberDecorator;
 
 public class RangeSize {
-	public final CcpJsonRepresentation content;
+	public final Function<String[], String[]> arrayProducer;
 	public final String[] fields;
-	
-	public RangeSize(CcpJsonRepresentation content, String[] fields) {
-		this.content = content;
+	public RangeSize(Function<String[], String[]> arrayProducer, String[] fields) {
+		this.arrayProducer = arrayProducer;
 		this.fields = fields;
 	}
 
-	public boolean equalsTo(int i) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean equalsTo(int y) {
+		boolean true1 = this.isTrue(x -> x.equalsTo(y));
+		return true1;
 	}
 
-	public boolean equalsOrGreaterThan(int i) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean equalsOrGreaterThan(int y) {
+		boolean true1 = this.isTrue(x -> x.equalsOrGreaterThan(y));
+		return true1;
 	}
 
-	public boolean equalsOrLessThan(int i) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean equalsOrLessThan(int y) {
+		boolean true1 = this.isTrue(x -> x.equalsOrLessThan(y));
+		return true1;
 	}
 
-	public boolean greaterThan(int i) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean greaterThan(int y) {
+		boolean true1 = this.isTrue(x -> x.greaterThan(y));
+		return true1;
 	}
 
-	public boolean lessThan(int i) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean lessThan(int y) {
+		boolean true1 = this.isTrue(x -> x.lessThan(y));
+		return true1;
 	}
 
+	
+	private boolean isTrue(Predicate<CcpNumberDecorator> predicate) {
+		String[] apply = this.arrayProducer.apply(this.fields);
+		for (String string : apply) {
+			CcpNumberDecorator cnd = new CcpNumberDecorator(string);
+			boolean hasFailed = predicate.test(cnd) == false;
+			if(hasFailed) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
 }

@@ -2,6 +2,7 @@ package com.ccp.decorators;
 
 import java.util.Collection;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.json.CcpJsonHandler;
@@ -116,6 +117,30 @@ public class CcpStringDecorator {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+	
+	public boolean isContainedAtTheList(Function<Object, Object> transformer ,Object... list) {
+		for (Object item : list) {
+			boolean areNotEquals = areEquals(transformer, this.content, item) == false;
+			if(areNotEquals) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public static boolean areEquals(Function<Object, Object> transformer, Object value, Object... list) {
+		for (Object item : list) {
+			Object v1 = transformer.apply(value);
+			Object v2 = transformer.apply(item);
+			
+			
+			boolean areNotEquals = v1.equals(v2) == false;
+			if (areNotEquals) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 }

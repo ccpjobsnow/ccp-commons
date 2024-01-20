@@ -16,7 +16,7 @@ public class CcpNumberDecorator {
 		return this.content > x ;
 	}
 
-	public boolean greaterOrEqualsTo(int x) {
+	public boolean equalsOrGreaterThan(int x) {
 		return this.content >= x ;
 	}
 
@@ -24,7 +24,7 @@ public class CcpNumberDecorator {
 		return this.content < x ;
 	}
 
-	public boolean lessOrEqualsTo(int x) {
+	public boolean equalsOrLessThan(int x) {
 		return this.content <= x ;
 	}
 

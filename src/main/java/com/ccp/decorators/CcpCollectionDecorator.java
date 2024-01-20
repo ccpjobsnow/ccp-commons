@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class CcpCollectionDecorator implements Iterable<Object>{
@@ -75,11 +76,21 @@ public class CcpCollectionDecorator implements Iterable<Object>{
 		return new CcpNumberDecorator("" + this.content.size());
 	}
 	
-	public boolean hasNotDuplicatedItems() {
+	public boolean hasNonDuplicatedItems() {
 		HashSet<Object> hashSet = new HashSet<Object>(this.content);
 		int s1 = this.content.size();
 		int s2 = hashSet.size();
 		return s1 == s2;
 	}
 	
+	public boolean isContainedAtTheList(Function<Object, Object> transformer, Object... list) {
+		for (Object value : this.content) {
+			boolean areNotEquals = CcpStringDecorator.areEquals(transformer, value, list);
+			if(areNotEquals) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 }
