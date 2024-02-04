@@ -50,7 +50,7 @@ abstract class CcpDbQueryComponent {
 		 return (T)instanceCopy;
 	}
 	 
-	 @Override
+	 
 	public final String toString() {
 		 Object value = this.getValue();
 

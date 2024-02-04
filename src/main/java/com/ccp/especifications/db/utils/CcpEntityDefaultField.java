@@ -13,12 +13,12 @@ public class CcpEntityDefaultField implements CcpEntityField{
 		this.name = name;
 	}
 
-	@Override
+	
 	public String name() {
 		return this.name;
 	}
 
-	@Override
+	
 	public boolean isPrimaryKey() {
 		return this.primaryKey;
 	}

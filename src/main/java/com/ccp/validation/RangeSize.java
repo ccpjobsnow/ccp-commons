@@ -13,27 +13,27 @@ public class RangeSize {
 		this.fields = fields;
 	}
 
-	public boolean equalsTo(int y) {
+	public boolean equalsTo(Double y) {
 		boolean true1 = this.isTrue(x -> x.equalsTo(y));
 		return true1;
 	}
 
-	public boolean equalsOrGreaterThan(int y) {
+	public boolean equalsOrGreaterThan(Double y) {
 		boolean true1 = this.isTrue(x -> x.equalsOrGreaterThan(y));
 		return true1;
 	}
 
-	public boolean equalsOrLessThan(int y) {
+	public boolean equalsOrLessThan(Double y) {
 		boolean true1 = this.isTrue(x -> x.equalsOrLessThan(y));
 		return true1;
 	}
 
-	public boolean greaterThan(int y) {
+	public boolean greaterThan(Double y) {
 		boolean true1 = this.isTrue(x -> x.greaterThan(y));
 		return true1;
 	}
 
-	public boolean lessThan(int y) {
+	public boolean lessThan(Double y) {
 		boolean true1 = this.isTrue(x -> x.lessThan(y));
 		return true1;
 	}

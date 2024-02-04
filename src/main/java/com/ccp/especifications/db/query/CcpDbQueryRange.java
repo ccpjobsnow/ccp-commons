@@ -7,7 +7,7 @@ public class CcpDbQueryRange extends CcpDbQueryComponent {
 	}
    
 	@SuppressWarnings("unchecked")
-	@Override
+	
 	protected <T extends CcpDbQueryComponent> T getInstanceCopy() {
 		return (T)new CcpDbQueryRange(this.parent);
 	}

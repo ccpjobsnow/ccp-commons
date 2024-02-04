@@ -12,7 +12,7 @@ public final class CcpDbQuerySimplifiedQuery  extends CcpDbQueryBooleanOperator 
 		super(parent, "query");
 	}
 
-	@Override
+	
 	@SuppressWarnings("unchecked")
 	public CcpDbQuerySimplifiedQuery prefix(CcpEntityField field, Object value) {
 		return super.prefix(field, value);
@@ -53,19 +53,19 @@ public final class CcpDbQuerySimplifiedQuery  extends CcpDbQueryBooleanOperator 
 		 
 		 return instanceCopy;
 	 }
-		@Override
+		
 		@SuppressWarnings("unchecked")
 		public CcpDbQuerySimplifiedQuery matchPhrase(CcpEntityField field, Object value) {
 			return super.matchPhrase(field, value);
 		}
 
-		@Override
+		
 		@SuppressWarnings("unchecked")
 		public CcpDbQuerySimplifiedQuery term(CcpEntityField field, Object value) {
 			return super.term(field, value);
 		}
 		
-		@Override
+		
 		@SuppressWarnings("unchecked")
 		public CcpDbQuerySimplifiedQuery match(CcpEntityField field, Object value) {
 			return super.match(field, value);
@@ -85,7 +85,7 @@ public final class CcpDbQuerySimplifiedQuery  extends CcpDbQueryBooleanOperator 
 			return clone;
 		}
 		
-		@Override
+		
 		public boolean hasChildreen() {
 			return this.values.content.isEmpty() == false;
 		}

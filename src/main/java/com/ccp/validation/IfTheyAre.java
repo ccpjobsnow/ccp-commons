@@ -1,7 +1,9 @@
 package com.ccp.validation;
 
+import java.util.Collection;
 import java.util.function.Function;
 
+import com.ccp.decorators.CcpCollectionDecorator;
 import com.ccp.decorators.CcpJsonRepresentation;
 
 public class IfTheyAre {
@@ -21,6 +23,14 @@ public class IfTheyAre {
 		}
 		return true;
 	}
+	
+	public boolean textsThenEachOneIsContainedAtTheList(Collection<Object> args) {
+		CcpCollectionDecorator ccpCollectionDecorator = new CcpCollectionDecorator(args);
+		String[] array = ccpCollectionDecorator.toArray();
+		boolean result = this.textsThenEachOneIsContainedAtTheList(array);
+		return result;
+	}	
+
 	public RangeSize textsThenEachOneHasTheSizeThatIs() {
 		Function<String[], String[]> arrayProducer = fields -> {
 			String[] result = new String[fields.length];
@@ -37,7 +47,8 @@ public class IfTheyAre {
 		Function<String[], String[]> arrayProducerOfItems = ItIsTrueThatTheFollowingFields.getArrayProducerOfItems(this.content);
 		return new RangeSize(arrayProducerOfItems, this.fields);
 	}
-	public boolean numbersThenEachOneIsContainedAtTheList(double... args) {
+
+	public boolean numbersThenEachOneIsContainedAtTheList(Double... args) {
 		for (String field : this.fields) {
 			Double value = this.content.getAsDoubleNumber(field);
 			
@@ -53,6 +64,13 @@ public class IfTheyAre {
 			}
 		}
 		return true;
+	}
+
+	public boolean numbersThenEachOneIsContainedAtTheList(Collection<Object> args) {
+		CcpCollectionDecorator ccpCollectionDecorator = new CcpCollectionDecorator(args);
+		Double[] array = ccpCollectionDecorator.toArray();
+		boolean result = this.numbersThenEachOneIsContainedAtTheList(array);
+		return result;
 	}
 
 }

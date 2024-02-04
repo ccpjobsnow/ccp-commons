@@ -26,6 +26,13 @@ public class CcpCollectionDecorator implements Iterable<Object>{
 		this.content = asObjectList;
 	}
 
+
+	@SuppressWarnings("unchecked")
+	public <T> T[] toArray() {
+		return (T[])this.content.toArray();
+	}
+	
+	
 	public boolean isLongNumberList() {
 		
 		boolean validList = this.isValidList(x -> x.isLongNumber());
@@ -62,7 +69,7 @@ public class CcpCollectionDecorator implements Iterable<Object>{
 	}
 
 	
-	@Override
+	
 	public Iterator<Object> iterator() {
 		return this.content.iterator();
 	}

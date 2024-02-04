@@ -91,7 +91,7 @@ abstract class CcpDbQueryBooleanOperator extends CcpDbQueryComponent{
 		return (T)clone;
 	}
 
-	@Override
+	
 	Object getValue() {
 		return new ArrayList<>(this.items);
 	}
@@ -125,7 +125,7 @@ abstract class CcpDbQueryBooleanOperator extends CcpDbQueryComponent{
 	}
 
 	
-	@Override
+	
 	public boolean hasChildreen() {
 		return this.items.isEmpty() == false;
 	}

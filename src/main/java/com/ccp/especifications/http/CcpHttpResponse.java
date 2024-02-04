@@ -65,7 +65,7 @@ public class CcpHttpResponse {
 		return encodeToString;
 	}
 	
-	@Override
+	
 	public String toString() {
 		return CcpConstants.EMPTY_JSON
 				.put("httpStatus", this.httpStatus)

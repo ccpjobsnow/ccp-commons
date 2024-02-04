@@ -107,7 +107,7 @@ public class CcpFolderDecorator {
 		}
 	}
 
-	@Override
+	
 	public String toString() {
 		return new File(this.content).getName();
 	}

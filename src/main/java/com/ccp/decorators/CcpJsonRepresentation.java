@@ -327,7 +327,7 @@ public class CcpJsonRepresentation {
 		return json.asPrettyJson(this.content);
 	}
 	
-	@Override
+	
 	public String toString() {
 		CcpJsonHandler json = CcpDependencyInjection.getDependency(CcpJsonHandler.class);
 
@@ -577,6 +577,15 @@ public class CcpJsonRepresentation {
 	public boolean isEmpty() {
 		boolean empty = this.content.isEmpty();
 		return empty;
+	}
+	
+
+	public CcpJsonRepresentation addToList(String key, Object... values) {
+		CcpJsonRepresentation result = this;
+		for (Object value : values) {
+			result = result.addToList(key, value);
+		}
+		return result;
 	}
 	
 	public CcpJsonRepresentation addToList(String key, Object value) {

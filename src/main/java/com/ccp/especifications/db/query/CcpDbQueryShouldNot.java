@@ -7,7 +7,7 @@ public final class CcpDbQueryShouldNot  extends CcpDbQueryBooleanOperator {
 	CcpDbQueryShouldNot(CcpDbQueryComponent parent) {
 		super(parent, "should_not");
 	}
-	@Override
+	
 	@SuppressWarnings("unchecked")
 	public CcpDbQueryShouldNot prefix(CcpEntityField field, Object value) {
 		return super.prefix(field, value);
@@ -23,13 +23,13 @@ public final class CcpDbQueryShouldNot  extends CcpDbQueryBooleanOperator {
 		return (T)new CcpDbQueryShouldNot(this.parent);
 	}
 	
-	@Override
+	
 	@SuppressWarnings("unchecked")
 	public CcpDbQueryShouldNot matchPhrase(CcpEntityField field, Object value) {
 		return super.matchPhrase(field, value);
 	}
 
-	@Override
+	
 	@SuppressWarnings("unchecked")
 	public CcpDbQueryShouldNot term(CcpEntityField field, Object value) {
 		return super.term(field, value);

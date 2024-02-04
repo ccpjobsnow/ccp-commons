@@ -12,20 +12,20 @@ public final class CcpDbQueryMustNot extends CcpDbQueryBooleanOperator{
 		return this.parent.addChild(this);
 	}
 	
-	@Override
+	
 	@SuppressWarnings("unchecked")
 	public CcpDbQueryMustNot prefix(CcpEntityField field, Object value) {
 		return super.prefix(field, value);
 	}
 
 	
-	@Override
+	
 	@SuppressWarnings("unchecked")
 	public CcpDbQueryMustNot matchPhrase(CcpEntityField field, Object value) {
 		return super.matchPhrase(field, value);
 	}
 
-	@Override
+	
 	@SuppressWarnings("unchecked")
 	public CcpDbQueryMustNot term(CcpEntityField field, Object value) {
 		return super.term(field, value);

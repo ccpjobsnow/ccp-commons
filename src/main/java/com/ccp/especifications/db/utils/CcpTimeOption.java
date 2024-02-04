@@ -5,7 +5,7 @@ import java.util.Date;
 
 public enum CcpTimeOption{
 	none{
-		@Override
+		
 		public String getFormattedCurrentDate(Long time) {
 			return "";
 		}

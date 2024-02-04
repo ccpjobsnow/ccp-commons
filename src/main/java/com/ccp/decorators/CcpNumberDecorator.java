@@ -12,23 +12,23 @@ public class CcpNumberDecorator {
 	public String toString() {
 		return "" + this.content;
 	}
-	public boolean greaterThan(int x) {
+	public boolean greaterThan(Double x) {
 		return this.content > x ;
 	}
 
-	public boolean equalsOrGreaterThan(int x) {
+	public boolean equalsOrGreaterThan(Double x) {
 		return this.content >= x ;
 	}
 
-	public boolean lessThan(int x) {
+	public boolean lessThan(Double x) {
 		return this.content < x ;
 	}
 
-	public boolean equalsOrLessThan(int x) {
+	public boolean equalsOrLessThan(Double x) {
 		return this.content <= x ;
 	}
 
-	public boolean equalsTo(int x) {
+	public boolean equalsTo(Double x) {
 		return this.content == x ;
 	}
 	

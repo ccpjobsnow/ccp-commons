@@ -1,6 +1,7 @@
 package com.ccp.validation;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
@@ -52,7 +53,16 @@ public class IfTheyAreArrayValuesSoEachOne {
 		}
 		return true;
 	}
-	public boolean isNumberAndItIsContainedAtTheList(double...args) {
+	
+	public boolean isTextAndItIsContainedAtTheList(Collection<Object> args) {
+		CcpCollectionDecorator ccpCollectionDecorator = new CcpCollectionDecorator(args);
+		String[] array = ccpCollectionDecorator.toArray();
+		boolean result = this.isTextAndItIsContainedAtTheList(array);
+		return result;
+	}
+	
+	
+	public boolean isNumberAndItIsContainedAtTheList(Double...args) {
 		Double[] doubles = new Double[args.length];
 		int k = 0;
 		for (double d : args) {
@@ -68,7 +78,13 @@ public class IfTheyAreArrayValuesSoEachOne {
 		}
 		return true;
 	}
+	public boolean isNumberAndItIsContainedAtTheList(Collection<Object> args) {
+		CcpCollectionDecorator ccpCollectionDecorator = new CcpCollectionDecorator(args);
+		Double[] array = ccpCollectionDecorator.toArray();
+		boolean result = this.isNumberAndItIsContainedAtTheList(array);
+		return result;
 	
+	}	
 	
 	public IfTheyAreArrayValuesSoEachOne isTextAnd() {
 		return new IfTheyAreArrayValuesSoEachOne(this.content, this.fields);

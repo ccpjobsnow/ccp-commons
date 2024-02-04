@@ -11,19 +11,19 @@ public final class CcpDbQueryMust extends CcpDbQueryBooleanOperator{
 	public CcpDbQueryBool endMustAndBackToBool() {
 		return this.parent.addChild(this);
 	}
-	@Override
+	
 	@SuppressWarnings("unchecked")
 	public CcpDbQueryMust matchPhrase(CcpEntityField field, Object value) {
 		return super.matchPhrase(field, value);
 	}
 
-	@Override
+	
 	@SuppressWarnings("unchecked")
 	public CcpDbQueryMust prefix(CcpEntityField field, Object value) {
 		return super.prefix(field, value);
 	}
 
-	@Override
+	
 	@SuppressWarnings("unchecked")
 	public CcpDbQueryMust term(CcpEntityField field, Object value) {
 		return super.term(field, value);
@@ -44,7 +44,7 @@ public final class CcpDbQueryMust extends CcpDbQueryBooleanOperator{
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
+	
 	public CcpDbQueryMust match(CcpEntityField field, Object value) {
 		return super.match(field, value);
 	}

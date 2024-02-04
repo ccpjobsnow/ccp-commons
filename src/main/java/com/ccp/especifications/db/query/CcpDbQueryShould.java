@@ -8,7 +8,7 @@ public final class CcpDbQueryShould  extends CcpDbQueryBooleanOperator {
 		super(parent, "should");
 		
 	}
-	@Override
+	
 	@SuppressWarnings("unchecked")
 	public CcpDbQueryShould prefix(CcpEntityField field, Object value) {
 		return super.prefix(field, value);
@@ -30,7 +30,7 @@ public final class CcpDbQueryShould  extends CcpDbQueryBooleanOperator {
 		return super.matchPhrase(field, value);
 	}
 
-	@Override
+	
 	@SuppressWarnings("unchecked")
 	public CcpDbQueryShould match(CcpEntityField field, Object value) {
 		return super.match(field, value);
@@ -48,7 +48,7 @@ public final class CcpDbQueryShould  extends CcpDbQueryBooleanOperator {
 
 
 
-	@Override
+	
 	@SuppressWarnings("unchecked")
 	public CcpDbQueryShould term(CcpEntityField field, Object value) {
 		return super.term(field, value);
