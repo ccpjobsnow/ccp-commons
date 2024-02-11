@@ -1,6 +1,8 @@
 package com.ccp.validation;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpCollectionDecorator;
@@ -13,11 +15,17 @@ public class IfTheyAre {
 		this.content = content;
 		this.fields = fields;
 	}
+	
 	public boolean textsThenEachOneIsContainedAtTheList(String ...args) {
 		
+		List<String> asList = Arrays.asList(args);
+		
 		for (String field : this.fields) {
-			boolean notContainedAtTheList = this.content.getAsMetadata(field).isContainedAtTheList(x -> "" + x, (Object) args);
-			if(notContainedAtTheList) {
+			
+			String asString = this.content.getAsString(field);
+			
+			boolean notAllowedValue = asList.contains(asString) == false;
+			if(notAllowedValue) {
 				return false;
 			}
 		}
@@ -49,19 +57,18 @@ public class IfTheyAre {
 	}
 
 	public boolean numbersThenEachOneIsContainedAtTheList(Double... args) {
+
+		List<Double> asList = Arrays.asList(args);
+		
 		for (String field : this.fields) {
+
 			Double value = this.content.getAsDoubleNumber(field);
 			
-			if(value == null) {
-				continue;
-			}	
-			
-			for (double d : args) {
-				boolean notEquals = value.equals(d) == false;
-				if(notEquals) {
-					return false;
-				}
+			boolean notAllowedValue = asList.contains(value) == false;
+			if(notAllowedValue) {
+				return false;
 			}
+			
 		}
 		return true;
 	}

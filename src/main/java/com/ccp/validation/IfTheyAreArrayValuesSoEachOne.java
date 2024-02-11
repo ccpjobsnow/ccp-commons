@@ -1,6 +1,7 @@
 package com.ccp.validation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
@@ -45,12 +46,18 @@ public class IfTheyAreArrayValuesSoEachOne {
 		return new RangeSize(arrayProducer, this.fields);
 	}
 	public boolean isTextAndItIsContainedAtTheList(String...args) {
+		
+		List<String> asList = Arrays.asList(args);	
+		
 		for (String field : this.fields) {
-			CcpCollectionDecorator asArrayMetadata = this.content.getAsArrayMetadata(field);
-			boolean isNotContained = asArrayMetadata.isContainedAtTheList(x -> "" + x, (Object[]) args) == false;
-			if(isNotContained) {
-				return false;
+			List<String> asStringList = this.content.getAsStringList(field);
+			for (String string : asStringList) {
+				boolean notAllowedValue = asList.contains(string) == false;
+				if(notAllowedValue) {
+					return false;
+				}
 			}
+		
 		}
 		return true;
 	}
@@ -64,19 +71,19 @@ public class IfTheyAreArrayValuesSoEachOne {
 	
 	
 	public boolean isNumberAndItIsContainedAtTheList(Double...args) {
-		Double[] doubles = new Double[args.length];
-		int k = 0;
-		for (double d : args) {
-			doubles[k++] = d;
-		}
+		
+		List<Double> asList = Arrays.asList(args);
 
 		for (String field : this.fields) {
-			CcpCollectionDecorator asArrayMetadata = this.content.getAsArrayMetadata(field);
-			boolean isNotContained = asArrayMetadata.isContainedAtTheList(x -> Double.valueOf("" + x), (Object[]) doubles) == false;
-			if(isNotContained) {
-				return false;
+			List<Double> collect = this.content.getAsStringList(field).stream().map(x -> Double.valueOf(x)).collect(Collectors.toList());
+			for (Double number : collect) {
+				boolean notAllowedValue = asList.contains(number) == false;
+				if(notAllowedValue) {
+					return false;
+				}
 			}
 		}
+		
 		return true;
 	}
 	public boolean isNumberAndItIsContainedAtTheList(Collection<Object> args) {
