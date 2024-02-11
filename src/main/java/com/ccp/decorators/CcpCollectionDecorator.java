@@ -92,7 +92,7 @@ public class CcpCollectionDecorator implements Iterable<Object>{
 	
 	public boolean isContainedAtTheList(Function<Object, Object> transformer, Object... list) {
 		for (Object value : this.content) {
-			boolean areNotEquals = CcpStringDecorator.areEquals(transformer, value, list);
+			boolean areNotEquals = CcpStringDecorator.areEquals(transformer, value, list) == false;
 			if(areNotEquals) {
 				return false;
 			}

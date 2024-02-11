@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.ccp.decorators.CcpCollectionDecorator;
 import com.ccp.decorators.CcpJsonRepresentation;
@@ -86,8 +87,19 @@ public class IfTheyAreArrayValuesSoEachOne {
 	
 	}	
 	
-	public IfTheyAreArrayValuesSoEachOne isTextAnd() {
-		return new IfTheyAreArrayValuesSoEachOne(this.content, this.fields);
+	public RangeSize isTextAndHasSizeThatIs() {
+		Function<String[], String[]> xxx = fields ->{
+			List<String> list = new ArrayList<>();
+
+			for (String field : fields) {
+				List<String> asStringList = this.content.getAsStringList(field);
+				list.addAll(asStringList.stream().map(x -> "" + x.length()).collect(Collectors.toList()));
+			}
+			
+			return list.toArray(new String[list.size()]);
+		};
+	
+		return new RangeSize(xxx, this.fields);
 	}
 	public RangeSize isNumberAndItIs() {
 		Function<String[], String[]> arrayProducer = fields -> {

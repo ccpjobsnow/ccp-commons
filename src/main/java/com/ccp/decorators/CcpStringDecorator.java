@@ -135,12 +135,12 @@ public class CcpStringDecorator {
 			Object v2 = transformer.apply(item);
 			
 			
-			boolean areNotEquals = v1.equals(v2) == false;
+			boolean areNotEquals = v1.equals(v2);
 			if (areNotEquals) {
-				return false;
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 
 }

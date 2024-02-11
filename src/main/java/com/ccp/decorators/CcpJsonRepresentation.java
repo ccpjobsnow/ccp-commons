@@ -502,12 +502,22 @@ public class CcpJsonRepresentation {
 		String asString = this.getAsString(alternativeKey);
 		return Arrays.asList(asString);
 	}
-	@SuppressWarnings("unchecked")
 	public List<Object> getAsObjectList(String key) {
+		
+		boolean isNotPresent = this.containsAllKeys(key) == false;
+		if(isNotPresent) {
+			return new ArrayList<>();
+		}
 		
 		Object object = this.content.get(key);
 		
 		if(object instanceof String) {
+			CcpJsonHandler jsonHandler = CcpDependencyInjection.getDependency(CcpJsonHandler.class);
+			try {
+				List<Object> fromJson = jsonHandler.fromJson(object.toString());
+				return fromJson;
+			} catch (Exception e) {
+			}
 			List<Object> lista = new ArrayList<>();
 			
 			String[] split = object.toString().split(",");
@@ -519,13 +529,19 @@ public class CcpJsonRepresentation {
 			return lista;
 		}
 		
-		Collection<Object> list = (Collection<Object>) object;
-
-		if(list == null) {
-			return new ArrayList<>();
+		if(object instanceof Collection<?> list) {
+			return new ArrayList<Object>(list);
 		}
 		
-		return new ArrayList<>(list);
+		throw new WrongType(key, Collection.class, object.getClass());
+		
+	}
+	
+	@SuppressWarnings("serial")
+	public static class WrongType extends RuntimeException{
+		private WrongType(String key, Class<?> expectedType, Class<?> actuallyType) {
+			super(String.format("The key '%s' must be of type '%s', but is of the type '%s'", key, expectedType.getName(), actuallyType.getName()));
+		}
 	}
 	
 	public CcpJsonRepresentation putAll(Map<String, Object> map) {
