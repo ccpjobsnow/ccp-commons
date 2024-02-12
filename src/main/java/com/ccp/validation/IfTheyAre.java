@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
-import com.ccp.decorators.CcpCollectionDecorator;
 import com.ccp.decorators.CcpJsonRepresentation;
 
 public class IfTheyAre {
@@ -33,8 +33,8 @@ public class IfTheyAre {
 	}
 	
 	public boolean textsThenEachOneIsContainedAtTheList(Collection<Object> args) {
-		CcpCollectionDecorator ccpCollectionDecorator = new CcpCollectionDecorator(args);
-		String[] array = ccpCollectionDecorator.toArray();
+		List<String> collect = args.stream().map(x -> x.toString()).collect(Collectors.toList());
+		String[] array = collect.toArray(new String[collect.size()]);
 		boolean result = this.textsThenEachOneIsContainedAtTheList(array);
 		return result;
 	}	
@@ -74,8 +74,8 @@ public class IfTheyAre {
 	}
 
 	public boolean numbersThenEachOneIsContainedAtTheList(Collection<Object> args) {
-		CcpCollectionDecorator ccpCollectionDecorator = new CcpCollectionDecorator(args);
-		Double[] array = ccpCollectionDecorator.toArray();
+		List<Double> collect = args.stream().map(x -> Double.valueOf(x.toString())).collect(Collectors.toList());
+		Double[] array = collect.toArray(new Double[collect.size()]);
 		boolean result = this.numbersThenEachOneIsContainedAtTheList(array);
 		return result;
 	}

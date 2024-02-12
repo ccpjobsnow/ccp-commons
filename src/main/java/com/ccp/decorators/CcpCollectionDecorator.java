@@ -26,10 +26,6 @@ public class CcpCollectionDecorator implements Iterable<Object>{
 	}
 
 
-	@SuppressWarnings("unchecked")
-	public <T> T[] toArray() {
-		return (T[])this.content.toArray();
-	}
 	
 	
 	public boolean isLongNumberList() {

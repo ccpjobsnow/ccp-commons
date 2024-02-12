@@ -63,8 +63,8 @@ public class IfTheyAreArrayValuesSoEachOne {
 	}
 	
 	public boolean isTextAndItIsContainedAtTheList(Collection<Object> args) {
-		CcpCollectionDecorator ccpCollectionDecorator = new CcpCollectionDecorator(args);
-		String[] array = ccpCollectionDecorator.toArray();
+		List<String> collect = args.stream().map(x -> x.toString()).collect(Collectors.toList());
+		String[] array = collect.toArray(new String[collect.size()]);
 		boolean result = this.isTextAndItIsContainedAtTheList(array);
 		return result;
 	}
@@ -87,8 +87,9 @@ public class IfTheyAreArrayValuesSoEachOne {
 		return true;
 	}
 	public boolean isNumberAndItIsContainedAtTheList(Collection<Object> args) {
-		CcpCollectionDecorator ccpCollectionDecorator = new CcpCollectionDecorator(args);
-		Double[] array = ccpCollectionDecorator.toArray();
+		
+		List<Double> collect = args.stream().map(x -> Double.valueOf("" + x)).collect(Collectors.toList());
+		Double[] array = collect.toArray(new Double[collect.size()]);
 		boolean result = this.isNumberAndItIsContainedAtTheList(array);
 		return result;
 	
