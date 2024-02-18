@@ -16,7 +16,19 @@ import com.ccp.validation.enums.AllowedValuesValidations;
 import com.ccp.validation.enums.BoundValidations;
 import com.ccp.validation.enums.ObjectValidations;
 
-public class Validations {
+public class CcpJsonFieldsValidations {
+	
+	public static void validate(Class<?> clazz, Map<String, Object> map) {
+		boolean isNotPresent = clazz.isAnnotationPresent(ValidationRules.class) == false;
+		
+		if(isNotPresent) {
+			return;
+		}
+		
+		ValidationRules rules = clazz.getAnnotation(ValidationRules.class);
+		validate(rules, map);
+	}
+	
 	public static void validate(ValidationRules rules, Map<String, Object> map) {
 		CcpJsonRepresentation json = new CcpJsonRepresentation(map);
 
