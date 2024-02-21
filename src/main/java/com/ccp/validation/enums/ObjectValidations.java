@@ -9,6 +9,12 @@ public enum ObjectValidations {
 			return json.containsAllKeys(fields);
 		}
 	},
+	requiredAtLeastOne {
+		
+		public boolean isValidJson(CcpJsonRepresentation json, String... fields) {
+			return json.containsAnyKeys(fields);
+		}
+	},
 	booleanFields {
 		
 		public boolean isValidJson(CcpJsonRepresentation json, String... fields) {

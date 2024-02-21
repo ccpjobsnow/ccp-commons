@@ -26,6 +26,8 @@ public @interface ValidationRules {
 	ArraySize[] arraySizeValidations() default {};
 	
 	CurrentYear[] currentYearValidations() default {};
+
+	Day[] dayValidations() default {};
 	
 	Class<?> rulesClass() default Dumb.class;
 	
