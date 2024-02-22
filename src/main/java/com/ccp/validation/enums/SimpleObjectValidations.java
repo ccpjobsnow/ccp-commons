@@ -2,7 +2,7 @@ package com.ccp.validation.enums;
 
 import com.ccp.decorators.CcpJsonRepresentation;
 
-public enum ObjectValidations {
+public enum SimpleObjectValidations {
 	requiredFields {
 		
 		public boolean isValidJson(CcpJsonRepresentation json, String... fields) {

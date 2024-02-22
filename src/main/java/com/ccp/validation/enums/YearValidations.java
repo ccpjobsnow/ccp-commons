@@ -5,7 +5,7 @@ import java.util.function.Predicate;
 
 import com.ccp.decorators.CcpJsonRepresentation;
 
-public enum CurrentYearValidations implements BoundValidations{
+public enum YearValidations implements BoundValidations, TimeEnlapsedValidations{
 	equalsTo 
 	{
 		public boolean isValidJson(CcpJsonRepresentation json, double bound, String... fields) {
@@ -53,19 +53,9 @@ public enum CurrentYearValidations implements BoundValidations{
 		Calendar instance = Calendar.getInstance();
 		int currentYear = instance.get(Calendar.YEAR);
 
-		for (String field : fields) {
-			Double value = json.getAsDoubleNumber(field);
-			double enlapsedYears = currentYear - value;
-			boolean isTrue = predicate.test(enlapsedYears);
-			
-			if(isTrue) {
-				return true;
-			}
-			
-		}
+		boolean true1 = this.isTrue(json, predicate, value -> currentYear - value, fields);
 		
-		return false;
-
+		return true1;
 	}
 
 }

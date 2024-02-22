@@ -1,11 +1,10 @@
 package com.ccp.validation.enums;
 
-import java.util.Calendar;
 import java.util.function.Predicate;
 
 import com.ccp.decorators.CcpJsonRepresentation;
 
-public enum DayValidations implements BoundValidations{
+public enum DayValidations implements BoundValidations, TimeEnlapsedValidations{
 	equalsTo 
 	{
 		public boolean isValidJson(CcpJsonRepresentation json, double bound, String... fields) {
@@ -49,19 +48,10 @@ public enum DayValidations implements BoundValidations{
 	;
 	
 	protected boolean isTrue(CcpJsonRepresentation json, Predicate<Double> predicate , String... fields) {
-		
 	
-		for (String field : fields) {
-			Double value = json.getAsDoubleNumber(field);
-			double enlapsed = value - System.currentTimeMillis();
-			double days = enlapsed / (24 * 60 * 60 * 1000);
-			boolean isTrue = predicate.test(days);
-			
-			if(isTrue) {
-				return true;
-			}
-		}
-		return false;
+		boolean true1 = this.isTrue(json, predicate, value -> (value - System.currentTimeMillis()) / 86_400_000, fields);
+		
+		return true1;
 	}
 
 }

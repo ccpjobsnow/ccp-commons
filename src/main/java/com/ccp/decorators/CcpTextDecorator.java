@@ -7,11 +7,12 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.Base64.Encoder;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CcpTextDecorator {
 	public final String content;
@@ -200,19 +201,10 @@ public class CcpTextDecorator {
 		return new CcpNumberDecorator("" + content.length());
 	}
 	
-	public boolean belongsToCustomValues(String...customValues) {
-		for (String customValue : customValues) {
-			if(customValue.equals(this.content)) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public boolean belongsToCustomValues(Collection<String> customValues) {
-		String[] a = new String[customValues.size()];
-		String[] array = customValues.toArray(a);
-		boolean belongsToDomain = this.belongsToCustomValues(array);
-		return belongsToDomain;
+	public boolean regexMatches(String regex) {
+		Pattern p = Pattern.compile(regex);
+		Matcher m = p.matcher(this.content);
+		boolean find = m.find();
+		return find;
 	}
 }

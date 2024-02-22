@@ -7,6 +7,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.ccp.decorators.CcpJsonRepresentation;
+import com.ccp.decorators.CcpStringDecorator;
+import com.ccp.decorators.CcpTextDecorator;
 
 public class IfTheyAre {
 	public final CcpJsonRepresentation content;
@@ -68,7 +70,6 @@ public class IfTheyAre {
 			if(notAllowedValue) {
 				return false;
 			}
-			
 		}
 		return true;
 	}
@@ -78,6 +79,23 @@ public class IfTheyAre {
 		Double[] array = collect.toArray(new Double[collect.size()]);
 		boolean result = this.numbersThenEachOneIsContainedAtTheList(array);
 		return result;
+	}
+
+	public boolean textsThenEachOneMatchesWithTheFollowingRegex(String regex) {
+
+		for (String field : this.fields) {
+			
+			String value = this.content.getAsString(field);
+			CcpStringDecorator csd = new CcpStringDecorator(value);
+			CcpTextDecorator text = csd.text();
+			
+			boolean regexDoesNotMatch = text.regexMatches(regex) == false;
+			
+			if(regexDoesNotMatch) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 }

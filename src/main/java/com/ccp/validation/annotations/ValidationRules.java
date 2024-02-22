@@ -9,25 +9,27 @@ import java.lang.annotation.Target;
 @Target({ ElementType.METHOD, ElementType.TYPE })
 public @interface ValidationRules {
 
-	ObjectRules[] simpleObjectRules() default {};
+	SimpleObject[] simpleObject() default {};
 
-	ArrayRules[] simpleArrayRules() default {};
+	SimpleArray[] simpleArray() default {};
 
 	AllowedValues[] allowedValues() default {};
 
-	ObjectNumbers[] objectNumbersValidations() default {};
+	ObjectNumbers[] objectNumbers() default {};
 
-	ArrayNumbers[] arrayNumbersValidations() default {};
+	ArrayNumbers[] arrayNumbers() default {};
 
-	ObjectText[] objectTextsValidations() default {};
+	ObjectTextSize[] objectTextSize() default {};
 
-	ArrayTexts[] arrayTextsValidations() default {};
+	ArrayTextSize[] arrayTextSize() default {};
 
-	ArraySize[] arraySizeValidations() default {};
+	ArraySize[] arraySize() default {};
 	
-	CurrentYear[] currentYearValidations() default {};
+	Year[] year() default {};
 
-	Day[] dayValidations() default {};
+	Day[] day() default {};
+	
+	Regex[] regex() default {};
 	
 	Class<?> rulesClass() default Dumb.class;
 	

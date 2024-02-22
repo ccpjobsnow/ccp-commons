@@ -2,7 +2,7 @@ package com.ccp.validation.enums;
 
 import com.ccp.decorators.CcpJsonRepresentation;
 
-public enum ArrayTextsSizeValidations implements BoundValidations{
+public enum ArrayTextSizeValidations implements BoundValidations{
 	equalsTo
 	{
 		public boolean isValidJson(CcpJsonRepresentation json, double bound, String... fields) {

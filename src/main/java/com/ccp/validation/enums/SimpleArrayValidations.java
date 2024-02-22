@@ -2,7 +2,7 @@ package com.ccp.validation.enums;
 
 import com.ccp.decorators.CcpJsonRepresentation;
 
-public enum ArrayValidations {
+public enum SimpleArrayValidations {
 
 	notEmptyArray{
 
