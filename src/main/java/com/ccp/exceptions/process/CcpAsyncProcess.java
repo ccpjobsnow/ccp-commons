@@ -11,6 +11,7 @@ import com.ccp.decorators.CcpTimeDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
+import com.ccp.especifications.mensageria.sender.CcpTopic;
 
 public class CcpAsyncProcess {
 	
@@ -67,7 +68,7 @@ public class CcpAsyncProcess {
 	}
 	final CcpMensageriaSender mensageriaSender = CcpDependencyInjection.hasDependency(CcpMensageriaSender.class) ? CcpDependencyInjection.getDependency(CcpMensageriaSender.class) : null;
 	
-	public CcpJsonRepresentation send(CcpJsonRepresentation values, String topic, CcpEntity entity) {
+	public CcpJsonRepresentation send(CcpJsonRepresentation values, CcpTopic topic, CcpEntity entity) {
 		String token = new CcpStringDecorator(CcpConstants.CHARACTERS_TO_GENERATE_TOKEN).text().generateToken(20);
 		CcpJsonRepresentation messageDetails = CcpConstants.EMPTY_JSON
 				.put("id", token)
