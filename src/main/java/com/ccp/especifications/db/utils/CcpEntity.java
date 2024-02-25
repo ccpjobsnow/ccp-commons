@@ -68,6 +68,7 @@ public interface CcpEntity extends CcpEntityIdGenerator{
 		String hash = new CcpStringDecorator(replace).hash().asString("SHA1");
 		return hash;
 	}
+	
 	default boolean isEmptyPrimaryKey(CcpEntityField key, CcpJsonRepresentation values) {
 		
 		if(key.isPrimaryKey() == false) {

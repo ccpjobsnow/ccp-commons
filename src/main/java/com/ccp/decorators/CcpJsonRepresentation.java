@@ -638,8 +638,8 @@ public class CcpJsonRepresentation {
 		return put;
 	}
 	
-	public <T> T get(Transformer<T> transformer) {
-		T transform = transformer.transform(this);
+	public <T> T get(Function<CcpJsonRepresentation, T> transformer) {
+		T transform = transformer.apply(this);
 		return transform;
 	}
 	public String getAsString(String key, String completeWith, int maxLength) {
@@ -662,10 +662,6 @@ public class CcpJsonRepresentation {
 		}
 		String formattedDateTime = new CcpTimeDecorator(asLongNumber).getFormattedDateTime(format);
 		return formattedDateTime;
-	}
-	
-	public static interface Transformer<T>{
-		T transform(CcpJsonRepresentation md);
 	}
 	
 
@@ -723,12 +719,4 @@ public class CcpJsonRepresentation {
 		return new ItIsTrueThatTheFollowingFields(this, fields);
 	}
 	
-	public static interface ValueExtractor<T>{
-		T getExtractedValue(String key, CcpJsonRepresentation json);
-	}
-	
-	public <T> T get(String key, ValueExtractor<T> valueExtractor) {
-		T extractedValue = valueExtractor.getExtractedValue(key, this);
-		return extractedValue;
-	}
 }
