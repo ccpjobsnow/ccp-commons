@@ -1,11 +1,13 @@
 package com.ccp.decorators;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class CcpCollectionDecorator implements Iterable<Object>{
 
@@ -85,5 +87,27 @@ public class CcpCollectionDecorator implements Iterable<Object>{
 		return s1 == s2;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public <T> List<T> getExclusiveList(List<T> listToCompare){
+		Predicate<? super Object> p = x -> listToCompare.contains(x) == false;
+		List<Object> collect = new ArrayList<Object>(this.content.stream().filter(p).collect(Collectors.toList()));
+		return (List<T>)collect;
+	}
 
+	public List<Object> getIntersectList(List<?> listToCompare){
+		Predicate<? super Object> p = x -> listToCompare.contains(x);
+		List<Object> collect = new ArrayList<Object>(this.content.stream().filter(p).collect(Collectors.toList()));
+		return collect;
+	}
+	
+	public CcpCollectionDecorator getSubCollection(int start, int end) {
+		if(end > this.content.size()) {
+			end = this.content.size();
+		}
+		
+		ArrayList<Object> arrayList = new ArrayList<>(this.content);
+		List<Object> subList = arrayList.subList(start, end);
+		CcpCollectionDecorator ccpCollectionDecorator = new CcpCollectionDecorator(subList);
+		return ccpCollectionDecorator;
+	}
 }

@@ -28,13 +28,13 @@ public class CcpDaoFinally {
 	}
 
 	public void endThisProcedure() {
-		List<CcpJsonRepresentation> statements = this.statements.getJsonList("statements");
+		List<CcpJsonRepresentation> statements = this.statements.getAsJsonList("statements");
 		CcpJsonRepresentation[] array = statements.toArray(new CcpJsonRepresentation[statements.size()]);
 		this.findById(this.id, array);
 	}
 
 	public CcpJsonRepresentation endThisProcedureRetrievingTheResultingData() {
-		List<CcpJsonRepresentation> statements = this.statements.getJsonList("statements");
+		List<CcpJsonRepresentation> statements = this.statements.getAsJsonList("statements");
 		CcpJsonRepresentation[] array = statements.toArray(new CcpJsonRepresentation[statements.size()]);
 		CcpJsonRepresentation findById = this.findById(this.id, array);
 		return findById;

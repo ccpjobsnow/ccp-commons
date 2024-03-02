@@ -465,7 +465,7 @@ public class CcpJsonRepresentation {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<CcpJsonRepresentation> getJsonList(String name) {
+	public List<CcpJsonRepresentation> getAsJsonList(String name) {
 		
 		Object object = this.content.get(name);
 		 
@@ -485,6 +485,11 @@ public class CcpJsonRepresentation {
 		return collect;
 	}
 
+	public CcpCollectionDecorator getAsCollectionDecorator(String key){
+		List<String> asStringList = this.getAsStringList(key);
+		CcpCollectionDecorator ccpCollectionDecorator = new CcpCollectionDecorator(asStringList);
+		return ccpCollectionDecorator;
+	}
 	
 	public List<String> getAsStringList(String key){
 		List<String> collect = this.getAsObjectList(key).stream()

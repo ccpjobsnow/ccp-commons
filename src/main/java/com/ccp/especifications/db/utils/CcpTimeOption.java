@@ -1,6 +1,7 @@
 package com.ccp.especifications.db.utils;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public enum CcpTimeOption{
@@ -16,7 +17,18 @@ public enum CcpTimeOption{
 	,ddMMyyyyHHmm
 	,ddMMyyyyHHmmss
 	,ddMMyyyyHHmmssSSS, 
-	ddMM
+	ddMM, 
+	weekly{
+		@Override
+		public String getFormattedCurrentDate(Long date) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(date);
+			int weekOfYear = cal.get(Calendar.WEEK_OF_YEAR);
+			int year = cal.get(Calendar.YEAR);
+			String string = year + "W" + weekOfYear + "_";
+			return string;
+		}
+	}
 	;
 
 	public String getFormattedCurrentDate(Long date) {

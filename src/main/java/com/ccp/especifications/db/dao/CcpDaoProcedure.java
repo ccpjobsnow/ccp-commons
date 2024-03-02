@@ -37,7 +37,7 @@ public class CcpDaoProcedure {
 	}
 	
 	private CcpDaoNextStep addStatement(String key, Object obj) {
-		List<CcpJsonRepresentation> list = this.statements.getJsonList("statements");
+		List<CcpJsonRepresentation> list = this.statements.getAsJsonList("statements");
 		list.add(CcpConstants.EMPTY_JSON.put(key, obj));
 		CcpJsonRepresentation newStatements = this.statements.put("statements", list);
 		return new CcpDaoNextStep(this.id, newStatements);

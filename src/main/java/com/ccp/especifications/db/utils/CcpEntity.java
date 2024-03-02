@@ -177,7 +177,20 @@ public interface CcpEntity extends CcpEntityIdGenerator{
 		boolean remove = dao.delete(this, id);
 		//TODO SALVAR AUDITORIA???
 		return remove;
-		
+	}
+	
+	default List<CcpJsonRepresentation> getManyByIds(String...ids){
+		CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
+		List<CcpJsonRepresentation> manyByIds = dao.getManyByIds(this, ids);
+	
+		int k = 0;
+		List<CcpJsonRepresentation> response = new ArrayList<>();
+		for (String id : ids) {
+			CcpJsonRepresentation md = manyByIds.get(k++);
+			md = md.put("_id", id);
+			response.add(md);
+		}
+		return response;
 	}
 	
 	default List<CcpJsonRepresentation> getManyByIds(CcpJsonRepresentation... values){
@@ -189,14 +202,20 @@ public interface CcpEntity extends CcpEntityIdGenerator{
 			String id = this.getId(value);
 			ids[k++] = id;
 		}
+		List<CcpJsonRepresentation> response = getManyById(ids);
+		return response;
+	}
+
+	default List<CcpJsonRepresentation> getManyById(String[] ids) {
+		int k;
 		CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
 		List<CcpJsonRepresentation> manyByIds = dao.getManyByIds(this, ids);
 	
 		k = 0;
 		List<CcpJsonRepresentation> response = new ArrayList<>();
-		for (CcpJsonRepresentation value : values) {
+		for (String id : ids) {
 			CcpJsonRepresentation md = manyByIds.get(k++);
-			md = md.put("_id", value);
+			md = md.put("_id", id);
 			response.add(md);
 		}
 		return response;
