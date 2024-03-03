@@ -1,6 +1,8 @@
 package com.ccp.especifications.db.dao;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.utils.CcpEntityIdGenerator;
@@ -73,6 +75,8 @@ public interface CcpDao {
 		
 		return oneById;
 	}
+	
+	CcpDaoUnionAll unionAll(Collection<CcpJsonRepresentation> values, CcpEntityIdGenerator... entities);
 
 	CcpJsonRepresentation getAllData(CcpJsonRepresentation values, CcpEntityIdGenerator... entities);
 
@@ -90,5 +94,7 @@ public interface CcpDao {
 		boolean deleted = this.delete(entity, id);
 		return deleted;
 	}
+
+	CcpDaoUnionAll unionAll(Set<String> values, CcpEntityIdGenerator... entities);
 
 }

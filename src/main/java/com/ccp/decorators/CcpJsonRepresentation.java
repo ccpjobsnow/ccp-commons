@@ -382,6 +382,14 @@ public class CcpJsonRepresentation {
 		return put;
 	}
 	
+	public <T,R> CcpJsonRepresentation putTransformedValue(String oldKey, String newKey, Function<T,R> function) {
+		T  oldValue = this.getAsObject(oldKey);
+		R newValue = function.apply(oldValue);
+		CcpJsonRepresentation put = this.put(newKey, newValue);
+		return put;
+	}
+	
+	
 	public CcpJsonRepresentation put(String key, Object value) {
 		
 		Map<String, Object> content = new LinkedHashMap<>();

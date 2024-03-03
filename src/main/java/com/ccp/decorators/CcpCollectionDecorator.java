@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import com.ccp.constantes.CcpConstants;
+
 public class CcpCollectionDecorator implements Iterable<Object>{
 
 	public final Collection<Object> content;
@@ -94,9 +96,10 @@ public class CcpCollectionDecorator implements Iterable<Object>{
 		return (List<T>)collect;
 	}
 
-	public List<Object> getIntersectList(List<?> listToCompare){
+	@SuppressWarnings("unchecked")
+	public <T> List<T> getIntersectList(List<T> listToCompare){
 		Predicate<? super Object> p = x -> listToCompare.contains(x);
-		List<Object> collect = new ArrayList<Object>(this.content.stream().filter(p).collect(Collectors.toList()));
+		List<T> collect = (List<T> )new ArrayList<Object>(this.content.stream().filter(p).collect(Collectors.toList()));
 		return collect;
 	}
 	
@@ -110,4 +113,6 @@ public class CcpCollectionDecorator implements Iterable<Object>{
 		CcpCollectionDecorator ccpCollectionDecorator = new CcpCollectionDecorator(subList);
 		return ccpCollectionDecorator;
 	}
+	
+	
 }
