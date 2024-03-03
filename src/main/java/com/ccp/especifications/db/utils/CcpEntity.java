@@ -206,7 +206,13 @@ public interface CcpEntity extends CcpEntityIdGenerator{
 		return response;
 	}
 
-	default List<CcpJsonRepresentation> getManyById(String[] ids) {
+	default List<CcpJsonRepresentation> getManyById(List<String> ids){
+		String[] array = ids.toArray(new String[ids.size()]);
+		List<CcpJsonRepresentation> manyById = this.getManyById(array);
+		return manyById;
+	}
+	
+	default List<CcpJsonRepresentation> getManyById(String... ids) {
 		int k;
 		CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
 		List<CcpJsonRepresentation> manyByIds = dao.getManyByIds(this, ids);

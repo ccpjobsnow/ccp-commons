@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class CcpCollectionDecorator implements Iterable<Object>{
 
-	private final Collection<Object> content;
+	public final Collection<Object> content;
 	
 	public CcpCollectionDecorator(Collection<Object> content) {
 		this.content = content;
