@@ -16,7 +16,7 @@ import com.ccp.especifications.mensageria.sender.CcpTopic;
 public class CcpAsyncProcess {
 	
 	static Map<String, Function<CcpJsonRepresentation, CcpJsonRepresentation>> instances = new HashMap<String, Function<CcpJsonRepresentation,CcpJsonRepresentation>>();
-	
+
 	@SuppressWarnings("unchecked")
 	private static synchronized Function<CcpJsonRepresentation, CcpJsonRepresentation> getProcess(String processName) {
 		
@@ -77,11 +77,12 @@ public class CcpAsyncProcess {
 				.put("started", System.currentTimeMillis())
 				.put("data", new CcpTimeDecorator().getFormattedCurrentDateTime("dd/MM/yyyy HH:mm:ss"))
 				;
+		
 		String asyncTaskId = entity.getId(messageDetails);
-		CcpJsonRepresentation messageSent = values.put("asyncTaskId", asyncTaskId);
-		this.mensageriaSender.send(topic, messageSent);
 		entity.createOrUpdate(messageDetails, asyncTaskId);
-		return messageSent;
+		
+		this.mensageriaSender.send(topic, messageDetails);
+		return messageDetails.put("asyncTaskId", asyncTaskId);
 	}
 
 }

@@ -12,7 +12,7 @@ public class CcpDaoLoadDataFromEntity {
 
 	}
 
-	public CcpDaoProcedure andSo() {
+	public CcpDaoProcedure and() {
 		return new CcpDaoProcedure(this.id, this.statements);
 	}
 	

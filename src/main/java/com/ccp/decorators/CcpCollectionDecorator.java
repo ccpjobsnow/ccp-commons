@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import com.ccp.constantes.CcpConstants;
-
 public class CcpCollectionDecorator implements Iterable<Object>{
 
 	public final Collection<Object> content;
