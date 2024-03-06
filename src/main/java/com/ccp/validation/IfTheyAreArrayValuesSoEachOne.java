@@ -61,7 +61,7 @@ public class IfTheyAreArrayValuesSoEachOne {
 		return true;
 	}
 	
-	public boolean isTextAndItIsContainedAtTheList(Collection<Object> args) {
+	public <T> boolean isTextAndItIsContainedAtTheList(Collection<T> args) {
 		List<String> collect = args.stream().map(x -> x.toString()).collect(Collectors.toList());
 		String[] array = collect.toArray(new String[collect.size()]);
 		boolean result = this.isTextAndItIsContainedAtTheList(array);

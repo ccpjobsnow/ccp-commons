@@ -67,7 +67,7 @@ public class CcpAsyncProcess {
 		entity.createOrUpdate(processResult, asyncTaskId);
 	}
 	final CcpMensageriaSender mensageriaSender = CcpDependencyInjection.hasDependency(CcpMensageriaSender.class) ? CcpDependencyInjection.getDependency(CcpMensageriaSender.class) : null;
-	
+	//TODO ENVIAR LISTA DE MENSAGENS DE UMA VEZ SÓ
 	public CcpJsonRepresentation send(CcpJsonRepresentation values, CcpTopic topic, CcpEntity entity) {
 		String token = new CcpStringDecorator(CcpConstants.CHARACTERS_TO_GENERATE_TOKEN).text().generateToken(20);
 		CcpJsonRepresentation messageDetails = CcpConstants.EMPTY_JSON
