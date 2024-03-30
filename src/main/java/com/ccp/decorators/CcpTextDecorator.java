@@ -161,7 +161,7 @@ public class CcpTextDecorator {
 		return sb.toString();
 	}
 
-	public String toSnackCase() {
+	public String toSnakeCase() {
 		char[] charArray = this.content.toCharArray();
 		StringBuilder sb = new StringBuilder(this.content);
 		int k = 0;

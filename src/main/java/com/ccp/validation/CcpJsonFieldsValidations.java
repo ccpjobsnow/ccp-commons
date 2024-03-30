@@ -1,5 +1,6 @@
 package com.ccp.validation;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import com.ccp.constantes.CcpConstants;
@@ -22,6 +23,7 @@ import com.ccp.validation.enums.SimpleObjectValidations;
 public class CcpJsonFieldsValidations {
 	
 	public static void validate(Class<?> clazz, Map<String, Object> map) {
+		
 		boolean isNotPresent = clazz.isAnnotationPresent(ValidationRules.class) == false;
 		
 		if(isNotPresent) {
@@ -33,25 +35,28 @@ public class CcpJsonFieldsValidations {
 	}
 	
 	public static void validate(ValidationRules rules, Map<String, Object> map) {
+		
 		CcpJsonRepresentation json = new CcpJsonRepresentation(map);
 
 		Class<?> rulesClass = rules.rulesClass();
 		
 		rules = rulesClass.isAnnotationPresent(ValidationRules.class) ? rulesClass.getAnnotation(ValidationRules.class) : rules;
 		
-		CcpJsonRepresentation result = CcpConstants.EMPTY_JSON;
+		CcpJsonRepresentation errors = CcpConstants.EMPTY_JSON;
 
-		result = validateBounds(rules, json, result);
+		errors = validateBounds(rules, json, errors);
 
-		result = validateRestricted(rules, json, result);
+		errors = validateRestricted(rules, json, errors);
 
-		result = simpleValidation(rules, json, result);
+		errors = simpleValidation(rules, json, errors);
 
-		boolean noErrors = result.isEmpty();
+		boolean noErrors = errors.isEmpty();
 
 		if (noErrors) {
 			return;
 		}
+		
+		CcpJsonRepresentation result = CcpConstants.EMPTY_JSON.put("errors", errors).put("json", json);
 
 		throw new CcpJsonInvalid(result);
 	}
@@ -68,7 +73,7 @@ public class CcpJsonFieldsValidations {
 			if (validJson) {
 				continue;
 			}
-			result = result.addToList(rule.name(), (Object[]) fields);
+			result = addErrorDetail(result, "none", rule,  fields);
 		}
 		return result;
 	}
@@ -86,12 +91,28 @@ public class CcpJsonFieldsValidations {
 			if (validJson) {
 				continue;
 			}
-			result = result.addToList(rule.name(), (Object[]) fields);
-			result = result.addToList(rule.name() + "RestrictedValues", (Object[]) restrictedValues);
+			result = addErrorDetail(result, restrictedValues, rule,  fields);
 		}
 		return result;
 	}
 
+	
+	private static CcpJsonRepresentation addErrorDetail(CcpJsonRepresentation result, Object bound, BoundValidations rule, String... fields) {
+		String ruleName = rule.getClass().getSimpleName().split("$")[0];
+		result = result.putSubKey(ruleName, "description", rule.name());
+		result = result.putSubKey(ruleName, "specification", bound);
+		result = result.putSubKey(ruleName, "fields", Arrays.asList(fields));
+		return result;
+	}
+	
+	private static CcpJsonRepresentation addErrorDetail(CcpJsonRepresentation result, Object bound, Enum<?> rule, String... fields) {
+		String ruleName = rule.getClass().getSimpleName().split("$")[0];
+		result = result.putSubKey(ruleName, "description", rule.name());
+		result = result.putSubKey(ruleName, "specification", bound);
+		result = result.putSubKey(ruleName, "fields", Arrays.asList(fields));
+		return result;
+	}
+	
 	private static CcpJsonRepresentation validateBounds(ValidationRules rules, CcpJsonRepresentation json,
 			CcpJsonRepresentation result) {
 
@@ -107,10 +128,9 @@ public class CcpJsonFieldsValidations {
 				if (validJson) {
 					continue;
 				}
-				result = result.addToList(rule.name(), (Object[]) fields);
-				result = result.put(rule.name() + "Bound", bound);
+				result = addErrorDetail(result, bound, rule,  fields);
 			}
-
+			
 		}
 
 		{
@@ -125,8 +145,7 @@ public class CcpJsonFieldsValidations {
 				if (validJson) {
 					continue;
 				}
-				result = result.addToList(rule.name(), (Object[]) fields);
-				result = result.put(rule.name() + "Bound", bound);
+				result = addErrorDetail(result, bound, rule,  fields);
 			}
 
 		}
@@ -142,8 +161,7 @@ public class CcpJsonFieldsValidations {
 				if (validJson) {
 					continue;
 				}
-				result = result.addToList(rule.name(), (Object[]) fields);
-				result = result.put(rule.name() + "Bound", bound);
+				result = addErrorDetail(result, bound, rule,  fields);
 			}
 
 		}
@@ -159,8 +177,7 @@ public class CcpJsonFieldsValidations {
 				if (validJson) {
 					continue;
 				}
-				result = result.addToList(rule.name(), (Object[]) fields);
-				result = result.put(rule.name() + "Bound", bound);
+				result = addErrorDetail(result, bound, rule,  fields);
 			}
 
 		}
@@ -176,8 +193,7 @@ public class CcpJsonFieldsValidations {
 				if (validJson) {
 					continue;
 				}
-				result = result.addToList(rule.name(), (Object[]) fields);
-				result = result.put(rule.name() + "Bound", bound);
+				result = addErrorDetail(result, bound, rule,  fields);
 			}
 
 		}
@@ -193,8 +209,7 @@ public class CcpJsonFieldsValidations {
 				if (validJson) {
 					continue;
 				}
-				result = result.addToList(rule.name(), (Object[]) fields);
-				result = result.put(rule.name() + "Bound", bound);
+				result = addErrorDetail(result, bound, rule,  fields);
 			}
 
 		}
@@ -210,8 +225,7 @@ public class CcpJsonFieldsValidations {
 				if (validJson) {
 					continue;
 				}
-				result = result.addToList(rule.name(), (Object[]) fields);
-				result = result.put(rule.name() + "Bound", bound);
+				result = addErrorDetail(result, bound, rule,  fields);
 			}
 
 		}
@@ -229,8 +243,8 @@ public class CcpJsonFieldsValidations {
 					continue;
 				}
 				
-				result = result.addToList("regex", (Object[]) fields);
-				result = result.put("regexValue", regex);
+				result = result.putSubKey("regexValidation", "fields", Arrays.asList(fields));
+				result = result.putSubKey("regexValidation", "specification", regex);
 			}
 		}
 		
@@ -239,10 +253,10 @@ public class CcpJsonFieldsValidations {
 	@SuppressWarnings("serial")
 	public static class CcpJsonInvalid extends RuntimeException {
 
-		public final CcpJsonRepresentation errors;
+		public final CcpJsonRepresentation result;
 
-		private CcpJsonInvalid(CcpJsonRepresentation errors) {
-			this.errors = errors;
+		private CcpJsonInvalid(CcpJsonRepresentation result) {
+			this.result = result;
 		}
 	}
 
