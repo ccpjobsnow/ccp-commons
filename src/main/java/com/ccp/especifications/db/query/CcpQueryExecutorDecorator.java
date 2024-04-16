@@ -36,7 +36,7 @@ public class CcpQueryExecutorDecorator {
 	}
 
 	public void consumeQueryResult(String scrollTime, int size,
-			Consumer<List<CcpJsonRepresentation>> consumer, String... fields) {
+			Consumer<CcpJsonRepresentation> consumer, String... fields) {
 		this.requestExecutor.consumeQueryResult(this.elasticQuery, this.resourcesNames, scrollTime, size, consumer, fields);
 	}
 

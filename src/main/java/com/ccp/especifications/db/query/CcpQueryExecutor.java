@@ -12,7 +12,7 @@ public interface CcpQueryExecutor {
 	
 	CcpJsonRepresentation update(CcpDbQueryOptions elasticQuery, String[] resourcesNames, CcpJsonRepresentation newValues) ;
 	
-	void consumeQueryResult(CcpDbQueryOptions elasticQuery, String[] resourcesNames, String scrollTime, int size, Consumer<List<CcpJsonRepresentation> > consumer, String...fields);
+	void consumeQueryResult(CcpDbQueryOptions elasticQuery, String[] resourcesNames, String scrollTime, int size, Consumer<CcpJsonRepresentation> consumer, String...fields);
 
 	long total(CcpDbQueryOptions elasticQuery, String[] resourcesNames);
 

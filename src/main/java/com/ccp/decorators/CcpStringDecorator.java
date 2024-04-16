@@ -18,6 +18,10 @@ public class CcpStringDecorator {
 	public CcpStringDecorator(String content) {
 		this.content = content;
 	}
+
+	public CcpStringDecorator(byte[] content) {
+		this.content = new String(content);
+	}
 	
 	public CcpEmailDecorator email() {
 		return new CcpEmailDecorator(this.content);

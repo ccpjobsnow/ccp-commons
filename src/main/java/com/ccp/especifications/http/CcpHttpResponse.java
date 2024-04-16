@@ -1,6 +1,5 @@
 package com.ccp.especifications.http;
 
-import java.util.Base64;
 import java.util.List;
 
 import com.ccp.constantes.CcpConstants;
@@ -60,8 +59,8 @@ public class CcpHttpResponse {
 	}
 
 	public String asBase64() {
-		String encodeToString = Base64.getEncoder().encodeToString(this.httpResponse.getBytes());
-		
+		byte[] bytes = this.httpResponse.getBytes();
+		String encodeToString = new CcpStringDecorator(bytes).text().asBase64();
 		return encodeToString;
 	}
 	

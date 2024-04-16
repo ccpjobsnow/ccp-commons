@@ -96,13 +96,12 @@ public class CcpDbQueryOptions extends CcpDbQueryComponent{
 		CcpDbQueryOptions clone = super.putProperty("from", from);
 		return clone;
 	}
-	
-	
 
 	public CcpDbQueryOptions setScrollTime(String scrollTime) {
 		CcpDbQueryOptions clone = super.putProperty("scroll", scrollTime);
 		return clone;
 	}
+	
 	public CcpDbQueryOptions matchAll() {
 		CcpDbQueryOptions clone = super.putProperty("query", CcpConstants.EMPTY_JSON.put("match_all", CcpConstants.EMPTY_JSON.content).content);
 		return clone;
