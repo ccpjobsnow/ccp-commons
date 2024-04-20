@@ -12,8 +12,8 @@ public class CcpHttpError extends RuntimeException {
 	public final boolean clientError;
 	public final boolean serverError;
 	
-	public CcpHttpError(String url, String method, CcpJsonRepresentation headers, String request, Integer status, String response, Set<String> expectedStatusList) {
-		super("Details: " + getEntity(url, method, headers, request, status, response) + ". All expected status: " + expectedStatusList);
+	public CcpHttpError(String trace, String url, String method, CcpJsonRepresentation headers, String request, Integer status, String response, Set<String> expectedStatusList) {
+		super("\n\n\nTrace: " + trace + "\nDetails: " + getEntity(url, method, headers, request, status, response) + "\n. All expected status: " + expectedStatusList);
 		this.entity = getEntity(url, method, headers, request, status, response);
 		this.clientError = status >= 400 && status < 500;
 		this.serverError = status >= 500 && status < 600;

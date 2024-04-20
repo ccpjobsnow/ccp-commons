@@ -22,20 +22,20 @@ public final class CcpHttpHandler {
 		this.flows = CcpConstants.EMPTY_JSON.put(httpStatus.toString(), CcpConstants.DO_NOTHING);
 	}
 	
-	public <V> V executeHttpSimplifiedGet(String url, CcpHttpResponseTransform<V> transformer) {
-		V executeHttpRequest = this.executeHttpRequest(url, "GET", CcpConstants.EMPTY_JSON, CcpConstants.EMPTY_JSON, transformer);
+	public <V> V executeHttpSimplifiedGet(String trace, String url, CcpHttpResponseTransform<V> transformer) {
+		V executeHttpRequest = this.executeHttpRequest(trace, url, "GET", CcpConstants.EMPTY_JSON, CcpConstants.EMPTY_JSON, transformer);
 		return executeHttpRequest;
 	}
 	
-	public <V> V executeHttpRequest(String url, String method, CcpJsonRepresentation headers, CcpJsonRepresentation body, CcpHttpResponseTransform<V> transformer) {
+	public <V> V executeHttpRequest(String trace, String url, String method, CcpJsonRepresentation headers, CcpJsonRepresentation body, CcpHttpResponseTransform<V> transformer) {
 		
 		String asJson = body.asUgglyJson();
-		V executeHttpRequest = this.executeHttpRequest(url, method, headers, asJson, transformer);
+		V executeHttpRequest = this.executeHttpRequest(trace,url, method, headers, asJson, transformer);
 		return executeHttpRequest;
 	}
 
 	@SuppressWarnings("unchecked")
-	public <V>V executeHttpRequest(String url, String method, CcpJsonRepresentation headers, String request, CcpHttpResponseTransform<V> transformer) {
+	public <V>V executeHttpRequest(String trace, String url, String method, CcpJsonRepresentation headers, String request, CcpHttpResponseTransform<V> transformer) {
 		
 		CcpHttpResponse response = this.ccpHttp.executeHttpRequest(url, method, headers, request);
 	
@@ -44,7 +44,7 @@ public final class CcpHttpHandler {
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> flow = this.flows.getAsObject("" + status);
 	
 		if(flow == null) {
-			throw new CcpHttpError(url, method, headers, request, status, response.httpResponse, this.flows.keySet());
+			throw new CcpHttpError(trace, url, method, headers, request, status, response.httpResponse, this.flows.keySet());
 		}
 	
 		boolean invalidSingleJson = response.isValidSingleJson() == false;

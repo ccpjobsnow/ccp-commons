@@ -7,13 +7,13 @@ import com.ccp.decorators.CcpJsonRepresentation;
 
 public interface CcpMensageriaSender {
 
-	default void send(CcpTopic topic, CcpJsonRepresentation... msgs) {
+	default void send(String topic, CcpJsonRepresentation... msgs) {
 		String[] array = Arrays.asList(msgs).stream().map(x -> x.asUgglyJson()).collect(Collectors.toList())
 		.toArray(new String[msgs.length]);
 		this.send(topic, array);
 	}
 	
-	void send(CcpTopic topic, String... msgs);
+	void send(String topic, String... msgs);
 	
 	
 }
