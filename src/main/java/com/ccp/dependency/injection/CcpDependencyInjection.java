@@ -7,9 +7,9 @@ public class CcpDependencyInjection {
 
 	static Map<Class<?>, Object> instances = new HashMap<>();
 	
-	public static void loadAllDependencies(CcpInstanceProvider... providers) {
+	public static void loadAllDependencies(CcpInstanceProvider<?>... providers) {
 		
-		for (CcpInstanceProvider provider : providers) {
+		for (CcpInstanceProvider<?> provider : providers) {
 			Object implementation = provider.getInstance();
 			Class<? extends Object> class1 = implementation.getClass();
 			Class<?>[] interfaces = class1.getInterfaces();
@@ -31,4 +31,18 @@ public class CcpDependencyInjection {
 		}
 		return (T) implementation;
 	}
+	
+	public static <T> T getInstance(Class<CcpInstanceProvider<T>> interfaceClass) {
+		try {
+			CcpInstanceProvider<T> newInstance = interfaceClass.getDeclaredConstructor().newInstance();
+			T instance = newInstance.getInstance();
+			return instance;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	
+	
+	
 }
