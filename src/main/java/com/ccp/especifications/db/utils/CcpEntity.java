@@ -13,6 +13,7 @@ import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
+import com.ccp.especifications.db.bulk.CcpEntityOperationType;
 import com.ccp.especifications.db.dao.CcpDao;
 import com.ccp.exceptions.db.CcpEntityMissingKeys;
 import com.ccp.exceptions.db.CcpEntityRecordNotFound;
@@ -112,7 +113,8 @@ public interface CcpEntity extends CcpEntityIdGenerator{
 	}
 
 	default CcpJsonRepresentation getOneById(CcpJsonRepresentation data) {
-		CcpJsonRepresentation md = this.getOneById(data, x -> {throw new CcpFlow(x.put("entity", this.name()), 404);});
+		String entityName = this.getEntityName();
+		CcpJsonRepresentation md = this.getOneById(data, x -> {throw new CcpFlow(x.put("entity", entityName), 404);});
 		return md;
 	}
 	
@@ -124,7 +126,8 @@ public interface CcpEntity extends CcpEntityIdGenerator{
 			return md;
 			
 		} catch (CcpEntityRecordNotFound e) {
-			CcpJsonRepresentation put = CcpConstants.EMPTY_JSON.put("id", id).put("entity", this.name());
+			String entityName = this.getEntityName();
+			CcpJsonRepresentation put = CcpConstants.EMPTY_JSON.put("id", id).put("entity", entityName);
 			throw new CcpFlow(put, 404);
 		}
 	}

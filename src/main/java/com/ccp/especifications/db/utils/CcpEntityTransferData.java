@@ -19,7 +19,7 @@ public class CcpEntityTransferData extends CcpNextStep {
 		
 		CcpJsonRepresentation entities = values.getInnerJson("_entities");
 
-		boolean doNothing = entities.getInnerJson(this.origin.name()).isEmpty() ;
+		boolean doNothing = entities.getInnerJson(this.origin.getEntityName()).isEmpty() ;
 		
 		if(doNothing) {
 			return new CcpStepResult(values, 200, this);
@@ -32,7 +32,7 @@ public class CcpEntityTransferData extends CcpNextStep {
 		}
 		
 		this.origin.transferData(values, this.target);
-		CcpJsonRepresentation renameKey = entities.renameKey(this.origin.name(), this.target.name());
+		CcpJsonRepresentation renameKey = entities.renameKey(this.origin.getEntityName(), this.target.getEntityName());
 		CcpJsonRepresentation put = values.put("_entities", renameKey);
 		return new CcpStepResult(put, 200, this);
 	}

@@ -27,7 +27,7 @@ public class CcpDaoUnionAll {
 	
 	public boolean isPresent(CcpEntityIdGenerator entity, CcpJsonRepresentation value) {
 		
-		String index = entity.name();
+		String index = entity.getEntityName();
 		String id = entity.getId(value);
 		
 		boolean present = this.isPresent(index, id);
@@ -56,7 +56,7 @@ public class CcpDaoUnionAll {
 
 	public boolean isPresent(CcpEntityIdGenerator entity) {
 		
-		String index = entity.name();
+		String index = entity.getEntityName();
 		
 		boolean indexNotFound = this.condensed.containsAllKeys(index) == false;
 		
@@ -69,7 +69,7 @@ public class CcpDaoUnionAll {
 	
 	public CcpJsonRepresentation get(CcpEntityIdGenerator entity, CcpJsonRepresentation value) {
 		
-		String index = entity.name();
+		String index = entity.getEntityName();
 		String id = entity.getId(value);
 		
 		CcpJsonRepresentation jsonValue = this.get(index, id);
@@ -97,7 +97,7 @@ public class CcpDaoUnionAll {
 	}
 	public CcpJsonRepresentation get(CcpEntityIdGenerator entity) {
 		
-		String index = entity.name();
+		String index = entity.getEntityName();
 		
 		boolean indexNotFound = this.condensed.containsAllKeys(index) == false;
 		

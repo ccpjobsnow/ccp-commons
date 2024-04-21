@@ -10,7 +10,7 @@ import com.ccp.especifications.db.utils.CcpEntityField;
 public class CcpEntityMissingKeys extends RuntimeException {
 
 	public CcpEntityMissingKeys(CcpEntity entity, List<CcpEntityField> keys, CcpJsonRepresentation object) {
-		super("It is missing the keys '" + keys + "' from entity '" + entity.name() + "' in the object " + object );
+		super("It is missing the keys '" + keys + "' from entity '" + entity + "' in the object " + object );
 	}
 	
 }

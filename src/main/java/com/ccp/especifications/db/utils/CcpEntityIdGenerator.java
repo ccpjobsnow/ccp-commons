@@ -8,6 +8,6 @@ public interface CcpEntityIdGenerator {
 
 	String getId(CcpJsonRepresentation values);
 
-	String name();
+	String getEntityName();
 	
 }

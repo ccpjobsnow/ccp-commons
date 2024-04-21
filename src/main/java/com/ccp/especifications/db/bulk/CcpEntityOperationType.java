@@ -1,4 +1,4 @@
-package com.ccp.especifications.db.utils;
+package com.ccp.especifications.db.bulk;
 
 public enum CcpEntityOperationType {
 
