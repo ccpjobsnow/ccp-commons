@@ -2,6 +2,7 @@ package com.ccp.especifications.db.bulk;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.ccp.decorators.CcpJsonRepresentation;
@@ -36,13 +37,18 @@ public interface CcpDbBulkExecutor {
 		return collect;
 	}
 	
-	default CcpJsonRepresentation commitAndAuditLogingErrors(CcpEntity errorEntity, CcpEntity auditEntity) {
+	default CcpJsonRepresentation commitAndAuditLogingErrors(
+			CcpEntity errorEntity, 
+			CcpEntity auditEntity,
+			Function<CcpJsonRepresentation, CcpJsonRepresentation> mapperSuccess,
+			Function<CcpJsonRepresentation, CcpJsonRepresentation> mapperFail
+			) {
 		
 		CcpJsonRepresentation bulkResultFromRecords = this.getBulkResult();
 		List<CcpJsonRepresentation> auditRecords = this.getAuditRecords(bulkResultFromRecords);
 		
-		List<CcpJsonRepresentation> failedRecords = this.getFailedRecords(auditRecords);
-		List<CcpJsonRepresentation> succedRecords = this.getSuccedRecords(auditRecords);
+		List<CcpJsonRepresentation> succedRecords = this.getSuccedRecords(auditRecords.stream().map(mapperSuccess).collect(Collectors.toList()));
+		List<CcpJsonRepresentation> failedRecords = this.getFailedRecords(auditRecords).stream().map(mapperFail).collect(Collectors.toList());
 		
 		List<CcpBulkItem> collect2 = this.getRecordList(errorEntity, failedRecords);
 		List<CcpBulkItem> collect = this.getRecordList(auditEntity, succedRecords);

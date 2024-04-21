@@ -19,7 +19,7 @@ public final class CcpHttpHandler {
 	}
 
 	public CcpHttpHandler(Integer httpStatus) {
-		this.flows = CcpConstants.EMPTY_JSON.put(httpStatus.toString(), CcpConstants.DO_NOTHING);
+		this.flows = CcpConstants.EMPTY_JSON.put(httpStatus.toString(), CcpConstants.DO_BY_PASS);
 	}
 	
 	public <V> V executeHttpSimplifiedGet(String trace, String url, CcpHttpResponseTransform<V> transformer) {
