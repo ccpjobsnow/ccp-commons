@@ -162,7 +162,16 @@ public class CcpEmailDecorator {
 
 		return emails;
 	}
-	//EmailDecorator getEmailDomain()
+
+	public String getProfessionalDomain() {
+		boolean nonProfessionalDomain = this.isNonProfessionalDomain();
+		if (nonProfessionalDomain) {
+			return "";
+		}
+		String domain = this.getDomain();
+		return domain;
+	}
+	
 	public String getDomain() {
 		if (this.content == null) {
 			return null;
