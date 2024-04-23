@@ -4,16 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
-import com.ccp.decorators.CcpStringDecorator;
-import com.ccp.decorators.CcpTimeDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.async.business.factory.CcpAsyncBusinessFactory;
 import com.ccp.especifications.db.utils.CcpEntity;
-import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
 
-public class CcpAsyncProcess {
+public class CcpAsyncTask {
 	
 	static Map<String, Function<CcpJsonRepresentation, CcpJsonRepresentation>> instances = new HashMap<String, Function<CcpJsonRepresentation,CcpJsonRepresentation>>();
 
@@ -67,25 +63,6 @@ public class CcpAsyncProcess {
 		Long finished = System.currentTimeMillis();
 		CcpJsonRepresentation processResult = messageDetails.put("response", response).put("finished", finished).put("success", success);
 		entity.createOrUpdate(processResult, asyncTaskId);
-	}
-	final CcpMensageriaSender mensageriaSender = CcpDependencyInjection.hasDependency(CcpMensageriaSender.class) ? CcpDependencyInjection.getDependency(CcpMensageriaSender.class) : null;
-	//TODO ENVIAR LISTA DE MENSAGENS DE UMA VEZ SÓ
-	public CcpJsonRepresentation send(CcpJsonRepresentation values, String topic, CcpEntity entity) {
-		String token = new CcpStringDecorator(CcpConstants.CHARACTERS_TO_GENERATE_TOKEN).text().generateToken(20);
-		CcpJsonRepresentation messageDetails = CcpConstants.EMPTY_JSON
-				.putAll(values)
-				.put("id", token)
-				.put("request", values)
-				.put("topic", topic)
-				.put("started", System.currentTimeMillis())
-				.put("data", new CcpTimeDecorator().getFormattedCurrentDateTime("dd/MM/yyyy HH:mm:ss"))
-				;
-		
-		String asyncTaskId = entity.getId(messageDetails);
-		entity.createOrUpdate(messageDetails, asyncTaskId);
-		
-		this.mensageriaSender.send(topic, messageDetails);
-		return messageDetails.put("asyncTaskId", asyncTaskId);
 	}
 
 }

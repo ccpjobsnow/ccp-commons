@@ -17,6 +17,13 @@ public class CcpBulkItem {
 		this.json = json;
 	}
 
+	public CcpBulkItem(CcpJsonRepresentation json, CcpEntityOperationType operation, CcpEntity entity, String id) {
+		this.operation = operation;
+		this.entity = entity;
+		this.json = json;
+		this.id = id;
+	}
+
 
 	public CcpJsonRepresentation getJson() {
 		return new CcpJsonRepresentation(this);
