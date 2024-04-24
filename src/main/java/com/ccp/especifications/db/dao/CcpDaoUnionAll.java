@@ -35,15 +35,14 @@ public class CcpDaoUnionAll {
 		return present;
 	}
 
-	public boolean isPresent(String index, String id) {
+	public boolean isPresent(String entityName, String id) {
 		
-		boolean indexNotFound = this.condensed.containsAllKeys(index) == false;
+		boolean entityNotFound = this.condensed.containsAllKeys(entityName) == false;
 		
-		if(indexNotFound) {
+		if(entityNotFound) {
 			return false;
 		}
-		
-		
+		//TODO Verificar a estrutura do condensed
 		CcpJsonRepresentation innerJson = this.condensed.getInnerJson(id);
 		
 		boolean idNotFound = innerJson.containsAllKeys(id) == false;
