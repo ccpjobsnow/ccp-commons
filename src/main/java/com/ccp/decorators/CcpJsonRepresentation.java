@@ -25,7 +25,7 @@ import com.ccp.constantes.CcpConstants;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.json.CcpJsonHandler;
 import com.ccp.validation.ItIsTrueThatTheFollowingFields;
-
+ 
 public final class CcpJsonRepresentation {
 
 	public final Map<String, Object> content;

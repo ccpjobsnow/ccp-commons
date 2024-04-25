@@ -42,7 +42,7 @@ public class CcpDaoUnionAll {
 		if(entityNotFound) {
 			return false;
 		}
-		//TODO Verificar a estrutura do condensed
+		//FIXME Verificar a estrutura do condensed
 		CcpJsonRepresentation innerJson = this.condensed.getInnerJson(id);
 		
 		boolean idNotFound = innerJson.containsAllKeys(id) == false;
