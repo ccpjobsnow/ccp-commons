@@ -89,8 +89,9 @@ public class CcpDaoUnionAll {
 		boolean idNotFound = innerJson.containsAllKeys(id) == false;
 		
 		if(idNotFound) {
-			throw new CcpEntityRecordNotFound(index, id);
+			return CcpConstants.EMPTY_JSON;
 		}
+		
 		CcpJsonRepresentation jsonValue = innerJson.getInnerJson(id);
 		return jsonValue;
 	}

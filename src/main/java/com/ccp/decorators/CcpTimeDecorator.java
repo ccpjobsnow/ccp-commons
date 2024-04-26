@@ -22,6 +22,13 @@ public class CcpTimeDecorator {
 		return tempo;
 	}
 	
+	public int getYear() {
+		Calendar instance = Calendar.getInstance();
+		instance.setTimeInMillis(this.time);
+		int year = instance.get(Calendar.YEAR);
+		return year;
+	}
+	
 	public Long getMidnight() {
 		Calendar cal = this.getBrazilianCalendar();
 		cal.set(Calendar.HOUR_OF_DAY, 0);

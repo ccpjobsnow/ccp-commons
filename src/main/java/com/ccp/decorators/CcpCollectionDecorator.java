@@ -65,8 +65,6 @@ public class CcpCollectionDecorator implements Iterable<Object>{
 		return true;
 	}
 
-	
-	
 	public Iterator<Object> iterator() {
 		return this.content.iterator();
 	}
@@ -88,17 +86,22 @@ public class CcpCollectionDecorator implements Iterable<Object>{
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <T> List<T> getExclusiveList(List<T> listToCompare){
+	public <T> List<T> getExclusiveList(Collection<T> listToCompare){
 		Predicate<? super Object> p = x -> listToCompare.contains(x) == false;
 		List<Object> collect = new ArrayList<Object>(this.content.stream().filter(p).collect(Collectors.toList()));
 		return (List<T>)collect;
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> List<T> getIntersectList(List<T> listToCompare){
+	public <T> List<T> getIntersectList(Collection<T> listToCompare){
 		Predicate<? super Object> p = x -> listToCompare.contains(x);
 		List<T> collect = (List<T> )new ArrayList<Object>(this.content.stream().filter(p).collect(Collectors.toList()));
 		return collect;
+	}
+	
+	public <T> boolean hasIntersect(Collection<T> listToCompare) {
+		List<T> intersectList = this.getIntersectList(listToCompare);
+		return intersectList.isEmpty() == false;
 	}
 	
 	public CcpCollectionDecorator getSubCollection(int start, int end) {
