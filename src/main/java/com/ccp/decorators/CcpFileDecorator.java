@@ -25,7 +25,10 @@ public class CcpFileDecorator {
 
 	private CcpFileDecorator getParent(String content) {
 		File file = new File(content);
-		File parentFile = file.getParentFile();
+		String ap = file.getAbsolutePath();
+		String replace = ap.replace('\\', File.separatorChar);
+		File file2 = new File(replace);
+		File parentFile = file2.getParentFile();
 		if(parentFile == null) {
 			return null;
 		}
@@ -129,9 +132,6 @@ public class CcpFileDecorator {
 	}
 	public List<String> getLines(){
 		String filePath = this.content;
-		if(this.content.toLowerCase().startsWith("c:\\") == false) {
-			filePath = "/home/onias/logs" + filePath;
-		}
 		ArrayList<String> linesFromFile = new ArrayList<>();
 		String line;
 		try (FileReader fr = new FileReader(filePath); BufferedReader br = new BufferedReader(fr)) {

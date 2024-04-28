@@ -41,19 +41,20 @@ public class CcpEmailDecorator {
 		return this.content;
 	}
 
-	public String stripAccents() {
+	public CcpEmailDecorator stripAccents() {
 		if(this.isValid()) {
 			String[] split = this.content.split("@");
 			String s1 = split[0];
 			String s2 = split[1];
-			String p1 = new CcpTextDecorator(s1).stripAccents();
-			String p2 = new CcpTextDecorator(s2).stripAccents();
-			return p1 + "@" + p2;
+			String p1 = new CcpTextDecorator(s1).stripAccents().content;
+			String p2 = new CcpTextDecorator(s2).stripAccents().content;
+			return new CcpEmailDecorator(p1 + "@" + p2);
 		}
 		
 		String s = Normalizer.normalize(this.content, Normalizer.Form.NFD);
-		s = s.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
-		return s;
+		String replaceAll = s.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+		CcpEmailDecorator ccpEmailDecorator = new CcpEmailDecorator(replaceAll);
+		return ccpEmailDecorator;
 	}
 	
 	public boolean isValid() {
@@ -119,12 +120,8 @@ public class CcpEmailDecorator {
 	private static final Pattern VALID_EMAIL_ADDRESS_REGEX = 
 		    Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 
-	public String findFirst(String delimitadores) {
+	public CcpEmailDecorator findFirst(String delimitadores) {
 
-		if(this.content == null) {
-			return "";
-		}
-		
 		String[] palavras = this.content.toLowerCase().split(delimitadores);
 		for (String palavra : palavras) {
 			if(palavra.contains("+")) {
@@ -133,8 +130,9 @@ public class CcpEmailDecorator {
 					continue;
 				}
 				String email = split[split.length - 1];
-				if(new CcpEmailDecorator(email).isValid()) {
-					return email;
+				CcpEmailDecorator ccpEmailDecorator = new CcpEmailDecorator(email);
+				if(ccpEmailDecorator.isValid()) {
+					return ccpEmailDecorator;
 				}
 			}
 
@@ -142,12 +140,16 @@ public class CcpEmailDecorator {
 				palavra = palavra.substring(0, palavra.length() - 1);
 			}
 			
-			if(new CcpEmailDecorator(palavra).isValid()) {
-				String retorno = new CcpEmailDecorator(palavra).stripAccents().toLowerCase().trim();
-				return retorno;
+			CcpEmailDecorator ced = new CcpEmailDecorator(palavra);
+			if(ced.isValid()) {
+				CcpEmailDecorator stripAccents = ced.stripAccents();
+				String retorno = stripAccents.content.toLowerCase().trim();
+				CcpEmailDecorator ccpEmailDecorator = new CcpEmailDecorator(retorno);
+				return ccpEmailDecorator;
 			}
 		}
-		return "";
+		CcpEmailDecorator ccpEmailDecorator = new CcpEmailDecorator("");
+		return ccpEmailDecorator;
 	}
 
 	public Set<String> extractFromText(String delimiter) {
@@ -173,10 +175,6 @@ public class CcpEmailDecorator {
 	}
 	
 	public String getDomain() {
-		if (this.content == null) {
-			return null;
-		}
-
 		String[] split = this.content.split("@");
 
 		if (split.length != 2) {

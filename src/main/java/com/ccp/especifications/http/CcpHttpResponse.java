@@ -60,7 +60,7 @@ public class CcpHttpResponse {
 
 	public String asBase64() {
 		byte[] bytes = this.httpResponse.getBytes();
-		String encodeToString = new CcpStringDecorator(bytes).text().asBase64();
+		String encodeToString = new CcpStringDecorator(bytes).text().asBase64().content;
 		return encodeToString;
 	}
 	

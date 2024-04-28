@@ -13,7 +13,7 @@ public interface CcpAsyncBusinessFactory {
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> function = map.get(processName);
 		
 		if(function == null) {
-			throw new RuntimeException("The topic '" + processName + "' does not exist");
+			throw new RuntimeException("The async process '" + processName + "' does not exist");
 		}
 		
 		return function;

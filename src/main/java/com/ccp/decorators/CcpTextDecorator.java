@@ -3,6 +3,7 @@ package com.ccp.decorators;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.text.Normalizer;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Base64.Decoder;
@@ -11,8 +12,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class CcpTextDecorator {
 	public final String content;
@@ -21,24 +24,81 @@ public class CcpTextDecorator {
 		this.content = content;
 	}
 
-	public String completeLeft(char complement, int length) {
+	public CcpTextDecorator completeLeft(char complement, int length) {
 		if((length - this.content.length() )<=0) {
-			return this.content;
+			return this;
 		}
 		String x = "";
 		for(int k = this.content.length(); k < length; k++) {
 			x += complement;
 		}
-		return x + this.content;
-
+		String complete = x + this.content;
+		CcpTextDecorator ccpTextDecorator = new CcpTextDecorator(complete);
+		return ccpTextDecorator;
 	}
-	public String stripAccents() {
+	
+	public CcpTextDecorator stripAccents() {
 		String s = Normalizer.normalize(this.content, Normalizer.Form.NFD);
 		s = s.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "").replaceAll("[^\\w\\s.,+-]", "");
-		return s;
-		
+		return new CcpTextDecorator(s);
 	}
-	public String generateToken(long charactersSize) {
+	
+	public List<String> getPieces(String beginDelimiter, String endDelimiter) {
+		int beginIndex = 0;
+		int endIndex = 0;
+		String str = this.content;
+		List<String> list = new ArrayList<>();
+		while(true) {
+			beginIndex = str.indexOf(beginDelimiter);
+			if(beginIndex < 0) {
+				return list;
+			}
+			endIndex = str.indexOf(endDelimiter )+ endDelimiter.length();
+
+			if(endIndex < 0) {
+				return list;
+			}
+			String substring = str.substring(beginIndex, endIndex);
+			list.add(substring);
+			str = str.substring(endIndex);
+		}
+	}
+	
+	public List<String> getPieces(Predicate<String> predicate, String delimiter){
+		String[] split = this.content.split(delimiter);
+		List<String> asList = Arrays.asList(split);
+		List<String> collect = asList.stream().filter(predicate).collect(Collectors.toList());
+		return collect;
+	}
+	
+	public CcpTextDecorator removePieces(Predicate<String> predicate, String delimiter) {
+		List<String> pieces = this.getPieces(predicate, delimiter);
+		CcpTextDecorator ccpTextDecorator = this.removePieces(pieces);
+		return ccpTextDecorator;
+	}
+	
+	public CcpTextDecorator replace(String oldText, String newText) {
+		String replace = this.content.replace(oldText, newText);
+		CcpTextDecorator ccpTextDecorator = new CcpTextDecorator(replace);
+		return ccpTextDecorator;
+	}
+	
+	public CcpTextDecorator removePieces(String beginDelimiter, String endDelimiter) {
+		List<String> pieces = this.getPieces(beginDelimiter, endDelimiter);
+		CcpTextDecorator ccpTextDecorator = this.removePieces(pieces);
+		return ccpTextDecorator;
+	}
+
+	public CcpTextDecorator removePieces(List<String> pieces) {
+		String str = this.content;	
+		for (String piece : pieces) {
+			str = str.replace(piece, " ");
+		}
+		CcpTextDecorator ccpTextDecorator = new CcpTextDecorator(str);
+		return ccpTextDecorator;
+	}
+	
+	public CcpTextDecorator generateToken(long charactersSize) {
 
 		Random random = new Random();
 		char[] charArray = this.content.toCharArray();
@@ -52,7 +112,8 @@ public class CcpTextDecorator {
 			sb.append(caractereAleatorio);
 		}
 
-		return sb.toString();
+		CcpTextDecorator ccpTextDecorator = new CcpTextDecorator(sb.toString());
+		return ccpTextDecorator;
 	}
 	
 	public InputStream getByteArrayInputStream() {
@@ -86,7 +147,7 @@ public class CcpTextDecorator {
 		return byteArrayInputStream;
 
 	}
-	public String getMessage(CcpJsonRepresentation parameters) {
+	public CcpTextDecorator getMessage(CcpJsonRepresentation parameters) {
 
 		Map<String, Object> content = parameters.getContent();
 		Set<String> keySet = content.keySet();
@@ -95,37 +156,30 @@ public class CcpTextDecorator {
 			String value = parameters.getAsString(key);
 			message = message.replace("{" + key + "}", value);
 		}
-		return message;
+		return new CcpTextDecorator(message);
 	}
 	//StringDecorator removeStartingCharacters()
-	public String removeStartingCharacters( char c) {
+	public CcpTextDecorator removeStartingCharacters( char c) {
 		
-		if(this.content == null) {
-			return this.content;
-		}
 		
 		if(this.content.startsWith("" + c) == false) {
-			return this.content;
+			return this;
 		}
 		
 		String substring = this.content.substring(1);
-		String removeStartingCharacters = new CcpTextDecorator(substring).removeStartingCharacters(c);
+		CcpTextDecorator removeStartingCharacters = new CcpTextDecorator(substring).removeStartingCharacters(c);
 		return removeStartingCharacters;
 	}
 
 	//StringDecorator removeEndingCharacters()
-	public String removeEndingCharacters(char c) {
-		
-		if(this.content == null) {
-			return this.content;
-		}
-		
+	public CcpTextDecorator removeEndingCharacters(char c) {
+
 		if(this.content.endsWith("" + c) == false) {
-			return this.content;
+			return this;
 		}
 
 		String substring = this.content.substring(0, this.content.length() - 1);
-		String removed = new CcpTextDecorator(substring). removeEndingCharacters(c);
+		CcpTextDecorator removed = new CcpTextDecorator(substring).removeEndingCharacters(c);
 		return removed;
 	}
 
@@ -143,25 +197,27 @@ public class CcpTextDecorator {
 		return this.content;
 	}
 	
-	public String asBase64() {
+	public CcpTextDecorator asBase64() {
 		byte[] bytes = this.content.getBytes();
 		Encoder encoder = Base64.getEncoder();
 		String encodeToString = encoder.encodeToString(bytes);
-		return encodeToString;
+		CcpTextDecorator ccpTextDecorator = new CcpTextDecorator(encodeToString);
+		return ccpTextDecorator;
 	}
 	
-	public String toCamelCase() {
+	public CcpTextDecorator toCamelCase() {
 		String[] split = this.content.split("_");
 		List<String> asList = Arrays.asList(split);
 		StringBuilder sb = new StringBuilder();
 		for (String string : asList) {
-			String capitalize = new CcpStringDecorator(string).text().capitalize();
+			String capitalize = new CcpStringDecorator(string).text().capitalize().content;
 			sb.append(capitalize);
 		}
-		return sb.toString();
+		CcpTextDecorator ccpTextDecorator = new CcpTextDecorator( sb.toString());
+		return ccpTextDecorator;
 	}
 
-	public String toSnakeCase() {
+	public CcpTextDecorator toSnakeCase() {
 		char[] charArray = this.content.toCharArray();
 		StringBuilder sb = new StringBuilder(this.content);
 		int k = 0;
@@ -182,19 +238,23 @@ public class CcpTextDecorator {
 			}
 			sb.insert(k++ + m++, "_");
 		}
-		return sb.toString().toLowerCase();
+		CcpTextDecorator ccpTextDecorator = new CcpTextDecorator(sb.toString().toLowerCase());
+		return ccpTextDecorator;
 	}
 	
-	public String capitalize() {
+	public CcpTextDecorator capitalize() {
 		
 		if(this.content.trim().isEmpty()) {
-			return "";
+			CcpTextDecorator ccpTextDecorator = new CcpTextDecorator("");
+			return ccpTextDecorator;
 		}
 		String firstLetter = this.content.substring(0, 1);
 		String substring = this.content.substring(1);
 		String upperCase = firstLetter.toUpperCase();
 		String lowerCase = substring.toLowerCase();
-		return upperCase + lowerCase;
+		String complete = upperCase + lowerCase;
+		CcpTextDecorator ccpTextDecorator = new CcpTextDecorator(complete);
+		return ccpTextDecorator;
 	}
 	
 	public CcpNumberDecorator lenght() {

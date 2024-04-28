@@ -131,11 +131,11 @@ public final class CcpJsonRepresentation {
 	private static CcpJsonRepresentation getErrorDetails(Throwable e) {
 
 		CcpJsonRepresentation jr = CcpConstants.EMPTY_JSON;
-
-		if (e == null) {
+		
+		if(e == null) {
 			return jr;
 		}
-
+		
 		Throwable cause = e.getCause();
 		String message = e.getMessage();
 		StackTraceElement[] st = e.getStackTrace();
@@ -155,9 +155,9 @@ public final class CcpJsonRepresentation {
 	}
 	
 	@SuppressWarnings("deprecation")
-	public Long getAsLongNumber(String property) {
+	public Long getAsLongNumber(String key) {
 		
-		Object object = this.content.get(property);
+		Object object = this.content.get(key);
 		try {
 			if(object instanceof Date) {
 				return ((Date)object).getTime();
@@ -175,17 +175,19 @@ public final class CcpJsonRepresentation {
 				}
 			}
 			
-			return null;
+			throw new RuntimeException("The value '" + object + "' from the key '" + key + "is not a long");
 		}
 		
 	}
 
-	public Integer getAsIntegerNumber(String property) {
+	public Integer getAsIntegerNumber(String key) {
 		
+		Object object = this.content.get(key);
+
 		try {
-			return Double.valueOf("" + this.content.get(property)).intValue();
+			return Double.valueOf("" + key).intValue();
 		} catch (Exception e) {
-			return null;
+			throw new RuntimeException("The value '" + object + "' from the key '" + key + "is not a integer");
 		}
 		
 	}
@@ -212,25 +214,13 @@ public final class CcpJsonRepresentation {
 		return 0;
 	}
 
-	public Double getAsDoubleNumber(String property) {
+	public Double getAsDoubleNumber(String key) {
 		
+		Object object = this.content.get(key);
 		try {
-			return Double.valueOf("" + this.content.get(property));
+			return Double.valueOf("" + object);
 		} catch (Exception e) {
-			return null;
-		}
-	}
-	
-	
-	public Date getAsData(String property) {
-		
-		try {
-			String asString = this.getAsString(property);
-			Double double1 = Double.valueOf(asString);
-			long longValue = double1.longValue();
-			return new Date(longValue);
-		} catch (Exception e) {
-			return null;
+			throw new RuntimeException("The value '" + object + "' from the key '" + key + "is not a double");
 		}
 	}
 	
@@ -240,7 +230,7 @@ public final class CcpJsonRepresentation {
 		
 		CcpTextDecorator ccpTextDecorator = new CcpTextDecorator(asString);
 		
-		String message = ccpTextDecorator.getMessage(this);
+		String message = ccpTextDecorator.getMessage(this).content;
 		 
 		CcpJsonRepresentation put = this.put(fieldToPut, message);
 		
@@ -279,14 +269,14 @@ public final class CcpJsonRepresentation {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> T getOrDefault(String name, T valorPadrao) {
+	public <T> T getOrDefault(String name, T defaultValue) {
 		Object object = this.content.get(name);
 		
 		if(null == object) {
-			return valorPadrao;
+			return defaultValue;
 		}
 		
-		if(valorPadrao instanceof String) {
+		if(defaultValue instanceof String) {
 			return (T) ("" + object);
 		}
 		
@@ -299,9 +289,12 @@ public final class CcpJsonRepresentation {
 			return 0d;
 		}
 		
-		
-		Double asDoubleNumber = this.getAsDoubleNumber(key);
-		return asDoubleNumber == null ? 0d : asDoubleNumber;
+		try {
+			Double asDoubleNumber = this.getAsDoubleNumber(key);
+			return asDoubleNumber;
+		} catch (Exception e) {
+			return 0d;
+		}
 	}
 	
 	public CcpJsonRepresentation getJsonPiece(String...keys) {
@@ -409,14 +402,14 @@ public final class CcpJsonRepresentation {
 		Map<String, Object> content = new HashMap<>();
 		content.putAll(this.content);
 		Object value = content.remove(oldKey);
-		CcpJsonRepresentation ccpMapDecorator = new CcpJsonRepresentation(content);
 		if(value == null) {
-			return ccpMapDecorator;
+			CcpJsonRepresentation json = new CcpJsonRepresentation(content);
+			return json;
 		}
 		
 		content.put(newKey, value);
-		CcpJsonRepresentation mapDecorator = ccpMapDecorator;
-		return mapDecorator;
+		CcpJsonRepresentation json = new CcpJsonRepresentation(content);
+		return json;
 		
 	}
 	
@@ -667,16 +660,6 @@ public final class CcpJsonRepresentation {
 	
 		return str;
 	}
-
-	public String getDataFormatada(String key, String format) {
-		Long asLongNumber = this.getAsLongNumber(key);
-		if(asLongNumber == null) {
-			return "";
-		}
-		String formattedDateTime = new CcpTimeDecorator(asLongNumber).getFormattedDateTime(format);
-		return formattedDateTime;
-	}
-	
 
 	public CcpJsonRepresentation whenHasKey(String key, Function<CcpJsonRepresentation, CcpJsonRepresentation> process) {
 		
