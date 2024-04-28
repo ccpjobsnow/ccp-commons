@@ -36,5 +36,6 @@ public @interface ValidationRules {
 	class Dumb {
 
 	}
+	
 
 }

@@ -151,7 +151,7 @@ public interface CcpEntity extends CcpEntityIdGenerator{
 		CcpJsonRepresentation onlyExistingFields = this.getOnlyExistingFields(values);
 		boolean created = this.create(values);
 		
-		this.saveAuditory(values, created ? CcpEntityOperationType.create : CcpEntityOperationType.update);
+		this.saveAuditory(onlyExistingFields, created ? CcpEntityOperationType.create : CcpEntityOperationType.update);
 
 		return onlyExistingFields;
 	}

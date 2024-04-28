@@ -11,16 +11,24 @@ import com.ccp.exceptions.http.CcpHttpError;
 public final class CcpHttpHandler {
 
 	private final CcpJsonRepresentation flows;
-	
+	private final Function<CcpJsonRepresentation, CcpJsonRepresentation> alternativeFlow;
 	private final CcpHttpRequester ccpHttp = CcpDependencyInjection.getDependency(CcpHttpRequester.class);
 
 	public CcpHttpHandler(CcpJsonRepresentation flows) {
+		this.alternativeFlow = null;
 		this.flows = flows;
 	}
 
+	public CcpHttpHandler(Integer httpStatus, Function<CcpJsonRepresentation, CcpJsonRepresentation> alternativeFlow) {
+		this.flows = CcpConstants.EMPTY_JSON.put(httpStatus.toString(), CcpConstants.DO_BY_PASS);
+		this.alternativeFlow = alternativeFlow;
+	}
+	
 	public CcpHttpHandler(Integer httpStatus) {
 		this.flows = CcpConstants.EMPTY_JSON.put(httpStatus.toString(), CcpConstants.DO_BY_PASS);
+		this.alternativeFlow = null;
 	}
+	
 	
 	public <V> V executeHttpSimplifiedGet(String trace, String url, CcpHttpResponseTransform<V> transformer) {
 		V executeHttpRequest = this.executeHttpRequest(trace, url, "GET", CcpConstants.EMPTY_JSON, CcpConstants.EMPTY_JSON, transformer);
@@ -41,7 +49,7 @@ public final class CcpHttpHandler {
 	
 		int status = response.httpStatus;
 		
-		Function<CcpJsonRepresentation, CcpJsonRepresentation> flow = this.flows.getAsObject("" + status);
+		Function<CcpJsonRepresentation, CcpJsonRepresentation> flow = this.flows.getOrDefault("" + status, this.alternativeFlow);
 	
 		if(flow == null) {
 			throw new CcpHttpError(trace, url, method, headers, request, status, response.httpResponse, this.flows.keySet());

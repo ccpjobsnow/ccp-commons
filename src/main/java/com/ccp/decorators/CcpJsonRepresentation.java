@@ -185,9 +185,9 @@ public final class CcpJsonRepresentation {
 		Object object = this.content.get(key);
 
 		try {
-			return Double.valueOf("" + key).intValue();
+			return Double.valueOf("" + object).intValue();
 		} catch (Exception e) {
-			throw new RuntimeException("The value '" + object + "' from the key '" + key + "is not a integer");
+			throw new RuntimeException("The value '" + object + "' from the key '" + key + "' is not a integer");
 		}
 		
 	}
