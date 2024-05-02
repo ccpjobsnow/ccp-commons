@@ -443,6 +443,19 @@ public final class CcpJsonRepresentation {
 		return new CcpJsonRepresentation(this.getContent());
 	}
 
+	
+	@SuppressWarnings("unchecked")
+	public <T>T getValueFromPath(String...paths){
+		CcpJsonRepresentation initial = this;
+		for(int k = 0; k < paths.length -1 ; k++) {
+			String path = paths[k];
+			initial = initial.getInnerJson(path);
+		}
+		String lastPath = paths[paths.length - 1];
+		Object object = initial.get(lastPath);
+		return (T) object;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public CcpJsonRepresentation getInnerJson(String key) {
 		Object object = this.content.get(key);
