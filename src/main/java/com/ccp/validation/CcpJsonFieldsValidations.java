@@ -1,11 +1,9 @@
 package com.ccp.validation;
 
-import java.util.Arrays;
 import java.util.Map;
 
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
-import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.validation.annotations.AllowedValues;
 import com.ccp.validation.annotations.ArrayNumbers;
 import com.ccp.validation.annotations.ArraySize;

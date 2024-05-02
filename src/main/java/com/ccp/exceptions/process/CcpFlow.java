@@ -1,7 +1,6 @@
 package com.ccp.exceptions.process;
 
 import com.ccp.decorators.CcpJsonRepresentation;
-import com.ccp.process.CcpStepResult;
 
 @SuppressWarnings("serial")
 public class CcpFlow extends RuntimeException{
@@ -12,12 +11,6 @@ public class CcpFlow extends RuntimeException{
 	
 	public final String[] fields;
 
-	public CcpFlow(CcpStepResult stepResult, String... fields) {
-		this.values = stepResult.getData();
-		this.status = stepResult.status;
-		this.fields = fields;
-
-	}
 	public CcpFlow(CcpJsonRepresentation values, int status, String... fields) {
 		super(values.put("status", status).asPrettyJson());
 		this.values = values;
