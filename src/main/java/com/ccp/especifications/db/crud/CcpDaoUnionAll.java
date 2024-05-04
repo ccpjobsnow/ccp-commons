@@ -1,4 +1,4 @@
-package com.ccp.especifications.db.dao;
+package com.ccp.especifications.db.crud;
 
 import java.util.List;
 
@@ -65,6 +65,29 @@ public class CcpDaoUnionAll {
 		
 		return true;
 	}
+	
+	
+	public <T> T whenRecordIsFoundInUnionAll(
+			CcpJsonRepresentation searchParameter, 
+			WhenRecordIsFoundInUnionAll<T> handler
+			) {
+		
+		CcpEntityIdGenerator entity = handler.getEntity();
+	
+		boolean notFound = this.isPresent(entity, searchParameter) == false;
+		
+		if(notFound) {
+			T whenRecordIsNotFound = handler.whenRecordIsNotFound(searchParameter);
+			return whenRecordIsNotFound;
+		}
+		
+		CcpJsonRepresentation recordFound = this.get(entity, searchParameter);
+		
+		T whenRecordIsFound = handler.whenRecordIsFound(searchParameter, recordFound);
+		
+		return whenRecordIsFound;
+	}
+	
 	
 	public CcpJsonRepresentation get(CcpEntityIdGenerator entity, CcpJsonRepresentation value) {
 		

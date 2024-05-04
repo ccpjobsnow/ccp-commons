@@ -1,4 +1,4 @@
-package com.ccp.especifications.db.dao;
+package com.ccp.especifications.db.crud;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,8 +56,8 @@ public class CcpDaoFinally {
 			entities[counter++] = ccpDbEntity;
 		}
 
-		CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
-		List<CcpJsonRepresentation> manyById = dao.getManyById(values, entities);
+		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
+		List<CcpJsonRepresentation> manyById = crud.getManyById(values, entities);
 		counter = 0;
 		
 		for (CcpJsonRepresentation specification : specifications) {

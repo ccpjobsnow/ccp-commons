@@ -1,4 +1,4 @@
-package com.ccp.especifications.db.dao;
+package com.ccp.especifications.db.crud;
 
 import java.util.Collection;
 import java.util.List;
@@ -7,7 +7,7 @@ import java.util.Set;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.utils.CcpEntityIdGenerator;
 
-public interface CcpDao {
+public interface CcpCrud {
 
 	List<CcpJsonRepresentation> getManyById(CcpJsonRepresentation values, CcpEntityIdGenerator... entities);
 	

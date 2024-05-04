@@ -11,10 +11,10 @@ public class CcpBulkItem {
 	public final String id;
 
 	public CcpBulkItem(CcpJsonRepresentation json, CcpEntityOperationType operation, CcpEntity entity) {
+		this.json = entity.getOnlyExistingFields(json);
 		this.id = entity.getId(json);
 		this.operation = operation;
 		this.entity = entity;
-		this.json = json;
 	}
 
 	public CcpBulkItem(CcpJsonRepresentation json, CcpEntityOperationType operation, CcpEntity entity, String id) {

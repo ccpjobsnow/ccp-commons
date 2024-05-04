@@ -14,7 +14,7 @@ import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.bulk.CcpEntityOperationType;
-import com.ccp.especifications.db.dao.CcpDao;
+import com.ccp.especifications.db.crud.CcpCrud;
 import com.ccp.exceptions.db.CcpEntityMissingKeys;
 import com.ccp.exceptions.db.CcpEntityRecordNotFound;
 import com.ccp.exceptions.process.CcpFlow;
@@ -102,8 +102,8 @@ public interface CcpEntity extends CcpEntityIdGenerator{
 
 	default CcpJsonRepresentation getOneById(CcpJsonRepresentation data, Function<CcpJsonRepresentation, CcpJsonRepresentation> ifNotFound) {
 		try {
-			CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
-			CcpJsonRepresentation oneById = dao.getOneById(this, data);
+			CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
+			CcpJsonRepresentation oneById = crud.getOneById(this, data);
 			return oneById;
 			
 		} catch (CcpEntityRecordNotFound e) {
@@ -121,8 +121,8 @@ public interface CcpEntity extends CcpEntityIdGenerator{
 
 	default CcpJsonRepresentation getOneById(String id) {
 		try {
-			CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
-			CcpJsonRepresentation md = dao.getOneById(this, id);
+			CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
+			CcpJsonRepresentation md = crud.getOneById(this, id);
 			return md;
 			
 		} catch (CcpEntityRecordNotFound e) {
@@ -133,15 +133,15 @@ public interface CcpEntity extends CcpEntityIdGenerator{
 	}
 	
 	default boolean exists(String id) {
-		CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
-		boolean exists = dao.exists(this, id);
+		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
+		boolean exists = crud.exists(this, id);
 		return exists;
 		
 	}
 	
 	default boolean exists(CcpJsonRepresentation data) {
-		CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
-		boolean exists = dao.exists(this, data);
+		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
+		boolean exists = crud.exists(this, data);
 		return exists;
 	}
 	
@@ -158,9 +158,9 @@ public interface CcpEntity extends CcpEntityIdGenerator{
 
 	default boolean create(CcpJsonRepresentation values) {
 		CcpJsonRepresentation onlyExistingFields = this.getOnlyExistingFields(values);
-		CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
+		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
 
-		CcpJsonRepresentation createOrUpdate = dao.createOrUpdate(this, onlyExistingFields);
+		CcpJsonRepresentation createOrUpdate = crud.createOrUpdate(this, onlyExistingFields);
 		String result = createOrUpdate.getAsString("result");
 		boolean created = "created".equals(result);
 		
@@ -169,22 +169,22 @@ public interface CcpEntity extends CcpEntityIdGenerator{
 	
 
 	default boolean delete(CcpJsonRepresentation values) {
-		CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
-		boolean remove = dao.delete(this, values);
+		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
+		boolean remove = crud.delete(this, values);
 		this.saveAuditory(values, CcpEntityOperationType.delete);
 		return remove;
 	}
 	
 	default boolean delete(String id) {
-		CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
-		boolean remove = dao.delete(this, id);
+		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
+		boolean remove = crud.delete(this, id);
 		//TODO SALVAR AUDITORIA???
 		return remove;
 	}
 	
 	default List<CcpJsonRepresentation> getManyByIds(String...ids){
-		CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
-		List<CcpJsonRepresentation> manyByIds = dao.getManyByIds(this, ids);
+		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
+		List<CcpJsonRepresentation> manyByIds = crud.getManyByIds(this, ids);
 	
 		int k = 0;
 		List<CcpJsonRepresentation> response = new ArrayList<>();
@@ -217,8 +217,8 @@ public interface CcpEntity extends CcpEntityIdGenerator{
 	
 	default List<CcpJsonRepresentation> getManyById(String... ids) {
 		int k;
-		CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
-		List<CcpJsonRepresentation> manyByIds = dao.getManyByIds(this, ids);
+		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
+		List<CcpJsonRepresentation> manyByIds = crud.getManyByIds(this, ids);
 	
 		k = 0;
 		List<CcpJsonRepresentation> response = new ArrayList<>();
@@ -239,8 +239,8 @@ public interface CcpEntity extends CcpEntityIdGenerator{
 	boolean isAuditable();
 	
 	default CcpJsonRepresentation createOrUpdate(CcpJsonRepresentation data, String id) {
-		CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
-		CcpJsonRepresentation createOrUpdate = dao.createOrUpdate(this, data, id);
+		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
+		CcpJsonRepresentation createOrUpdate = crud.createOrUpdate(this, data, id);
 		return createOrUpdate;
 	}
 	

@@ -1,4 +1,4 @@
-package com.ccp.especifications.db.dao;
+package com.ccp.especifications.db.crud;
 
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;

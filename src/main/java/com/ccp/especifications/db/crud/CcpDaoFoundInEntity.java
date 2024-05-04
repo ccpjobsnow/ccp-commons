@@ -1,4 +1,4 @@
-package com.ccp.especifications.db.dao;
+package com.ccp.especifications.db.crud;
 
 import java.util.List;
 import java.util.function.Function;
