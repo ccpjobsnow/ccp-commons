@@ -7,11 +7,11 @@ import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.utils.CcpEntityIdGenerator;
 import com.ccp.exceptions.db.CcpEntityRecordNotFound;
 
-public class CcpDaoUnionAll {
+public class CcpSelectUnionAll {
 
 	public final CcpJsonRepresentation  condensed;
 
-	public CcpDaoUnionAll(List<CcpJsonRepresentation> results) {
+	public CcpSelectUnionAll(List<CcpJsonRepresentation> results) {
 		
 		CcpJsonRepresentation  condensed = CcpConstants.EMPTY_JSON;
 		

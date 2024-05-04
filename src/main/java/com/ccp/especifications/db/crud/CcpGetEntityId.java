@@ -10,8 +10,8 @@ public class CcpGetEntityId {
 	public CcpGetEntityId(CcpJsonRepresentation id) {
 		this.id = id;
 	}
-	public CcpDaoProcedure toBeginProcedureAnd() {
-		return new CcpDaoProcedure(this.id, CcpConstants.EMPTY_JSON);
+	public CcpSelectProcedure toBeginProcedureAnd() {
+		return new CcpSelectProcedure(this.id, CcpConstants.EMPTY_JSON);
 	}
 
 

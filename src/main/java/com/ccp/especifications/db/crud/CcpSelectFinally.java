@@ -16,11 +16,11 @@ import com.ccp.exceptions.process.CcpFlow;
 import com.ccp.process.CcpProcessStatus;
 
 
-public class CcpDaoFinally {
+public class CcpSelectFinally {
 	private final CcpJsonRepresentation id;
 	private final CcpJsonRepresentation statements;
 	private final String[] fields;
-	CcpDaoFinally(CcpJsonRepresentation id, CcpJsonRepresentation statements, String[] fields) {
+	CcpSelectFinally(CcpJsonRepresentation id, CcpJsonRepresentation statements, String[] fields) {
 		this.id = id;
 		this.fields = fields;
 		this.statements = statements;

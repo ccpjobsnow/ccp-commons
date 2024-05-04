@@ -76,7 +76,7 @@ public interface CcpCrud {
 		return oneById;
 	}
 	
-	CcpDaoUnionAll unionAll(Collection<CcpJsonRepresentation> values, CcpEntityIdGenerator... entities);
+	CcpSelectUnionAll unionAll(Collection<CcpJsonRepresentation> values, CcpEntityIdGenerator... entities);
 
 	CcpJsonRepresentation getAllData(CcpJsonRepresentation values, CcpEntityIdGenerator... entities);
 
@@ -95,6 +95,6 @@ public interface CcpCrud {
 		return deleted;
 	}
 
-	CcpDaoUnionAll unionAll(Set<String> values, CcpEntityIdGenerator... entities);
+	CcpSelectUnionAll unionAll(Set<String> values, CcpEntityIdGenerator... entities);
 
 }
