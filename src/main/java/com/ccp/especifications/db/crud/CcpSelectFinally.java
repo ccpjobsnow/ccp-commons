@@ -1,10 +1,8 @@
 package com.ccp.especifications.db.crud;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -42,29 +40,22 @@ public class CcpSelectFinally {
 
 	
 	private CcpJsonRepresentation findById(CcpJsonRepresentation values, CcpJsonRepresentation... specifications) {
-		int counter = 0;
 		List<CcpEntity> keySet = Arrays.asList(specifications).stream()
 				.filter(x -> x.getAsObject("entity") != null)
-				.map(x -> (CcpEntity) x.getAsObject("entity") )
+				.map(x -> (CcpEntity) x.get("entity") )
 				.collect(Collectors.toList());
 		
 		LinkedHashSet<CcpEntity> set = new LinkedHashSet<>(keySet);
 
-		CcpEntity[]  entities = new CcpEntity[set.size()];
+		CcpEntity[] entities = set.toArray(new CcpEntity[set.size()]);
 		
-		for (CcpEntity ccpDbEntity : set) { 
-			entities[counter++] = ccpDbEntity;
-		}
-
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
-		List<CcpJsonRepresentation> manyById = crud.getManyById(values, entities);
-		counter = 0;
+		
+		CcpSelectUnionAll unionAll = crud.unionAll(values, entities);
 		
 		for (CcpJsonRepresentation specification : specifications) {
 			
-			String entity = specification.getAsString("entity");
-			
-			boolean executeFreeAction = entity.trim().isEmpty();
+			boolean executeFreeAction = specification.containsKey("entity") == false;
 			
 			if(executeFreeAction) {
 				Function<CcpJsonRepresentation, CcpJsonRepresentation> action = specification.getAsObject("action");
@@ -72,25 +63,22 @@ public class CcpSelectFinally {
 				continue;
 			}
 			
-			boolean recordFound = specification.getAsBoolean("found");
+			boolean shouldHaveBeenFound = specification.getAsBoolean("found");
 			
-			Optional<CcpJsonRepresentation> findFirst = new ArrayList<>(manyById).stream()
-					.filter(x -> x.getAsString("_index").equals(entity))
-					.findFirst();
-
-			CcpJsonRepresentation dataBaseRow = findFirst.get();
+			CcpEntity entity = specification.getAsObject("entity");
 			
-			boolean _found = dataBaseRow.getAsBoolean("_found");
-			boolean itWasNotForeseen = _found != recordFound;
+			boolean wasActuallyFound = unionAll.isPresent(entity, values);
+			
+			boolean itWasNotForeseen = wasActuallyFound != shouldHaveBeenFound;
 			
 			if(itWasNotForeseen) {
 
-				if(_found == false) {
+				if(wasActuallyFound == false) {
 					continue;
 				}
-
-				values = values.putSubKey("_entities", entity, dataBaseRow);
-				
+				String entityName = entity.getEntityName();
+				CcpJsonRepresentation dataBaseRow = unionAll.getEntityRow(entity,values);
+				values = values.putSubKey("_entities", entityName, dataBaseRow);
 				continue;
 			}
 			
@@ -112,12 +100,13 @@ public class CcpSelectFinally {
 			
 			Function<CcpJsonRepresentation, CcpJsonRepresentation> action = specification.getAsObject("action");
 
-			if(recordFound == false) {
+			if(shouldHaveBeenFound == false) {
 				values = action.apply(values);
 				continue;
 			}
-			
-			CcpJsonRepresentation context = values.putSubKey("_entities", entity, dataBaseRow);
+			String entityName = entity.getEntityName();
+			CcpJsonRepresentation dataBaseRow = unionAll.getEntityRow(entity,values);
+			CcpJsonRepresentation context = values.putSubKey("_entities", entityName, dataBaseRow);
 			values = action.apply(context);
 		}
 		
@@ -128,6 +117,4 @@ public class CcpSelectFinally {
 		CcpJsonRepresentation subMap = values.getJsonPiece(this.fields);
 		return subMap;
 	}
-
-	
 }

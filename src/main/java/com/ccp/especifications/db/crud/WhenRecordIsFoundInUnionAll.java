@@ -1,14 +1,14 @@
 package com.ccp.especifications.db.crud;
 
 import com.ccp.decorators.CcpJsonRepresentation;
-import com.ccp.especifications.db.utils.CcpEntityIdGenerator;
+import com.ccp.especifications.db.utils.CcpEntity;
 
 public interface WhenRecordIsFoundInUnionAll<T> {
 
-	T whenRecordIsFound(CcpJsonRepresentation searchParameter, CcpJsonRepresentation recordFound);
+	T whenRecordExists(CcpJsonRepresentation searchParameter, CcpJsonRepresentation recordFound);
 
-	T whenRecordIsNotFound(CcpJsonRepresentation searchParameter);
+	T whenRecordDoesNotExist(CcpJsonRepresentation searchParameter);
 	
-	CcpEntityIdGenerator getEntity();
+	CcpEntity getEntity();
 	
 }

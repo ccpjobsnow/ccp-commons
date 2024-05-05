@@ -6,7 +6,7 @@ public enum SimpleArrayValidations {
 
 	notEmptyArray{
 
-		@Override
+		
 		public boolean isValidJson(CcpJsonRepresentation json, String... fields) {
 			boolean x = json.itIsTrueThatTheFollowingFields(fields).ifTheyAreAllArrayValuesThenEachOne().hasTheSizeThatIs().greaterThan(0d);
 			return x;

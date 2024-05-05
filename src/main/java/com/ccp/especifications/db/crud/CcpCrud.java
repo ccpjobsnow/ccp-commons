@@ -1,17 +1,15 @@
 package com.ccp.especifications.db.crud;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import com.ccp.decorators.CcpJsonRepresentation;
-import com.ccp.especifications.db.utils.CcpEntityIdGenerator;
+import com.ccp.especifications.db.utils.CcpEntity;
 
 public interface CcpCrud {
 
-	List<CcpJsonRepresentation> getManyById(CcpJsonRepresentation values, CcpEntityIdGenerator... entities);
-	
-	default CcpJsonRepresentation createOrUpdate(CcpEntityIdGenerator entity, CcpJsonRepresentation data) {
+	default CcpJsonRepresentation createOrUpdate(CcpEntity entity, CcpJsonRepresentation data) {
 		
 		String id = entity.getId(data);
 
@@ -20,54 +18,17 @@ public interface CcpCrud {
 		return response;
 	}
 	
-	List<CcpJsonRepresentation> getManyByIds(CcpEntityIdGenerator entity, String... ids);
 	
-	default boolean exists(CcpEntityIdGenerator entity, CcpJsonRepresentation values) {
+	default boolean exists(CcpEntity entity, CcpJsonRepresentation values) {
 		String id = entity.getId(values);
 		
 		boolean exists = this.exists(entity, id);
 		return exists;
 	}
 	
-	default boolean anyMatch(CcpJsonRepresentation values, CcpEntityIdGenerator... entities) {
-		List<CcpJsonRepresentation> manyById = this.getManyById(values, entities);
-		for (CcpJsonRepresentation md : manyById) {
-			boolean found = md.getAsBoolean("_found");
-			
-			if(found) {
-				return true;
-			}
-		}
-		return false;
-	}
+	CcpJsonRepresentation getOneById(CcpEntity entity, String id);
 
-	default boolean allMatch(CcpJsonRepresentation values, CcpEntityIdGenerator... entities) {
-		List<CcpJsonRepresentation> manyById = this.getManyById(values, entities);
-		for (CcpJsonRepresentation md : manyById) {
-			boolean notFound = md.getAsBoolean("_found") == false;
-			
-			if(notFound) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	default boolean noMatches(CcpJsonRepresentation values, CcpEntityIdGenerator... entities) {
-		List<CcpJsonRepresentation> manyById = this.getManyById(values, entities);
-		for (CcpJsonRepresentation md : manyById) {
-			boolean found = md.getAsBoolean("_found");
-			
-			if(found) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	CcpJsonRepresentation getOneById(CcpEntityIdGenerator entity, String id);
-
-	default CcpJsonRepresentation getOneById(CcpEntityIdGenerator entity, CcpJsonRepresentation values) {
+	default CcpJsonRepresentation getOneById(CcpEntity entity, CcpJsonRepresentation values) {
 	
 		String id = entity.getId(values);
 		
@@ -76,25 +37,25 @@ public interface CcpCrud {
 		return oneById;
 	}
 	
-	CcpSelectUnionAll unionAll(Collection<CcpJsonRepresentation> values, CcpEntityIdGenerator... entities);
+	CcpSelectUnionAll unionAll(Collection<CcpJsonRepresentation> values, CcpEntity... entities);
 
-	CcpJsonRepresentation getAllData(CcpJsonRepresentation values, CcpEntityIdGenerator... entities);
+	default CcpSelectUnionAll unionAll(CcpJsonRepresentation values, CcpEntity... entities) {
+		List<CcpJsonRepresentation> asList = Arrays.asList(values);
+		CcpSelectUnionAll unionAll = this.unionAll(asList, entities);
+		return unionAll;
+	}
 
-	List<CcpJsonRepresentation> getManyById(List<CcpJsonRepresentation> values, CcpEntityIdGenerator... entities);
 
-	CcpJsonRepresentation createOrUpdate(CcpEntityIdGenerator entity, CcpJsonRepresentation data, String id);
+	CcpJsonRepresentation createOrUpdate(CcpEntity entity, CcpJsonRepresentation data, String id);
 
-	boolean exists(CcpEntityIdGenerator entity, String id);
+	boolean exists(CcpEntity entity, String id);
 
-	boolean delete(CcpEntityIdGenerator entity, String id); 
+	boolean delete(CcpEntity entity, String id); 
 	
-	default boolean delete(CcpEntityIdGenerator entity, CcpJsonRepresentation values) {
+	default boolean delete(CcpEntity entity, CcpJsonRepresentation values) {
 		String id = entity.getId(values);
 
 		boolean deleted = this.delete(entity, id);
 		return deleted;
 	}
-
-	CcpSelectUnionAll unionAll(Set<String> values, CcpEntityIdGenerator... entities);
-
 }

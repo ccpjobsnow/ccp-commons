@@ -19,7 +19,7 @@ public enum CcpTimeOption{
 	,ddMMyyyyHHmmssSSS, 
 	ddMM, 
 	weekly{
-		@Override
+		
 		public String getFormattedCurrentDate(Long date) {
 			Calendar cal = Calendar.getInstance();
 			cal.setTimeInMillis(date);

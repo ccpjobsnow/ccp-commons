@@ -20,9 +20,11 @@ import com.ccp.exceptions.db.CcpEntityRecordNotFound;
 import com.ccp.exceptions.process.CcpFlow;
 
 
-public interface CcpEntity extends CcpEntityIdGenerator{
+public interface CcpEntity{
 
-	
+
+	String getEntityName();
+
 	CcpTimeOption getTimeOption();
 	
 	CcpEntityField[] getFields();
@@ -181,59 +183,7 @@ public interface CcpEntity extends CcpEntityIdGenerator{
 		//TODO SALVAR AUDITORIA???
 		return remove;
 	}
-	
-	default List<CcpJsonRepresentation> getManyByIds(String...ids){
-		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
-		List<CcpJsonRepresentation> manyByIds = crud.getManyByIds(this, ids);
-	
-		int k = 0;
-		List<CcpJsonRepresentation> response = new ArrayList<>();
-		for (String id : ids) {
-			CcpJsonRepresentation md = manyByIds.get(k++);
-			md = md.put("_id", id);
-			response.add(md);
-		}
-		return response;
-	}
-	
-	default List<CcpJsonRepresentation> getManyByIds(CcpJsonRepresentation... values){
-		String[] ids = new String[values.length];
-		
-		int k = 0;
-		
-		for (CcpJsonRepresentation value : values) {
-			String id = this.getId(value);
-			ids[k++] = id;
-		}
-		List<CcpJsonRepresentation> response = getManyById(ids);
-		return response;
-	}
 
-	default List<CcpJsonRepresentation> getManyById(List<String> ids){
-		String[] array = ids.toArray(new String[ids.size()]);
-		List<CcpJsonRepresentation> manyById = this.getManyById(array);
-		return manyById;
-	}
-	
-	default List<CcpJsonRepresentation> getManyById(String... ids) {
-		int k;
-		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
-		List<CcpJsonRepresentation> manyByIds = crud.getManyByIds(this, ids);
-	
-		k = 0;
-		List<CcpJsonRepresentation> response = new ArrayList<>();
-		for (String id : ids) {
-			CcpJsonRepresentation md = manyByIds.get(k++);
-			md = md.put("_id", id);
-			response.add(md);
-		}
-		return response;
-	}
-	
-	default List<CcpJsonRepresentation> getManyByIds(List< CcpJsonRepresentation> values){
-		CcpJsonRepresentation[] array = values.toArray(new CcpJsonRepresentation[values.size()]);
-		return this.getManyByIds(array);
-	}	
 	void saveAuditory(CcpJsonRepresentation values, CcpEntityOperationType operation);
 	
 	boolean isAuditable();

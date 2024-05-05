@@ -414,7 +414,8 @@ public final class CcpJsonRepresentation {
 	}
 	
 	public CcpJsonRepresentation removeKey(String key) {
-		Map<String, Object> copy = new HashMap<>(this.getContent());
+		Map<String, Object> content = this.getContent();
+		Map<String, Object> copy = new HashMap<>(content);
 		copy.remove(key);
 		CcpJsonRepresentation mapDecorator = new CcpJsonRepresentation(copy);
 		return mapDecorator;
@@ -445,13 +446,34 @@ public final class CcpJsonRepresentation {
 
 	
 	@SuppressWarnings("unchecked")
+	public <T>T getValueFromPath(T defaultValue, String...paths){
+		CcpJsonRepresentation initial = this;
+		for(int k = 0; k < paths.length -1 ; k++) {
+			String path = paths[k];
+			initial = initial.getInnerJson(path);
+		}
+		
+		String lastPath = paths[paths.length - 1];
+		
+		boolean isNotPresent = initial.containsKey(lastPath) == false;
+		
+		if(isNotPresent) {
+			return defaultValue;
+		}
+		
+		Object object = initial.get(lastPath);
+		return (T) object;
+	}
+	@SuppressWarnings("unchecked")
 	public <T>T getValueFromPath(String...paths){
 		CcpJsonRepresentation initial = this;
 		for(int k = 0; k < paths.length -1 ; k++) {
 			String path = paths[k];
 			initial = initial.getInnerJson(path);
 		}
+		
 		String lastPath = paths[paths.length - 1];
+		
 		Object object = initial.get(lastPath);
 		return (T) object;
 	}

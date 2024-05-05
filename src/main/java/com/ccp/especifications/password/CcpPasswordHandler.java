@@ -4,6 +4,6 @@ public interface CcpPasswordHandler {
 
 	boolean matches(String password, String hash);
 
-	String getPasswordHash(String password);
+	String getHash(String password);
 
 }
