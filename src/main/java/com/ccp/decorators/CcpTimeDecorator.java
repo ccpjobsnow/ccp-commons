@@ -41,11 +41,6 @@ public class CcpTimeDecorator {
 	}
 	
 
-	public String getFormattedCurrentDateTime(String pattern) {
-
-		return this.getFormattedDateTime(pattern);
-	}
-
 	public String getFormattedDateTime(String pattern) {
 		Date d = new Date();
 		d.setTime(this.time);

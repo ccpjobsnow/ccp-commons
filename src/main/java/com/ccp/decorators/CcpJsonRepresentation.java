@@ -297,6 +297,12 @@ public final class CcpJsonRepresentation {
 		}
 	}
 	
+	public CcpJsonRepresentation getJsonPiece(Collection<String> keys) {
+		String[] array = keys.toArray(new String[keys.size()]);
+		CcpJsonRepresentation jsonPiece = this.getJsonPiece(array);
+		return jsonPiece;
+	}	
+	
 	public CcpJsonRepresentation getJsonPiece(String...keys) {
 		
 		Map<String, Object> subMap = new LinkedHashMap<>();
@@ -445,6 +451,16 @@ public final class CcpJsonRepresentation {
 	}
 
 	
+	public CcpJsonRepresentation getInnerJsonFromPath(String...paths) {
+		try {
+			Map<String, Object> map =  this.getValueFromPath(paths);
+			CcpJsonRepresentation json = new CcpJsonRepresentation(map);
+			return json;
+		} catch (Exception e) {
+			return CcpConstants.EMPTY_JSON;
+		}
+	}
+	
 	@SuppressWarnings("unchecked")
 	public <T>T getValueFromPath(T defaultValue, String...paths){
 		CcpJsonRepresentation initial = this;
@@ -464,8 +480,9 @@ public final class CcpJsonRepresentation {
 		Object object = initial.get(lastPath);
 		return (T) object;
 	}
+	
 	@SuppressWarnings("unchecked")
-	public <T>T getValueFromPath(String...paths){
+	private <T>T getValueFromPath(String...paths){
 		CcpJsonRepresentation initial = this;
 		for(int k = 0; k < paths.length -1 ; k++) {
 			String path = paths[k];
@@ -623,6 +640,10 @@ public final class CcpJsonRepresentation {
 	
 	public Object get(String key) {
 		Object object = this.content.get(key);
+		boolean valueIsAbsent = object == null;
+		if(valueIsAbsent) {
+			throw new RuntimeException("The value is absent to the key " + key);
+		}
 		return object;
 	}
 	

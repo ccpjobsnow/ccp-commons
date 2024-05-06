@@ -12,7 +12,7 @@ public final class CcpHttpHandler {
 
 	private final CcpJsonRepresentation flows;
 	private final Function<CcpJsonRepresentation, CcpJsonRepresentation> alternativeFlow;
-	private final CcpHttpRequester ccpHttp = CcpDependencyInjection.getDependency(CcpHttpRequester.class);
+	public final CcpHttpRequester ccpHttp = CcpDependencyInjection.getDependency(CcpHttpRequester.class);
 
 	public CcpHttpHandler(CcpJsonRepresentation flows) {
 		this.alternativeFlow = null;
@@ -42,11 +42,19 @@ public final class CcpHttpHandler {
 		return executeHttpRequest;
 	}
 
-	@SuppressWarnings("unchecked")
 	public <V>V executeHttpRequest(String trace, String url, String method, CcpJsonRepresentation headers, String request, CcpHttpResponseTransform<V> transformer) {
 		
 		CcpHttpResponse response = this.ccpHttp.executeHttpRequest(url, method, headers, request);
 	
+		V executeHttpRequest = this.executeHttpRequest(trace, url, method, headers, request, transformer, response);
+		
+		return executeHttpRequest;
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	public <V> V executeHttpRequest(String trace, String url, String method, CcpJsonRepresentation headers,
+			String request, CcpHttpResponseTransform<V> transformer, CcpHttpResponse response) {
 		int status = response.httpStatus;
 		
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> flow = this.flows.getOrDefault("" + status, this.alternativeFlow);
@@ -69,7 +77,6 @@ public final class CcpHttpHandler {
 
 		CcpJsonRepresentation execute = flow.apply((CcpJsonRepresentation)tranform);
 		return (V)execute;
-		
 	}
 	
 	

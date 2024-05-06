@@ -11,9 +11,12 @@ public interface CcpHttpRequester {
 		if(expectedStatus == res.httpStatus) {
 			return res;
 		}
-		
 		throw new RuntimeException(
 				CcpConstants.EMPTY_JSON
+				.put("url", url)
+				.put("method", method)
+				.put("headers", headers)
+				.put("body", body)
 				.put("expectedStatus", expectedStatus)
 				.put("realStatus", res.httpStatus)
 				.put("response", res.httpResponse)

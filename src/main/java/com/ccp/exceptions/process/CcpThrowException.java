@@ -1,8 +1,10 @@
 package com.ccp.exceptions.process;
 
+import java.util.function.Function;
+
 import com.ccp.decorators.CcpJsonRepresentation;
 
-public class CcpThrowException implements  java.util.function.Function<CcpJsonRepresentation, CcpJsonRepresentation>{
+public class CcpThrowException implements  Function<CcpJsonRepresentation, CcpJsonRepresentation>{
 
 	private final RuntimeException exception;
 	

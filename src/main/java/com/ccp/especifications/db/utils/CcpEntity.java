@@ -15,7 +15,6 @@ import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.bulk.CcpEntityOperationType;
 import com.ccp.especifications.db.crud.CcpCrud;
-import com.ccp.exceptions.db.CcpEntityMissingKeys;
 import com.ccp.exceptions.db.CcpEntityRecordNotFound;
 import com.ccp.exceptions.process.CcpFlow;
 
@@ -28,6 +27,29 @@ public interface CcpEntity{
 	CcpTimeOption getTimeOption();
 	
 	CcpEntityField[] getFields();
+	
+	default CcpJsonRepresentation getPrimaryKeyValues(CcpJsonRepresentation values) {
+		
+		List<String> onlyPrimaryKey = this.getPrimaryKeyNames();
+		CcpJsonRepresentation jsonPiece = values.getJsonPiece(onlyPrimaryKey);
+		CcpTimeOption timeOption = this.getTimeOption();
+		
+		boolean hasNoTimeOption = CcpTimeOption.none.equals(timeOption);
+		
+		if(hasNoTimeOption) {
+			return jsonPiece;
+		}
+		
+		String name = timeOption.name();
+		CcpJsonRepresentation put = jsonPiece.put("timeOption", name);
+		return put;
+	}
+
+	default List<String> getPrimaryKeyNames() {
+		CcpEntityField[] fields = this.getFields();
+		List<String> onlyPrimaryKey = new ArrayList<>(Arrays.asList(fields).stream().filter(x -> x.isPrimaryKey()).map(x -> x.name()).collect(Collectors.toList()));
+		return onlyPrimaryKey;
+	}
 	
 	default String getId(CcpJsonRepresentation values) {
 		CcpTimeOption timeOption = this.getTimeOption();
@@ -49,7 +71,7 @@ public interface CcpEntity{
 		boolean isMissingKeys = missingKeys.isEmpty() == false;
 		
 		if(isMissingKeys) {
-			throw new CcpEntityMissingKeys(this, missingKeys, values);
+			throw new RuntimeException("It is missing the keys '" + missingKeys + "' from entity '" + this + "' in the object " + values );
 		}
 		
 		
@@ -87,7 +109,7 @@ public interface CcpEntity{
 	}
 	default String getPrimaryKeyFieldValue(CcpEntityField key, CcpJsonRepresentation values) {
 		
-		boolean notCollection = values.get(key.name()) instanceof Collection<?> == false;
+		boolean notCollection = values.getOrDefault(key.name(), new Object()) instanceof Collection<?> == false;
 		
 		if(notCollection) {
 			String primaryKeyFieldValue = values.getAsString(key.name()).trim() + "_";

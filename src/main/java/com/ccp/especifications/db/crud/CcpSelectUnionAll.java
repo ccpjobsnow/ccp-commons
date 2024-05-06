@@ -41,9 +41,9 @@ public class CcpSelectUnionAll {
 		if(entityNotFound) {
 			return false;
 		}
-		CcpJsonRepresentation innerJson = this.condensed.getInnerJson(id);
+		CcpJsonRepresentation innerJson = this.condensed.getInnerJsonFromPath(entityName, id);
 		
-		boolean idNotFound = innerJson.containsAllKeys(id) == false;
+		boolean idNotFound = innerJson.isEmpty();
 		
 		if(idNotFound) {
 			return false;
@@ -83,6 +83,26 @@ public class CcpSelectUnionAll {
 		return jsonValue;
 	}
 
+	public CcpJsonRepresentation getRequiredEntityRow(CcpEntity entity, CcpJsonRepresentation value) {
+		
+		CcpJsonRepresentation entityRow = this.getEntityRow(entity, value);
+		
+		boolean notFound = entityRow.isEmpty();
+		
+		if(notFound) {
+			CcpJsonRepresentation primaryKeyValues = entity.getPrimaryKeyValues(value);
+			String id = entity.getId(value);
+			String entityName = entity.getEntityName();
+			String errorMessage = String.format("Does not exist an id '%s' registered in the entity '%s'. Values to compose this id are: %s ", 
+					id,
+					entityName,
+					primaryKeyValues);
+			throw new RuntimeException(errorMessage);
+		}
+		return entityRow;
+	}
+	
+	
 	private CcpJsonRepresentation getEntityRow(String index, String id) {
 		
 		boolean indexNotFound = this.condensed.containsAllKeys(index) == false;

@@ -12,7 +12,7 @@ import com.ccp.especifications.json.CcpJsonHandler;
 public class CcpHttpResponse {
 
 	public final String httpResponse;
-	final int httpStatus;
+	public final int httpStatus;
 	
 	
 	public CcpHttpResponse(String httpResponse, int httpStatus) {
