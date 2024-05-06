@@ -5,6 +5,7 @@ import java.util.List;
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.utils.CcpEntity;
+import com.ccp.exceptions.db.CcpEntityRecordNotFound;
 
 public class CcpSelectUnionAll {
 
@@ -54,21 +55,21 @@ public class CcpSelectUnionAll {
 	
 	public <T> T whenRecordIsFoundInUnionAll(
 			CcpJsonRepresentation searchParameter, 
-			WhenRecordIsFoundInUnionAll<T> handler
+			HandleWithSearchResultsInTheEntity<T> handler
 			) {
 		
-		CcpEntity entity = handler.getEntity();
+		CcpEntity entity = handler.getEntityToSearch();
 	
 		boolean recordDoesNotExist = this.isPresent(entity, searchParameter) == false;
 		
 		if(recordDoesNotExist) {
-			T whenRecordDoesNotExist = handler.whenRecordDoesNotExist(searchParameter);
+			T whenRecordDoesNotExist = handler.whenRecordWasNotFoundInTheEntitySearch(searchParameter);
 			return whenRecordDoesNotExist;
 		}
 		
-		CcpJsonRepresentation recordFound = this.getEntityRow(entity, searchParameter);
+		CcpJsonRepresentation recordFound = this.getRequiredEntityRow(entity, searchParameter);
 		
-		T whenRecordExists = handler.whenRecordExists(searchParameter, recordFound);
+		T whenRecordExists = handler.whenRecordWasFoundInTheEntitySearch(searchParameter, recordFound);
 		
 		return whenRecordExists;
 	}
@@ -90,15 +91,9 @@ public class CcpSelectUnionAll {
 		boolean notFound = entityRow.isEmpty();
 		
 		if(notFound) {
-			CcpJsonRepresentation primaryKeyValues = entity.getPrimaryKeyValues(value);
-			String id = entity.getId(value);
-			String entityName = entity.getEntityName();
-			String errorMessage = String.format("Does not exist an id '%s' registered in the entity '%s'. Values to compose this id are: %s ", 
-					id,
-					entityName,
-					primaryKeyValues);
-			throw new RuntimeException(errorMessage);
+			throw new CcpEntityRecordNotFound(entity, value);
 		}
+		
 		return entityRow;
 	}
 	
