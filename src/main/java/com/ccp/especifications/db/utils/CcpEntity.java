@@ -1,18 +1,11 @@
 package com.ccp.especifications.db.utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
-import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
+import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpEntityOperationType;
 import com.ccp.especifications.db.crud.CcpCrud;
 import com.ccp.exceptions.db.CcpEntityRecordNotFound;
@@ -21,108 +14,11 @@ import com.ccp.exceptions.process.CcpFlow;
 
 public interface CcpEntity{
 
-
 	String getEntityName();
 
-	CcpTimeOption getTimeOption();
+	String getId(CcpJsonRepresentation values) ;
 	
-	CcpEntityField[] getFields();
-	
-	default CcpJsonRepresentation getPrimaryKeyValues(CcpJsonRepresentation values) {
-		
-		List<String> onlyPrimaryKey = this.getPrimaryKeyNames();
-		CcpJsonRepresentation jsonPiece = values.getJsonPiece(onlyPrimaryKey);
-		CcpTimeOption timeOption = this.getTimeOption();
-		
-		boolean hasNoTimeOption = CcpTimeOption.none.equals(timeOption);
-		
-		if(hasNoTimeOption) {
-			return jsonPiece;
-		}
-		
-		String name = timeOption.name();
-		CcpJsonRepresentation put = jsonPiece.put("timeOption", name);
-		return put;
-	}
-
-	default List<String> getPrimaryKeyNames() {
-		CcpEntityField[] fields = this.getFields();
-		List<String> onlyPrimaryKey = new ArrayList<>(Arrays.asList(fields).stream().filter(x -> x.isPrimaryKey()).map(x -> x.name()).collect(Collectors.toList()));
-		return onlyPrimaryKey;
-	}
-	
-	default String getId(CcpJsonRepresentation values) {
-		CcpTimeOption timeOption = this.getTimeOption();
-		Long time = System.currentTimeMillis();
-		String formattedCurrentDate = timeOption.getFormattedCurrentDate(time);
-		CcpEntityField[] fields = this.getFields();
-		if(fields.length == 0) {
-			
-			if(CcpTimeOption.none != timeOption) {
-				return formattedCurrentDate;
-			}
-			
-			return UUID.randomUUID().toString();
-		}
-		
-		List<CcpEntityField> missingKeys = Arrays.asList(fields).stream().filter(key -> this.isEmptyPrimaryKey(key, values))
-				.collect(Collectors.toList());
-		
-		boolean isMissingKeys = missingKeys.isEmpty() == false;
-		
-		if(isMissingKeys) {
-			throw new RuntimeException("It is missing the keys '" + missingKeys + "' from entity '" + this + "' in the object " + values );
-		}
-		
-		
-		List<String> onlyPrimaryKeys = Arrays.asList(fields).stream().filter(key -> key.isPrimaryKey()).map(key -> this.getPrimaryKeyFieldValue(key, values)).collect(Collectors.toList());
-
-		if(onlyPrimaryKeys.isEmpty()) {
-			String hash = new CcpStringDecorator(formattedCurrentDate).hash().asString("SHA1");
-			return hash;
-		}
-		
-		Collections.sort(onlyPrimaryKeys);
-		onlyPrimaryKeys = new ArrayList<>(onlyPrimaryKeys);
-
-		if(formattedCurrentDate.trim().isEmpty() == false) {
-			onlyPrimaryKeys.add(0, formattedCurrentDate);
-		}
-		
-		String replace = onlyPrimaryKeys.toString().replace("[", "").replace("]", "");
-		String hash = new CcpStringDecorator(replace).hash().asString("SHA1");
-		return hash;
-	}
-	
-	default boolean isEmptyPrimaryKey(CcpEntityField key, CcpJsonRepresentation values) {
-		
-		if(key.isPrimaryKey() == false) {
-			return false;
-		}
-		
-		String primaryKeyFieldValue = this.getPrimaryKeyFieldValue(key, values);
-		if("_".equals(primaryKeyFieldValue)) {
-			return true;
-		}
-		
-		return false;
-	}
-	default String getPrimaryKeyFieldValue(CcpEntityField key, CcpJsonRepresentation values) {
-		
-		boolean notCollection = values.getOrDefault(key.name(), new Object()) instanceof Collection<?> == false;
-		
-		if(notCollection) {
-			String primaryKeyFieldValue = values.getAsString(key.name()).trim() + "_";
-			return primaryKeyFieldValue;
-		}
-		
-		Collection<?> col = values.getAsObject(key.name());
-		ArrayList<?> list = new ArrayList<>(col);
-		list.sort((a, b) -> ("" + a).compareTo("" + b));
-		String primaryKeyFieldValue = list.stream().map(x -> x.toString().trim()).collect(Collectors.toList()).toString() + "_";
-		return primaryKeyFieldValue;
-	}
-
+	CcpJsonRepresentation getPrimaryKeyValues(CcpJsonRepresentation values);
 
 	default CcpJsonRepresentation getOneById(CcpJsonRepresentation data, Function<CcpJsonRepresentation, CcpJsonRepresentation> ifNotFound) {
 		try {
@@ -173,10 +69,7 @@ public interface CcpEntity{
 	
 	default CcpJsonRepresentation createOrUpdate(CcpJsonRepresentation values) {
 		CcpJsonRepresentation onlyExistingFields = this.getOnlyExistingFields(values);
-		boolean created = this.create(values);
-		
-		this.saveAuditory(onlyExistingFields, created ? CcpEntityOperationType.create : CcpEntityOperationType.update);
-
+		this.create(values);
 		return onlyExistingFields;
 	}
 
@@ -195,20 +88,15 @@ public interface CcpEntity{
 	default boolean delete(CcpJsonRepresentation values) {
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
 		boolean remove = crud.delete(this, values);
-		this.saveAuditory(values, CcpEntityOperationType.delete);
 		return remove;
 	}
 	
 	default boolean delete(String id) {
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
 		boolean remove = crud.delete(this, id);
-		//TODO SALVAR AUDITORIA???
 		return remove;
 	}
 
-	void saveAuditory(CcpJsonRepresentation values, CcpEntityOperationType operation);
-	
-	boolean isAuditable();
 	
 	default CcpJsonRepresentation createOrUpdate(CcpJsonRepresentation data, String id) {
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
@@ -216,11 +104,5 @@ public interface CcpEntity{
 		return createOrUpdate;
 	}
 	
-	default CcpJsonRepresentation transferData(CcpJsonRepresentation values, CcpEntity target) {
-		this.delete(values);
-		target.create(values);
-		return values;
-	}
-	
-	
+	CcpBulkItem getRecordToBulkOperation(CcpJsonRepresentation values, CcpEntityOperationType operation);
 }

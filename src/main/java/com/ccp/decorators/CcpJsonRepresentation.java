@@ -771,4 +771,10 @@ public final class CcpJsonRepresentation {
 		return new ItIsTrueThatTheFollowingFields(this, fields);
 	}
 	
+	public Set<String> getMissingKeys(Collection<String> keys){
+		Set<String> collect = keys.stream().filter(key -> this.getAsString(key).trim().isEmpty()).collect(Collectors.toSet());
+		return collect;
+	}
+	
+	
 }

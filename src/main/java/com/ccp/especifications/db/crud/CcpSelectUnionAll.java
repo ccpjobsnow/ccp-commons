@@ -35,7 +35,7 @@ public class CcpSelectUnionAll {
 		return present;
 	}
 
-	private boolean isPresent(String entityName, String id) {
+	public boolean isPresent(String entityName, String id) {
 		
 		boolean entityNotFound = this.condensed.containsAllKeys(entityName) == false;
 		

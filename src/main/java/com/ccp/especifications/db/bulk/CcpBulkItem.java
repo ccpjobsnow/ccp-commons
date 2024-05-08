@@ -60,4 +60,9 @@ public class CcpBulkItem {
 		}
 	}
 
+	public CcpBulkItem getSecondRecordToBulkOperation() {
+		CcpBulkItem recordToBulkOperation = this.entity.getRecordToBulkOperation(this.json, this.operation);
+		return recordToBulkOperation;
+	}
+	
 }

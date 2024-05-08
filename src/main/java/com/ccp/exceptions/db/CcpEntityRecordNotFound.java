@@ -10,6 +10,10 @@ public class CcpEntityRecordNotFound extends RuntimeException{
 		super(getErrorMessage(entityName, id));
 	}
 
+	public CcpEntityRecordNotFound(CcpEntity entity, CcpJsonRepresentation values) {
+		super(getErrorMessage(entity, values));
+	}
+
 	private static String getErrorMessage(String entityName, String id) {
 		String errorMessage = String.format("Does not exist an id '%s' registered in the entity '%s'.", 
 				id,	entityName);
@@ -17,9 +21,6 @@ public class CcpEntityRecordNotFound extends RuntimeException{
 		return errorMessage;
 	}
 
-	public CcpEntityRecordNotFound(CcpEntity entity, CcpJsonRepresentation values) {
-		super(getErrorMessage(entity, values));
-	}
 
 	private static String getErrorMessage(CcpEntity entity, CcpJsonRepresentation values) {
 

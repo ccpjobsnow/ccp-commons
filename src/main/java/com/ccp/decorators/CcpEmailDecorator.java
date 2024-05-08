@@ -9,7 +9,8 @@ import java.util.regex.Pattern;
 
 public class CcpEmailDecorator {
 
-	private static Set<String> nonProfessionalDomains = new HashSet<>();//TODO PARAMETRIZAR ESTA LISTA
+	private static Set<String> nonProfessionalDomains = new HashSet<>();
+	//TODO PARAMETRIZAR ESTA LISTA
 	static {
 		nonProfessionalDomains.add("globalweb.com.br");
 		nonProfessionalDomains.add("localweb.com.br");
