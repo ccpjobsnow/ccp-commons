@@ -1,5 +1,7 @@
 package com.ccp.especifications.db.utils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 import com.ccp.constantes.CcpConstants;
@@ -105,4 +107,12 @@ public interface CcpEntity{
 	}
 	
 	CcpBulkItem getRecordToBulkOperation(CcpJsonRepresentation values, CcpEntityOperationType operation);
+
+	default List<CcpBulkItem> getFirstRecordsToInsert(){
+		return new ArrayList<>();
+	}
+	
+	default String getScriptToCreateEntity() {
+		return "";
+	}
 }

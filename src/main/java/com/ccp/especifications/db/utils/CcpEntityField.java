@@ -5,4 +5,5 @@ public interface CcpEntityField {
 	String name();
 	
 	boolean isPrimaryKey();
+	
 }
