@@ -1,8 +1,10 @@
 package com.ccp.especifications.db.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
@@ -67,7 +69,6 @@ public interface CcpEntity{
 		return exists;
 	}
 	
-	CcpJsonRepresentation getOnlyExistingFields(CcpJsonRepresentation values) ;
 	
 	default CcpJsonRepresentation createOrUpdate(CcpJsonRepresentation values) {
 		CcpJsonRepresentation onlyExistingFields = this.getOnlyExistingFields(values);
@@ -111,8 +112,13 @@ public interface CcpEntity{
 	default List<CcpBulkItem> getFirstRecordsToInsert(){
 		return new ArrayList<>();
 	}
-	
-	default String getScriptToCreateEntity() {
-		return "";
+
+	CcpEntityField[] getFields();
+	default CcpJsonRepresentation getOnlyExistingFields(CcpJsonRepresentation values) {
+		CcpEntityField[] fields = this.getFields();
+		String[] array = Arrays.asList(fields).stream().map(x -> x.name()).collect(Collectors.toList()).toArray(new String[fields.length]);
+		CcpJsonRepresentation subMap = values.getJsonPiece(array);
+		return subMap;
 	}
+
 }
