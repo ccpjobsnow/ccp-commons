@@ -127,5 +127,6 @@ public interface CcpEntity{
 		List<String> onlyPrimaryKey = new ArrayList<>(Arrays.asList(fields).stream().filter(x -> x.isPrimaryKey()).map(x -> x.name()).collect(Collectors.toList()));
 		return onlyPrimaryKey;
 	}
-
+	
+	boolean canSaveCopy();
 }
