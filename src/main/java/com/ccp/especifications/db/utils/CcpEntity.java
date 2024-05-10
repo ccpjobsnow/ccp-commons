@@ -114,11 +114,18 @@ public interface CcpEntity{
 	}
 	
 	CcpEntityField[] getFields();
+	
 	default CcpJsonRepresentation getOnlyExistingFields(CcpJsonRepresentation values) {
 		CcpEntityField[] fields = this.getFields();
 		String[] array = Arrays.asList(fields).stream().map(x -> x.name()).collect(Collectors.toList()).toArray(new String[fields.length]);
 		CcpJsonRepresentation subMap = values.getJsonPiece(array);
 		return subMap;
+	}
+	
+	default List<String> getPrimaryKeyNames() {
+		CcpEntityField[] fields = this.getFields();
+		List<String> onlyPrimaryKey = new ArrayList<>(Arrays.asList(fields).stream().filter(x -> x.isPrimaryKey()).map(x -> x.name()).collect(Collectors.toList()));
+		return onlyPrimaryKey;
 	}
 
 }
