@@ -32,6 +32,7 @@ public enum CcpEntityOperationType {
 	}
 	
 	public CcpBulkItem getReprocess(Function<CcpBulkOperationResult, CcpJsonRepresentation> reprocessJsonProducer, CcpBulkOperationResult result, CcpEntity entityToReprocess) {
+		
 		int status = result.status();
 		boolean statusNotFound = this.handlers.containsAllKeys("" + status) == false;
 		
@@ -40,6 +41,7 @@ public enum CcpEntityOperationType {
 			CcpBulkItem ccpBulkItem = new CcpBulkItem(json, create, entityToReprocess);
 			return ccpBulkItem;
 		}
+		
 		Function<CcpBulkItem,CcpBulkItem> handler = this.handlers.getAsObject("" + status);
 		CcpBulkItem bulkItem = result.getBulkItem();
 		CcpBulkItem apply = handler.apply(bulkItem);

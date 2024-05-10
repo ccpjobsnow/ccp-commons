@@ -112,7 +112,7 @@ public interface CcpEntity{
 	default List<CcpBulkItem> getFirstRecordsToInsert(){
 		return new ArrayList<>();
 	}
-
+	
 	CcpEntityField[] getFields();
 	default CcpJsonRepresentation getOnlyExistingFields(CcpJsonRepresentation values) {
 		CcpEntityField[] fields = this.getFields();

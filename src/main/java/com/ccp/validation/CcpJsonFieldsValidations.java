@@ -89,7 +89,8 @@ public class CcpJsonFieldsValidations {
 				if(validJson) {
 					continue;
 				}
-				Object value = json.get(field);
+				
+				Object value = json.content.get(field);
 				CcpJsonRepresentation fieldDetails = CcpConstants.EMPTY_JSON
 						.put("name", field)
 						.put("value", value)
@@ -253,6 +254,12 @@ public class CcpJsonFieldsValidations {
 					continue;
 				}
 				errors = errors.put("restrictedValues", restrictedValues);
+				
+				boolean containsKey = json.containsKey(field);
+				if(containsKey) {
+					continue;
+				}
+				
 				Object value = json.get(field);
 				CcpJsonRepresentation fieldDetails = CcpConstants.EMPTY_JSON
 						.put("name", field)
@@ -429,15 +436,6 @@ public class CcpJsonFieldsValidations {
 		}
 		
 		return result;
-	}
-	@SuppressWarnings("serial")
-	public static class CcpJsonInvalid extends RuntimeException {
-
-		public final CcpJsonRepresentation result;
-
-		private CcpJsonInvalid(CcpJsonRepresentation result) {
-			this.result = result;
-		}
 	}
 
 

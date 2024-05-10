@@ -88,9 +88,12 @@ public class CcpFileDecorator {
 		}
     }
 	public  String extractStringContent() {
+		File file = new File(this.content);
+		boolean fileIsMissing = file.exists() == false;
+		if(fileIsMissing) {
+			throw new RuntimeException("it is missing the file: " + this.content);
+		}
 		try {
-			
-			File file = new File(this.content);
 			Path path = file.toPath();
 			byte[] fileContent = Files.readAllBytes(path);
 			String string = new String(fileContent, "UTF-8");

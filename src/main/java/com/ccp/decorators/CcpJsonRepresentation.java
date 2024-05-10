@@ -540,7 +540,8 @@ public final class CcpJsonRepresentation {
 
 	public CcpCollectionDecorator getAsCollectionDecorator(String key){
 		List<String> asStringList = this.getAsStringList(key);
-		CcpCollectionDecorator ccpCollectionDecorator = new CcpCollectionDecorator(asStringList);
+		String[] array = asStringList.toArray(new String[asStringList.size()]);
+		CcpCollectionDecorator ccpCollectionDecorator = new CcpCollectionDecorator((Object[])array);
 		return ccpCollectionDecorator;
 	}
 	
@@ -568,7 +569,9 @@ public final class CcpJsonRepresentation {
 		}
 		
 		Object object = this.content.get(key);
-		
+		if(object == null) {
+			return new ArrayList<>();
+		}
 		if(object instanceof String) {
 			CcpJsonHandler jsonHandler = CcpDependencyInjection.getDependency(CcpJsonHandler.class);
 			try {
@@ -615,7 +618,8 @@ public final class CcpJsonRepresentation {
 	}
 	
 	public boolean containsKey(String key) {
-		return this.content.containsKey(key);
+		Object object = this.content.get(key);
+		return object != null;
 	}
 
 	public boolean containsAllKeys(String... keys) {
