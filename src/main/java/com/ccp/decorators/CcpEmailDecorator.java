@@ -1,7 +1,6 @@
 package com.ccp.decorators;
 
 import java.text.Normalizer;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
@@ -9,27 +8,27 @@ import java.util.regex.Pattern;
 
 public class CcpEmailDecorator {
 
-	private static Set<String> nonProfessionalDomains = new HashSet<>();
-	//TODO PARAMETRIZAR ESTA LISTA
-	static {
-		nonProfessionalDomains.add("globalweb.com.br");
-		nonProfessionalDomains.add("localweb.com.br");
-		nonProfessionalDomains.add("protonmail.com");
-		nonProfessionalDomains.add("locaweb.com.br");
-		nonProfessionalDomains.add("outlook.com.br");
-		nonProfessionalDomains.add("yahoo.com.br");
-		nonProfessionalDomains.add("terra.com.br");
-		nonProfessionalDomains.add("outlook.com");
-		nonProfessionalDomains.add("hotmail.com");
-		nonProfessionalDomains.add("uol.com.br");
-		nonProfessionalDomains.add("bol.com.br");
-		nonProfessionalDomains.add("uolinc.com");
-		nonProfessionalDomains.add("yahoo.com");
-		nonProfessionalDomains.add("gmail.com");
-		nonProfessionalDomains.add("ig.com.br");
-		nonProfessionalDomains.add("live.com");
-		nonProfessionalDomains.add("msn.com");
-	}
+//	private static Set<String> nonProfessionalDomains = new HashSet<>();
+//	
+//	static {
+//		nonProfessionalDomains.add("globalweb.com.br");
+//		nonProfessionalDomains.add("localweb.com.br");
+//		nonProfessionalDomains.add("protonmail.com");
+//		nonProfessionalDomains.add("locaweb.com.br");
+//		nonProfessionalDomains.add("outlook.com.br");
+//		nonProfessionalDomains.add("yahoo.com.br");
+//		nonProfessionalDomains.add("terra.com.br");
+//		nonProfessionalDomains.add("outlook.com");
+//		nonProfessionalDomains.add("hotmail.com");
+//		nonProfessionalDomains.add("uol.com.br");
+//		nonProfessionalDomains.add("bol.com.br");
+//		nonProfessionalDomains.add("uolinc.com");
+//		nonProfessionalDomains.add("yahoo.com");
+//		nonProfessionalDomains.add("gmail.com");
+//		nonProfessionalDomains.add("ig.com.br");
+//		nonProfessionalDomains.add("live.com");
+//		nonProfessionalDomains.add("msn.com");
+//	}
 
 	
 	public final String content;
@@ -166,14 +165,6 @@ public class CcpEmailDecorator {
 		return emails;
 	}
 
-	public String getProfessionalDomain() {
-		boolean nonProfessionalDomain = this.isNonProfessionalDomain();
-		if (nonProfessionalDomain) {
-			return "";
-		}
-		String domain = this.getDomain();
-		return domain;
-	}
 	
 	public String getDomain() {
 		String[] split = this.content.split("@");
@@ -184,21 +175,6 @@ public class CcpEmailDecorator {
 
 		String domain = split[1];
 		return domain;
-	}
-
-	public boolean isNonProfessionalDomain() {
-		boolean contains = nonProfessionalDomains.contains(this.content.toLowerCase());
-
-		return contains;
-	}
-
-	//EmailDecorator isNonProfessionalDomain()
-	public  boolean isFreelancerDomain() {
-		String domain = this.getDomain();
-
-		boolean contains = nonProfessionalDomains.contains(domain);
-
-		return contains;
 	}
 
 }
