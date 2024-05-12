@@ -28,27 +28,32 @@ public class CcpAsyncTask {
 		return asyncBusiness;
 	}
 	
-	public static CcpJsonRepresentation executeProcess(String processName, CcpJsonRepresentation values, CcpEntity entity,  Function<CcpJsonRepresentation, CcpJsonRepresentation> jnAsyncBusinessNotifyError) {
+	public static CcpJsonRepresentation executeProcess(
+			String processName, 
+			CcpJsonRepresentation messageDetails, 
+			CcpEntity entity,  
+			Function<CcpJsonRepresentation, CcpJsonRepresentation> jnAsyncBusinessNotifyError) {
 		
-		String asyncTaskId = values.getAsString("asyncTaskId");
-		
-		CcpJsonRepresentation asyncTaskDetails = entity.getOneById(asyncTaskId);	
 		
 		try {
-			CcpJsonRepresentation response = executeProcess(processName, values, jnAsyncBusinessNotifyError);
-			saveProcessResult(entity, asyncTaskDetails, response,asyncTaskId, true);
+			CcpJsonRepresentation response = executeProcess(processName, messageDetails, jnAsyncBusinessNotifyError);
+			saveProcessResult(entity, messageDetails, response, true);
 			return response;
 		} catch (Throwable e) {
 			CcpJsonRepresentation response = new CcpJsonRepresentation(e);
-			saveProcessResult(entity, asyncTaskDetails, response, asyncTaskId, false);
+			saveProcessResult(entity, messageDetails, response, false);
 			throw e;
 		}
 	}
 
-	public static CcpJsonRepresentation executeProcess(String processName, CcpJsonRepresentation values, Function<CcpJsonRepresentation, CcpJsonRepresentation> jnAsyncBusinessNotifyError) {
+	public static CcpJsonRepresentation executeProcess(
+			String processName,
+			CcpJsonRepresentation messageDetails, 
+			Function<CcpJsonRepresentation, CcpJsonRepresentation> jnAsyncBusinessNotifyError
+			) {
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> process = getProcess(processName);
 		try {
-			CcpJsonRepresentation response = process.apply(values);
+			CcpJsonRepresentation response = process.apply(messageDetails);
 			return response;
 			
 		} catch (Throwable e) {
@@ -59,10 +64,14 @@ public class CcpAsyncTask {
 		}
 	}
 
-	private static void saveProcessResult(CcpEntity entity, CcpJsonRepresentation messageDetails, CcpJsonRepresentation response,String asyncTaskId, boolean success) {
+	private static void saveProcessResult(CcpEntity entity, CcpJsonRepresentation messageDetails, CcpJsonRepresentation response, boolean success) {
 		Long finished = System.currentTimeMillis();
-		CcpJsonRepresentation processResult = messageDetails.put("response", response).put("finished", finished).put("success", success);
-		entity.createOrUpdate(processResult, asyncTaskId);
+		
+		CcpJsonRepresentation oneById = entity.getOneById(messageDetails);
+		Long started = oneById.getAsLongNumber("started");
+		Long enlapsedTime = finished - started;
+		CcpJsonRepresentation processResult = messageDetails.put("enlapsedTime", enlapsedTime).put("response", response).put("finished", finished).put("success", success);
+		entity.createOrUpdate(processResult);
 	}
 
 }

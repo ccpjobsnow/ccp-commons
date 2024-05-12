@@ -109,14 +109,14 @@ public final class CcpJsonRepresentation {
 		this(getMap(json));
 	}
 
-	static Map<String, Object> getMap(String _json) {
-		CcpJsonHandler json = CcpDependencyInjection.getDependency(CcpJsonHandler.class);
+	static Map<String, Object> getMap(String json) {
+		CcpJsonHandler handler = CcpDependencyInjection.getDependency(CcpJsonHandler.class);
 		try {
-			Map<String, Object> fromJson = json.fromJson(_json);
+			Map<String, Object> fromJson = handler.fromJson(json);
 			return fromJson;
 			
 		} catch (Exception e) {
-			throw new RuntimeException(json + " está inválido", e);
+			throw new RuntimeException("The following json is an invalid json: " + json , e);
 		}
 	}
 	
@@ -622,9 +622,28 @@ public final class CcpJsonRepresentation {
 		return object != null;
 	}
 
+	public boolean containsAllKeys(Collection<String> keys) {
+		String[] array = this.toArray(keys);
+		boolean containsAllKeys = this.containsAllKeys(array);
+		return containsAllKeys;
+	}
+
+	private String[] toArray(Collection<String> keys) {
+		int size = keys.size();
+		String[] a = new String[size];
+		String[] array = keys.toArray(a);
+		return array;
+	}	
+	
 	public boolean containsAllKeys(String... keys) {
 		boolean containsKeys = this.containsKeys(false, keys);
 		return containsKeys;
+	}
+	
+	public boolean containsAnyKeys(Collection<String> keys) {
+		String[] array = this.toArray(keys);
+		boolean containsAnyKeys = this.containsAnyKeys(array);
+		return containsAnyKeys;
 	}
 
 	public boolean containsAnyKeys(String... keys) {
