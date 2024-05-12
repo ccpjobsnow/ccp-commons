@@ -23,6 +23,18 @@ public interface CcpEntity{
 	String getId(CcpJsonRepresentation values) ;
 	
 	CcpJsonRepresentation getPrimaryKeyValues(CcpJsonRepresentation values);
+	
+	CcpBulkItem getRecordToBulkOperation(CcpJsonRepresentation values, CcpEntityOperationType operation);
+	
+	CcpEntityField[] getFields();
+	
+	boolean canSaveCopy();
+	
+	boolean hasMirrorEntity();
+	
+	default CcpEntity getMirrorEntity() {
+		return this;
+	}
 
 	default CcpJsonRepresentation getOneById(CcpJsonRepresentation data, Function<CcpJsonRepresentation, CcpJsonRepresentation> ifNotFound) {
 		try {
@@ -107,13 +119,11 @@ public interface CcpEntity{
 		return createOrUpdate;
 	}
 	
-	CcpBulkItem getRecordToBulkOperation(CcpJsonRepresentation values, CcpEntityOperationType operation);
 
 	default List<CcpBulkItem> getFirstRecordsToInsert(){
 		return new ArrayList<>();
 	}
 	
-	CcpEntityField[] getFields();
 	
 	default CcpJsonRepresentation getOnlyExistingFields(CcpJsonRepresentation values) {
 		CcpEntityField[] fields = this.getFields();
@@ -128,5 +138,4 @@ public interface CcpEntity{
 		return onlyPrimaryKey;
 	}
 	
-	boolean canSaveCopy();
 }

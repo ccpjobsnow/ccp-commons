@@ -36,7 +36,7 @@ public class CcpBulkItem {
 	}
 	
 	public int hashCode() {
-		return (this.entity + "_" + this.id).hashCode();
+		return (this.entity + "_" + this.id + "_" + this.operation).hashCode();
 	}
 
 	public boolean equals(Object obj) {
@@ -54,6 +54,12 @@ public class CcpBulkItem {
 			if(differentId) {
 				return false;
 			}
+			boolean differentOperation = other.operation.equals(this.operation) == false;
+			
+			if(differentOperation) {
+				return false;
+			}
+			
 			return true;
 		} catch (Exception e) {
 			return false;
