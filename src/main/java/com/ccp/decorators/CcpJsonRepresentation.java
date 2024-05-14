@@ -398,6 +398,10 @@ public final class CcpJsonRepresentation {
 	}  
 
 	public CcpJsonRepresentation duplicateValueFromKey(String keyToCopy, String keyToPaste) {
+		boolean inexistentKey = this.containsAllKeys(keyToCopy) == false;
+		if (inexistentKey) {
+			return this;
+		}
 		Object value = this.get(keyToCopy);
 		CcpJsonRepresentation newMap = this.put(keyToPaste, value);
 		return newMap;
@@ -665,7 +669,7 @@ public final class CcpJsonRepresentation {
 		Object object = this.content.get(key);
 		boolean valueIsAbsent = object == null;
 		if(valueIsAbsent) {
-			throw new RuntimeException("The value is absent to the key " + key);
+			throw new RuntimeException("The value is absent to the key " + key + " in json: " + this);
 		}
 		return object;
 	}
