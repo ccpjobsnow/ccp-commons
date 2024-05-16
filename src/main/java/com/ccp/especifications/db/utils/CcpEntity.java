@@ -31,6 +31,11 @@ public interface CcpEntity{
 	boolean canSaveCopy();
 	
 	boolean hasMirrorEntity();
+
+	default CcpBulkItem toBulkItem(CcpJsonRepresentation json, CcpEntityOperationType operation) {
+		CcpBulkItem ccpBulkItem = new CcpBulkItem(json, operation, this);
+		return ccpBulkItem;
+	}
 	
 	default CcpEntity getMirrorEntity() {
 		return this;

@@ -2,8 +2,11 @@ package com.ccp.especifications.file.bucket;
 
 public interface CcpFileBucket {
 
-	String read(String tenant, String bucketName, String fileName);
+	String get(String tenant, String bucketName, String fileName);
 
-	void remove(String tenant, String bucketName, String fileName);
+	String delete(String tenant, String bucketName, String fileName);
+	
+	String save(String tenant, String bucketName, String fileName, String fileContent);
+
 	
 }
