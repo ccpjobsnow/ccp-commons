@@ -10,7 +10,9 @@ import com.ccp.constantes.CcpConstants;
 
 public class CcpDbQueryOptions extends CcpDbQueryComponent{
 	
-	public CcpDbQueryOptions() { 
+	public static final CcpDbQueryOptions INSTANCE = new CcpDbQueryOptions();
+	
+	private CcpDbQueryOptions() { 
 		super(null, "");
 	}
 
