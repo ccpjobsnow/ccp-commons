@@ -45,8 +45,8 @@ public class CcpCacheDecorator {
 		this.cache.put(this.key, value, secondsDelay);
 	}
 
-	public <V> V remove() {
-		return this.cache.remove(this.key);
+	public <V> V delete() {
+		return this.cache.delete(this.key);
 	}
 	
 	public CcpCacheDecorator incrementKey(String key, Object value) {

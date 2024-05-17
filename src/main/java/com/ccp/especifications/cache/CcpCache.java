@@ -10,5 +10,5 @@ public interface CcpCache {
 	<V> V getOrThrowException(String key, RuntimeException e);
 	boolean isPresent(String key);
 	void put(String key, Object value, int secondsDelay);
-	<V> V remove(String key);
+	<V> V delete(String key);
 }
