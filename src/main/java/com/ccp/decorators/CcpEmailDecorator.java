@@ -72,7 +72,7 @@ public class CcpEmailDecorator {
 		if(this.content.trim().toLowerCase().endsWith("@wayon.global")) {
 			return true;
 		}
-		if(this.content.trim().toLowerCase().endsWith("@corp.inovation.com.br")) {
+		if(this.content.trim().toLowerCase().endsWith("@corp.inovation.com.br")) { 
 			return true;
 		}
 		if(this.content.toLowerCase().endsWith(".docx")) {

@@ -42,7 +42,7 @@ public class CcpAsyncTask {
 		} catch (Throwable e) {
 			CcpJsonRepresentation response = new CcpJsonRepresentation(e);
 			saveProcessResult(entity, messageDetails, response, false);
-			throw e;
+			throw e;  
 		}
 	}
 

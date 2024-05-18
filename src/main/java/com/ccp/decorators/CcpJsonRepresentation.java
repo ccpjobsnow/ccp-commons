@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -133,7 +134,7 @@ public final class CcpJsonRepresentation {
 		CcpJsonRepresentation jr = CcpConstants.EMPTY_JSON;
 		
 		if(e == null) {
-			return jr;
+			return jr; 
 		}
 		
 		Throwable cause = e.getCause();
@@ -803,5 +804,10 @@ public final class CcpJsonRepresentation {
 		return collect;
 	}
 	
-	
+	public InputStream toInputStream() {
+		String asUgglyJson = this.asUgglyJson();
+		byte[] bytes = asUgglyJson.getBytes(StandardCharsets.UTF_8);
+		InputStream stream = new ByteArrayInputStream(bytes);
+		return stream;
+	}
 }
