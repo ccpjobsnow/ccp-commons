@@ -53,25 +53,25 @@ public class CcpSelectUnionAll {
 	}
 
 	
-	public <T> T whenRecordIsFoundInUnionAll(
+	public <T> T handleRecordInUnionAll(
 			CcpJsonRepresentation searchParameter, 
 			HandleWithSearchResultsInTheEntity<T> handler
 			) {
 		
 		CcpEntity entity = handler.getEntityToSearch();
 	
-		boolean recordDoesNotExist = this.isPresent(entity, searchParameter) == false;
+		boolean recordNotFound = this.isPresent(entity, searchParameter) == false;
 		
-		if(recordDoesNotExist) {
-			T whenRecordDoesNotExist = handler.whenRecordWasNotFoundInTheEntitySearch(searchParameter);
-			return whenRecordDoesNotExist;
+		if(recordNotFound) {
+			T whenRecordWasNotFoundInTheEntitySearch = handler.whenRecordWasNotFoundInTheEntitySearch(searchParameter);
+			return whenRecordWasNotFoundInTheEntitySearch;
 		}
 		
 		CcpJsonRepresentation recordFound = this.getRequiredEntityRow(entity, searchParameter);
 		
-		T whenRecordExists = handler.whenRecordWasFoundInTheEntitySearch(searchParameter, recordFound);
+		T whenRecordWasFoundInTheEntitySearch = handler.whenRecordWasFoundInTheEntitySearch(searchParameter, recordFound);
 		
-		return whenRecordExists;
+		return whenRecordWasFoundInTheEntitySearch;
 	}
 	
 	
