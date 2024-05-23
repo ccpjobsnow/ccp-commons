@@ -1,7 +1,10 @@
 package com.ccp.exceptions.db;
 
 import com.ccp.decorators.CcpJsonRepresentation;
+import com.ccp.dependency.injection.CcpDependencyInjection;
+import com.ccp.especifications.db.crud.CcpSelectUnionAll;
 import com.ccp.especifications.db.utils.CcpEntity;
+import com.ccp.especifications.json.CcpJsonHandler;
 
 @SuppressWarnings("serial")
 public class CcpEntityRecordNotFound extends RuntimeException{
@@ -10,9 +13,10 @@ public class CcpEntityRecordNotFound extends RuntimeException{
 		super(getErrorMessage(entityName, id));
 	}
 
-	public CcpEntityRecordNotFound(CcpEntity entity, CcpJsonRepresentation values) {
-		super(getErrorMessage(entity, values));
+	public CcpEntityRecordNotFound(CcpEntity entity, CcpJsonRepresentation values, CcpSelectUnionAll unionAll) {
+		super(getErrorMessage(entity, values)+", " + CcpDependencyInjection.getDependency(CcpJsonHandler.class).toJson(unionAll));
 	}
+	
 
 	private static String getErrorMessage(String entityName, String id) {
 		String errorMessage = String.format("Does not exist an id '%s' registered in the entity '%s'.", 

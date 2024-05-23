@@ -151,7 +151,7 @@ public final class CcpJsonRepresentation {
 		
 		CcpJsonRepresentation causeDetails = getErrorDetails(cause);
 
-		jr = jr.put("type", e.getClass().getName()).put("stackTrace", stackTrace.toString()).put("message", message).put("cause", causeDetails);
+		jr = jr.put("type", e.getClass().getName()).put("stackTrace", stackTrace.toString()).put("msg", message).put("cause", causeDetails);
 		return jr;
 	}
 	

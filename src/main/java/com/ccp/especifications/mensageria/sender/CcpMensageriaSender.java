@@ -22,6 +22,7 @@ public interface CcpMensageriaSender {
 	}
 	
 	void send(String topic, String... msgs);
+
 	
 	
 }

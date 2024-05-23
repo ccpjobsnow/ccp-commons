@@ -9,9 +9,11 @@ import com.ccp.exceptions.db.CcpEntityRecordNotFound;
 
 public class CcpSelectUnionAll {
 
+	public final CcpJsonRepresentation  requestBody;
 	public final CcpJsonRepresentation  condensed;
+	public final CcpJsonRepresentation  response;
 
-	public CcpSelectUnionAll(List<CcpJsonRepresentation> results) {
+	public CcpSelectUnionAll(List<CcpJsonRepresentation> results, CcpJsonRepresentation requestBody,  CcpEntity... entities) {
 		
 		CcpJsonRepresentation  condensed = CcpConstants.EMPTY_JSON;
 		
@@ -22,7 +24,10 @@ public class CcpSelectUnionAll {
 			condensed = condensed.putSubKey(index, id, removeKeys);
 		}
 		
+		this.response = CcpConstants.EMPTY_JSON.put("results", results); 
+		this.requestBody = requestBody;
 		this.condensed = condensed;
+		
 	}
 	
 	public boolean isPresent(CcpEntity entity, CcpJsonRepresentation value) {
@@ -89,9 +94,12 @@ public class CcpSelectUnionAll {
 		CcpJsonRepresentation entityRow = this.getEntityRow(entity, value);
 		
 		boolean notFound = entityRow.isEmpty();
+		if(notFound) {
+			System.out.println("apenas debugue e fique quieto");
+		}
 		
 		if(notFound) {
-			throw new CcpEntityRecordNotFound(entity, value);
+			throw new CcpEntityRecordNotFound(entity, value, this);
 		}
 		
 		return entityRow;
