@@ -36,7 +36,9 @@ public class CcpBulkItem {
 	}
 	
 	public int hashCode() {
-		return (this.entity + "_" + this.id + "_" + this.operation).hashCode();
+		String string = this.entity + "_" + this.id + "_" + this.operation;
+		int hashCode = string.hashCode();
+		return hashCode;
 	}
 
 	public boolean equals(Object obj) {

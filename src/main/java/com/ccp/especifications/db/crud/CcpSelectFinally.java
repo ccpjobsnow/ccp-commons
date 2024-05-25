@@ -39,7 +39,7 @@ public class CcpSelectFinally {
 	}
 
 	
-	private CcpJsonRepresentation findById(CcpJsonRepresentation values, CcpJsonRepresentation... specifications) {
+	private CcpJsonRepresentation findById(CcpJsonRepresentation json, CcpJsonRepresentation... specifications) {
 		List<CcpEntity> keySet = Arrays.asList(specifications).stream()
 				.filter(x -> x.getAsObject("entity") != null)
 				.map(x -> (CcpEntity) x.get("entity") )
@@ -51,7 +51,7 @@ public class CcpSelectFinally {
 		
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
 		
-		CcpSelectUnionAll unionAll = crud.unionAll(values, entities);
+		CcpSelectUnionAll unionAll = crud.unionAll(json, entities);
 		
 		for (CcpJsonRepresentation specification : specifications) {
 			
@@ -59,7 +59,7 @@ public class CcpSelectFinally {
 			
 			if(executeFreeAction) {
 				Function<CcpJsonRepresentation, CcpJsonRepresentation> action = specification.getAsObject("action");
-				values = action.apply(values);
+				json = action.apply(json);
 				continue;
 			}
 			
@@ -67,7 +67,7 @@ public class CcpSelectFinally {
 			
 			CcpEntity entity = specification.getAsObject("entity");
 			
-			boolean wasActuallyFound = unionAll.isPresent(entity, values);
+			boolean wasActuallyFound = entity.isPresentInThisUnionAll(unionAll, json);
 			
 			boolean itWasNotForeseen = wasActuallyFound != shouldHaveBeenFound;
 			
@@ -77,8 +77,8 @@ public class CcpSelectFinally {
 					continue;
 				}
 				String entityName = entity.getEntityName();
-				CcpJsonRepresentation dataBaseRow = unionAll.getRequiredEntityRow(entity,values);
-				values = values.putSubKey("_entities", entityName, dataBaseRow);
+				CcpJsonRepresentation dataBaseRow = unionAll.getRequiredEntityRow(entity,json);
+				json = json.putSubKey(CcpConstants.ENTITIES_LABEL, entityName, dataBaseRow);
 				continue;
 			}
 			
@@ -95,26 +95,26 @@ public class CcpSelectFinally {
 				
 				CcpProcessStatus status = specification.getAsObject("status");
 				String message = specification.getOrDefault("message", status.name());
-				throw new CcpFlow(values, status.status() , message, this.fields);
+				throw new CcpFlow(json, status.status() , message, this.fields);
 			}
 			
 			Function<CcpJsonRepresentation, CcpJsonRepresentation> action = specification.getAsObject("action");
 
 			if(shouldHaveBeenFound == false) {
-				values = action.apply(values);
+				json = action.apply(json);
 				continue;
 			}
 			String entityName = entity.getEntityName();
-			CcpJsonRepresentation dataBaseRow = unionAll.getRequiredEntityRow(entity,values);
-			CcpJsonRepresentation context = values.putSubKey("_entities", entityName, dataBaseRow);
-			values = action.apply(context);
+			CcpJsonRepresentation dataBaseRow = unionAll.getRequiredEntityRow(entity,json);
+			CcpJsonRepresentation context = json.putSubKey(CcpConstants.ENTITIES_LABEL, entityName, dataBaseRow);
+			json = action.apply(context);
 		}
 		
 		if(this.fields.length <= 0) {
 			return CcpConstants.EMPTY_JSON;
 		}
 		
-		CcpJsonRepresentation subMap = values.getJsonPiece(this.fields);
+		CcpJsonRepresentation subMap = json.getJsonPiece(this.fields);
 		return subMap;
 	}
 }

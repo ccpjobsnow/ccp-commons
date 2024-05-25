@@ -47,7 +47,6 @@ public interface CcpCrud {
 	}
 	
 	CcpSelectUnionAll unionAll(Collection<CcpJsonRepresentation> values, CcpEntity... entities);
-	CcpSelectUnionAll unionAll(List<String> ids, CcpEntity... entities);
 
 	default CcpSelectUnionAll unionAll(CcpJsonRepresentation values, CcpEntity... entities) {
 		List<CcpJsonRepresentation> asList = Arrays.asList(values);

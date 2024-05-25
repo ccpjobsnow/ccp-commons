@@ -4,42 +4,31 @@ import java.util.List;
 
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
+import com.ccp.dependency.injection.CcpDependencyInjection;
+import com.ccp.especifications.db.utils.CcpDbRequester;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.exceptions.db.CcpEntityRecordNotFound;
 
 public class CcpSelectUnionAll {
 
-	public final CcpJsonRepresentation  requestBody;
 	public final CcpJsonRepresentation  condensed;
-	public final CcpJsonRepresentation  response;
 
-	public CcpSelectUnionAll(List<CcpJsonRepresentation> results, CcpJsonRepresentation requestBody,  CcpEntity... entities) {
-		
+	public CcpSelectUnionAll(List<CcpJsonRepresentation> results) {
 		CcpJsonRepresentation  condensed = CcpConstants.EMPTY_JSON;
+		CcpDbRequester dependency = CcpDependencyInjection.getDependency(CcpDbRequester.class);
+		
+		String fieldNameToEntity = dependency.getFieldNameToEntity();
+		String fieldNameToId = dependency.getFieldNameToId();
 		
 		for (CcpJsonRepresentation result : results) {
-			String index = result.getAsString("_index");
-			String id = result.getAsString("_id");
-			CcpJsonRepresentation removeKeys = result.removeKeys("_index", "_id");
+			String id = result.getAsString(fieldNameToId);
+			String index = result.getAsString(fieldNameToEntity);
+			CcpJsonRepresentation removeKeys = result.removeKeys(fieldNameToId, fieldNameToEntity);
 			condensed = condensed.putSubKey(index, id, removeKeys);
 		}
-		
-		this.response = CcpConstants.EMPTY_JSON.put("results", results); 
-		this.requestBody = requestBody;
 		this.condensed = condensed;
-		
 	}
 	
-	public boolean isPresent(CcpEntity entity, CcpJsonRepresentation value) {
-		
-		String index = entity.getEntityName();
-		String id = entity.getId(value);
-		
-		boolean present = this.isPresent(index, id);
-		
-		return present;
-	}
-
 	public boolean isPresent(String entityName, String id) {
 		
 		boolean entityNotFound = this.condensed.containsAllKeys(entityName) == false;
@@ -56,7 +45,6 @@ public class CcpSelectUnionAll {
 		}
 		return true;
 	}
-
 	
 	public <T> T handleRecordInUnionAll(
 			CcpJsonRepresentation searchParameter, 
@@ -65,7 +53,7 @@ public class CcpSelectUnionAll {
 		
 		CcpEntity entity = handler.getEntityToSearch();
 	
-		boolean recordNotFound = this.isPresent(entity, searchParameter) == false;
+		boolean recordNotFound = entity.isPresentInThisUnionAll(this, searchParameter) == false;
 		
 		if(recordNotFound) {
 			T whenRecordWasNotFoundInTheEntitySearch = handler.whenRecordWasNotFoundInTheEntitySearch(searchParameter);
@@ -80,33 +68,21 @@ public class CcpSelectUnionAll {
 	}
 	
 	
-	public CcpJsonRepresentation getEntityRow(CcpEntity entity, CcpJsonRepresentation value) {
+	public CcpJsonRepresentation getRequiredEntityRow(CcpEntity entity, CcpJsonRepresentation json) {
 		
-		String index = entity.getEntityName();
-		String id = entity.getId(value);
-		
-		CcpJsonRepresentation jsonValue = this.getEntityRow(index, id);
-		return jsonValue;
-	}
+		boolean notFound = entity.isPresentInThisUnionAll(this, json) == false;
 
-	public CcpJsonRepresentation getRequiredEntityRow(CcpEntity entity, CcpJsonRepresentation value) {
-		
-		CcpJsonRepresentation entityRow = this.getEntityRow(entity, value);
-		
-		boolean notFound = entityRow.isEmpty();
 		if(notFound) {
-			System.out.println("apenas debugue e fique quieto");
+			throw new CcpEntityRecordNotFound(entity, json);
 		}
 		
-		if(notFound) {
-			throw new CcpEntityRecordNotFound(entity, value, this);
-		}
+		CcpJsonRepresentation entityRow = entity.getRecordFromUnionAll(this, json);
 		
 		return entityRow;
 	}
 	
 	
-	private CcpJsonRepresentation getEntityRow(String index, String id) {
+	public CcpJsonRepresentation getEntityRow(String index, String id) {
 		
 		boolean indexNotFound = this.condensed.containsAllKeys(index) == false;
 		
@@ -114,10 +90,8 @@ public class CcpSelectUnionAll {
 			return CcpConstants.EMPTY_JSON;
 		}
 		
-		
 		CcpJsonRepresentation innerJson = this.condensed.getInnerJson(index);
 
-		
 		boolean idNotFound = innerJson.containsAllKeys(id) == false;
 		
 		if(idNotFound) {
