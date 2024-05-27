@@ -36,6 +36,7 @@ public class CcpSelectUnionAll {
 		if(entityNotFound) {
 			return false;
 		}
+		
 		CcpJsonRepresentation innerJson = this.condensed.getInnerJsonFromPath(entityName, id);
 		
 		boolean idNotFound = innerJson.isEmpty();
@@ -43,6 +44,7 @@ public class CcpSelectUnionAll {
 		if(idNotFound) {
 			return false;
 		}
+		
 		return true;
 	}
 	

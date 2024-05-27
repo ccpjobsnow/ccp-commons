@@ -19,6 +19,12 @@ import com.ccp.exceptions.process.CcpFlow;
 
 public interface CcpEntity{
 
+	List<CcpJsonRepresentation> getParametersToSearch(CcpJsonRepresentation json);
+	
+	boolean isPresentInThisUnionAll(CcpSelectUnionAll unionAll, CcpJsonRepresentation json);
+	
+	CcpJsonRepresentation getRecordFromUnionAll(CcpSelectUnionAll unionAll, CcpJsonRepresentation json);
+
 	String getEntityName();
 
 	String getId(CcpJsonRepresentation values) ;
@@ -144,9 +150,4 @@ public interface CcpEntity{
 		return onlyPrimaryKey;
 	}
 	
-	List<CcpJsonRepresentation> getParametersToSearch(CcpJsonRepresentation json);
-	
-	boolean isPresentInThisUnionAll(CcpSelectUnionAll unionAll, CcpJsonRepresentation json);
-	
-	CcpJsonRepresentation getRecordFromUnionAll(CcpSelectUnionAll unionAll, CcpJsonRepresentation json);
 }
