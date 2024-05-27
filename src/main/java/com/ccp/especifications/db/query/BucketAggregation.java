@@ -29,7 +29,7 @@ public final class BucketAggregation extends CcpDbQueryComponent {
 	private CcpDbQueryAggregations getStatisRequest(String p1, String p2) {
 		CcpDbQueryComponent copy = this.copy();
 		Map<String, Object> content = CcpConstants.EMPTY_JSON.put("field", this.fieldName).put(p1, this.size).getContent();
-		copy.values = copy.values.put(p2, content);
+		copy.json = copy.json.put(p2, content);
 		CcpDbQueryAggregations addChild = this.parent.addChild(copy);
 		return addChild;
 	}

@@ -7,7 +7,7 @@ import com.ccp.especifications.json.CcpJsonHandler;
 
 abstract class CcpDbQueryComponent {
 
-	public CcpJsonRepresentation values = CcpConstants.EMPTY_JSON;
+	public CcpJsonRepresentation json = CcpConstants.EMPTY_JSON;
 	protected CcpDbQueryComponent parent;
 	protected String name;
 	
@@ -20,7 +20,7 @@ abstract class CcpDbQueryComponent {
 	 protected abstract <T extends CcpDbQueryComponent> T getInstanceCopy() ;
 	
 	 Object getValue() {
-		return this.values.content;
+		return this.json.content;
 	}
 	 
 	 @SuppressWarnings("unchecked")
@@ -30,7 +30,7 @@ abstract class CcpDbQueryComponent {
 		 
 		 Object value = child.getValue();
 		 
-		 instanceCopy.values = instanceCopy.values.put(child.name, value);
+		 instanceCopy.json = instanceCopy.json.put(child.name, value);
 		 
 		 return (T)instanceCopy;
 	 }
@@ -45,7 +45,7 @@ abstract class CcpDbQueryComponent {
 			 instanceCopy.parent = this.parent.copy();
 		 }
 		 
-		 instanceCopy.values = this.values.copy();
+		 instanceCopy.json = this.json.copy();
 		
 		 return (T)instanceCopy;
 	}
@@ -61,12 +61,12 @@ abstract class CcpDbQueryComponent {
 	}
 	 
 	public boolean hasChildreen() {
-		return this.values.content.isEmpty() == false;
+		return this.json.content.isEmpty() == false;
 	} 
 	
 	public <T extends CcpDbQueryComponent> T putProperty(String propertyName, Object propertyValue){
 		T clone = this.copy();
-		clone.values = clone.values.put(propertyName, propertyValue);
+		clone.json = clone.json.put(propertyName, propertyValue);
 		return clone;
 
 	}

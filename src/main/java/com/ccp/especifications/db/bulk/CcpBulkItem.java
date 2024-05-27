@@ -12,7 +12,7 @@ public class CcpBulkItem {
 
 	public CcpBulkItem(CcpJsonRepresentation json, CcpEntityOperationType operation, CcpEntity entity) {
 		this.json = entity.getOnlyExistingFields(json);
-		this.id = entity.getId(json);
+		this.id = entity.calculateId(json);
 		this.operation = operation;
 		this.entity = entity;
 	}
@@ -69,7 +69,7 @@ public class CcpBulkItem {
 	}
 
 	public CcpBulkItem getSecondRecordToBulkOperation() {
-		CcpBulkItem recordToBulkOperation = this.entity.getRecordToBulkOperation(this.json, this.operation);
+		CcpBulkItem recordToBulkOperation = this.entity.getRecordCopyToBulkOperation(this.json, this.operation);
 		return recordToBulkOperation;
 	}
 	
