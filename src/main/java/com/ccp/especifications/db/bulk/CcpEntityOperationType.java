@@ -13,7 +13,7 @@ public enum CcpEntityOperationType {
 	update(CcpConstants.EMPTY_JSON.put("404", (Function<CcpBulkItem,CcpBulkItem>) x -> getCreateOperationType(x))), 
 	delete(CcpConstants.EMPTY_JSON.put("404", (Function<CcpBulkItem,CcpBulkItem>) x -> 
 	{
-		throw new CcpEntityRecordNotFound(x.entity, x.json, null);//FIXME SAIA DAQUI 'NULL'
+		throw new CcpEntityRecordNotFound(x.entity, x.json);
 	}))
 	;
 	

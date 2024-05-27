@@ -21,4 +21,8 @@ public interface CcpDbRequester {
 	List<CcpBulkOperationResult> executeDatabaseSetup(String pathToJavaClasses, String hostFolder, String pathToCreateEntityScript,	Consumer<CcpIncorrectEntityFields> whenIsIncorrectMapping,	Consumer<Throwable> whenOccursAnError);
 
 	CcpJsonRepresentation getConnectionDetails();
+
+	String getFieldNameToEntity();
+
+	String getFieldNameToId();
 }

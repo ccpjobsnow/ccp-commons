@@ -12,11 +12,18 @@ import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpEntityOperationType;
 import com.ccp.especifications.db.crud.CcpCrud;
+import com.ccp.especifications.db.crud.CcpSelectUnionAll;
 import com.ccp.exceptions.db.CcpEntityRecordNotFound;
 import com.ccp.exceptions.process.CcpFlow;
 
 
 public interface CcpEntity{
+
+	List<CcpJsonRepresentation> getParametersToSearch(CcpJsonRepresentation json);
+	
+	boolean isPresentInThisUnionAll(CcpSelectUnionAll unionAll, CcpJsonRepresentation json);
+	
+	CcpJsonRepresentation getRecordFromUnionAll(CcpSelectUnionAll unionAll, CcpJsonRepresentation json);
 
 	String getEntityName();
 
