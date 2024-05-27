@@ -20,48 +20,48 @@ import com.ccp.validation.enums.BoundValidations;
 import com.ccp.validation.enums.SimpleObjectValidations;
 
 public class CcpJsonFieldsValidations {
-	
+	// Valida o conteúdo das informações do JSON com os campos da tabela que receberá os dados
 	public static void validate(Class<?> clazz, Map<String, Object> map, String featureName) {
-		
+		// Verifica se há algum campo do JSON que não está presente na tabela
 		boolean isNotPresent = clazz.isAnnotationPresent(ValidationRules.class) == false;
-		
+		// Se algum campo do JSON não estiver na tabela, retorna.
 		if(isNotPresent) {
 			return;
 		}
-		
+		// Se todos campos do JSON estiverem na tabela, dá continuidade organizando
 		ValidationRules rules = clazz.getAnnotation(ValidationRules.class);
-		
+		// Organiza os dados e executa o método de validação
 		validate(rules, map, featureName);
 	}
-	
+	// Após a organização do método, é chamado aqui para execução
 	public static void validate(ValidationRules rules, Map<String, Object> map, String featureName) {
-		
+		// Recebe o JSON mapeado
 		CcpJsonRepresentation json = new CcpJsonRepresentation(map);
-
+		// ???
 		Class<?> rulesClass = rules.rulesClass();
-		
+		// ???
 		rules = rulesClass.isAnnotationPresent(ValidationRules.class) ? rulesClass.getAnnotation(ValidationRules.class) : rules;
-		
+		// Cria variável de evidência em formato JSON vazia
 		CcpJsonRepresentation evidences = CcpConstants.EMPTY_JSON;
-
+		// Validando os limites
 		evidences = validateBounds(rules, json, evidences);
-
+		// Validando restrições
 		evidences = validateRestricted(rules, json, evidences);
-
+		// Validações simples 
 		evidences = simpleValidation(rules, json, evidences);
-
+		// Acrescenta a relação de erros
 		CcpJsonRepresentation errors = evidences.getInnerJson("errors");
-		
+		// Carrega a variável booleana vazia		--		Não está faltando um if do tipo se errors for vazio então carrega noErrors com errors.isEmpty()? 
 		boolean noErrors = errors.isEmpty();
-
+		// Caso noErros seja verdadeiro, retorna
 		if (noErrors) {
 			return;
 		}
-		
+		// Se noErrors for falso continua carregando a variável de especificação
 		CcpJsonRepresentation specification = getSpecification(featureName, rules);
-		
+		// Incrementa a variável de evidência com a especificação
 		CcpJsonRepresentation result = evidences.put("specification", specification).put("json", json);
-
+		// Se der algum erro, será redirecionado à classe CcpJsonInvalid()
 		throw new CcpJsonInvalid(result);
 	}
 
