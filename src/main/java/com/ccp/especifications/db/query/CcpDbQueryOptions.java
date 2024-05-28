@@ -55,12 +55,12 @@ public class CcpDbQueryOptions extends CcpDbQueryComponent{
 		
 		List<Object> asList = Arrays.asList(content);
 
-		if(copy.values.content.containsKey("sort")) {
-			List<Object> sort = copy.values.getAsObjectList("sort");
+		if(copy.json.content.containsKey("sort")) {
+			List<Object> sort = copy.json.getAsObjectList("sort");
 			asList = new ArrayList<>(sort);
 			asList.add(content);
 		}
-		copy.values = copy.values.put("sort", asList);
+		copy.json = copy.json.put("sort", asList);
 		return copy;
 	}
 	@SuppressWarnings("unchecked")

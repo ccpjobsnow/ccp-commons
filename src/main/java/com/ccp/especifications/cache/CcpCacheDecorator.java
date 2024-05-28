@@ -10,23 +10,23 @@ import com.ccp.dependency.injection.CcpDependencyInjection;
 public class CcpCacheDecorator {
 	private final CcpCache cache = CcpDependencyInjection.getDependency(CcpCache.class);
 	
-	private final CcpJsonRepresentation values;
+	private final CcpJsonRepresentation json;
 
 	private final String key;
 	
 
 	public CcpCacheDecorator(String key) {
-		this.values = CcpConstants.EMPTY_JSON;
+		this.json = CcpConstants.EMPTY_JSON;
 		this.key = key;
 	}
 	
-	private CcpCacheDecorator(CcpJsonRepresentation values, String key) {
-		this.values = values;
+	private CcpCacheDecorator(CcpJsonRepresentation json, String key) {
+		this.json = json;
 		this.key = key;
 	}
 
 	public <V> V get(Function<CcpJsonRepresentation,V> taskToGetValue, int cacheSeconds) {
-		return this.cache.get(this.key, this.values, taskToGetValue, cacheSeconds);
+		return this.cache.get(this.key, this.json, taskToGetValue, cacheSeconds);
 	}
 
 	public <V> V getOrDefault(V defaultValue) {
@@ -37,7 +37,7 @@ public class CcpCacheDecorator {
 		return this.cache.getOrThrowException(this.key, e);
 	}
 
-	public boolean isPresent() {
+	public boolean exists() {
 		return this.cache.isPresent(this.key);
 	}
 
@@ -51,14 +51,14 @@ public class CcpCacheDecorator {
 	
 	public CcpCacheDecorator incrementKey(String key, Object value) {
 		String _key = this.key + "." + key + "." + value;
-		CcpJsonRepresentation put = this.values.put(key, value);
+		CcpJsonRepresentation put = this.json.put(key, value);
 		CcpCacheDecorator ccpCacheDecorator = new CcpCacheDecorator(put, _key);
 		return ccpCacheDecorator;
 	}
 	
-	public CcpCacheDecorator incrementKeys(CcpJsonRepresentation values, String... keys) {
+	public CcpCacheDecorator incrementKeys(CcpJsonRepresentation json, String... keys) {
 		
-		CcpJsonRepresentation jsonPiece = values.getJsonPiece(keys);
+		CcpJsonRepresentation jsonPiece = json.getJsonPiece(keys);
 		
 		CcpCacheDecorator result = this.incrementKeys(jsonPiece);
 		

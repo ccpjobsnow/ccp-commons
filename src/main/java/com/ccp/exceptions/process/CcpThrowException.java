@@ -12,7 +12,7 @@ public class CcpThrowException implements  Function<CcpJsonRepresentation, CcpJs
 		this.exception = exception;
 	}
 
-	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
+	public CcpJsonRepresentation apply(CcpJsonRepresentation json) {
 		throw this.exception;
 	}
 

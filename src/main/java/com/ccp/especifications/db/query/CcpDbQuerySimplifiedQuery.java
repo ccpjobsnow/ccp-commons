@@ -27,7 +27,7 @@ public final class CcpDbQuerySimplifiedQuery  extends CcpDbQueryBooleanOperator 
 	}
 	
 	Object getValue() {
-		return this.values.content;
+		return this.json.content;
 	}
 	 @SuppressWarnings("unchecked")
 	 protected CcpDbQuerySimplifiedQuery copy() {
@@ -37,7 +37,7 @@ public final class CcpDbQuerySimplifiedQuery  extends CcpDbQueryBooleanOperator 
 
 		 instanceCopy.parent = this.parent.copy();
 		 
-		 instanceCopy.values = this.values.copy();
+		 instanceCopy.json = this.json.copy();
 		
 		 return instanceCopy;
 	}
@@ -49,7 +49,7 @@ public final class CcpDbQuerySimplifiedQuery  extends CcpDbQueryBooleanOperator 
 		 
 		 Object value = child.getValue();
 		 
-		 instanceCopy.values = instanceCopy.values.put(child.name, value);
+		 instanceCopy.json = instanceCopy.json.put(child.name, value);
 		 
 		 return instanceCopy;
 	 }
@@ -81,13 +81,13 @@ public final class CcpDbQuerySimplifiedQuery  extends CcpDbQueryBooleanOperator 
 			Map<String, Object> outerMap = CcpConstants.EMPTY_JSON.put(key, map).getContent();
 			
 			CcpDbQuerySimplifiedQuery clone = this.copy();
-			clone.values = new CcpJsonRepresentation(outerMap);
+			clone.json = new CcpJsonRepresentation(outerMap);
 			return clone;
 		}
 		
 		
 		public boolean hasChildreen() {
-			return this.values.content.isEmpty() == false;
+			return this.json.content.isEmpty() == false;
 		}
 
 

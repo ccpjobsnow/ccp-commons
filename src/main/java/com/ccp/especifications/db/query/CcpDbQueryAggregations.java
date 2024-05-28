@@ -29,7 +29,7 @@ public final class CcpDbQueryAggregations extends CcpDbQueryComponent{
 		CcpDbQueryAggregations copy = this.copy();
 		Map<String, Object> c1 = CcpConstants.EMPTY_JSON.put("field", fieldName).getContent();
 		Map<String, Object> c2 = CcpConstants.EMPTY_JSON.put(key, c1).getContent();
-		copy.values = copy.values.put(aggregationName, c2);
+		copy.json = copy.json.put(aggregationName, c2);
 		return copy;
 	}
 	public CcpDbQueryAggregations addMaxAggregation(String aggregationName, CcpEntityField fieldName) {

@@ -27,11 +27,11 @@ public interface CcpEntity{
 
 	String getEntityName();
 
-	String getId(CcpJsonRepresentation values) ;
+	String calculateId(CcpJsonRepresentation json) ;
 	
-	CcpJsonRepresentation getPrimaryKeyValues(CcpJsonRepresentation values);
+	CcpJsonRepresentation getPrimaryKeyValues(CcpJsonRepresentation json);
 	
-	CcpBulkItem getRecordToBulkOperation(CcpJsonRepresentation values, CcpEntityOperationType operation);
+	CcpBulkItem getRecordCopyToBulkOperation(CcpJsonRepresentation json, CcpEntityOperationType operation);
 	
 	CcpEntityField[] getFields();
 	
@@ -48,21 +48,21 @@ public interface CcpEntity{
 		return this;
 	}
 
-	default CcpJsonRepresentation getOneById(CcpJsonRepresentation data, Function<CcpJsonRepresentation, CcpJsonRepresentation> ifNotFound) {
+	default CcpJsonRepresentation getOneById(CcpJsonRepresentation json, Function<CcpJsonRepresentation, CcpJsonRepresentation> ifNotFound) {
 		try {
 			CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
-			CcpJsonRepresentation oneById = crud.getOneById(this, data);
+			CcpJsonRepresentation oneById = crud.getOneById(this, json);
 			return oneById;
 			
 		} catch (CcpEntityRecordNotFound e) {
-			CcpJsonRepresentation execute = ifNotFound.apply(data);
+			CcpJsonRepresentation execute = ifNotFound.apply(json);
 			return execute;
 		}
 	}
 
-	default CcpJsonRepresentation getOneById(CcpJsonRepresentation data) {
+	default CcpJsonRepresentation getOneById(CcpJsonRepresentation json) {
 		String entityName = this.getEntityName();
-		CcpJsonRepresentation md = this.getOneById(data, x -> {throw new CcpFlow(x.put("entity", entityName), 404);});
+		CcpJsonRepresentation md = this.getOneById(json, x -> {throw new CcpFlow(x.put("entity", entityName), 404);});
 		return md;
 	}
 	
@@ -87,21 +87,21 @@ public interface CcpEntity{
 		
 	}
 	
-	default boolean exists(CcpJsonRepresentation data) {
+	default boolean exists(CcpJsonRepresentation json) {
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
-		boolean exists = crud.exists(this, data);
+		boolean exists = crud.exists(this, json);
 		return exists;
 	}
 	
 	
-	default CcpJsonRepresentation createOrUpdate(CcpJsonRepresentation values) {
-		CcpJsonRepresentation onlyExistingFields = this.getOnlyExistingFields(values);
-		this.create(values);
+	default CcpJsonRepresentation createOrUpdate(CcpJsonRepresentation json) {
+		CcpJsonRepresentation onlyExistingFields = this.getOnlyExistingFields(json);
+		this.create(json);
 		return onlyExistingFields;
 	}
 
-	default boolean create(CcpJsonRepresentation values) {
-		CcpJsonRepresentation onlyExistingFields = this.getOnlyExistingFields(values);
+	default boolean create(CcpJsonRepresentation json) {
+		CcpJsonRepresentation onlyExistingFields = this.getOnlyExistingFields(json);
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
 
 		CcpJsonRepresentation createOrUpdate = crud.createOrUpdate(this, onlyExistingFields);
@@ -112,9 +112,9 @@ public interface CcpEntity{
 	}
 	
 
-	default boolean delete(CcpJsonRepresentation values) {
+	default boolean delete(CcpJsonRepresentation json) {
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
-		boolean remove = crud.delete(this, values);
+		boolean remove = crud.delete(this, json);
 		return remove;
 	}
 	
@@ -125,9 +125,9 @@ public interface CcpEntity{
 	}
 
 	
-	default CcpJsonRepresentation createOrUpdate(CcpJsonRepresentation data, String id) {
+	default CcpJsonRepresentation createOrUpdate(CcpJsonRepresentation json, String id) {
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
-		CcpJsonRepresentation createOrUpdate = crud.createOrUpdate(this, data, id);
+		CcpJsonRepresentation createOrUpdate = crud.createOrUpdate(this, json, id);
 		return createOrUpdate;
 	}
 	
@@ -137,10 +137,10 @@ public interface CcpEntity{
 	}
 	
 	
-	default CcpJsonRepresentation getOnlyExistingFields(CcpJsonRepresentation values) {
+	default CcpJsonRepresentation getOnlyExistingFields(CcpJsonRepresentation json) {
 		CcpEntityField[] fields = this.getFields();
 		String[] array = Arrays.asList(fields).stream().map(x -> x.name()).collect(Collectors.toList()).toArray(new String[fields.length]);
-		CcpJsonRepresentation subMap = values.getJsonPiece(array);
+		CcpJsonRepresentation subMap = json.getJsonPiece(array);
 		return subMap;
 	}
 	

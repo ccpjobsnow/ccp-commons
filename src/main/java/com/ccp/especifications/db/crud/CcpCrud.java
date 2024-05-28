@@ -11,35 +11,37 @@ import com.ccp.validation.annotations.ValidationRules;
 
 public interface CcpCrud {
 
-	default CcpJsonRepresentation createOrUpdate(CcpEntity entity, CcpJsonRepresentation data) {
+	default CcpJsonRepresentation createOrUpdate(CcpEntity entity, CcpJsonRepresentation json) {
 		
 		Class<? extends CcpEntity> class1 = entity.getClass();
 		if(class1.isAnnotationPresent(ValidationRules.class)) {
 			ValidationRules annotation = class1.getAnnotation(ValidationRules.class);
 			String actionName = "save" + entity.getClass().getSimpleName();
-			CcpJsonFieldsValidations.validate(annotation, data.content, actionName);
+			CcpJsonFieldsValidations.validate(annotation, json.content, actionName);
 		}
 		
-		String id = entity.getId(data);
+		String id = entity.calculateId(json);
 
-		CcpJsonRepresentation response = this.createOrUpdate(entity, data, id);
+		CcpJsonRepresentation response = this.createOrUpdate(entity, json, id);
 		
 		return response;
 	}
 	
 	
-	default boolean exists(CcpEntity entity, CcpJsonRepresentation values) {
-		String id = entity.getId(values);
+	default boolean exists(CcpEntity entity, CcpJsonRepresentation json) {
+		
+		String id = entity.calculateId(json);
 		
 		boolean exists = this.exists(entity, id);
+		
 		return exists;
 	}
 	
 	CcpJsonRepresentation getOneById(CcpEntity entity, String id);
 
-	default CcpJsonRepresentation getOneById(CcpEntity entity, CcpJsonRepresentation values) {
+	default CcpJsonRepresentation getOneById(CcpEntity entity, CcpJsonRepresentation json) {
 	
-		String id = entity.getId(values);
+		String id = entity.calculateId(json);
 		
 		CcpJsonRepresentation oneById = this.getOneById(entity, id);
 		
@@ -48,21 +50,21 @@ public interface CcpCrud {
 	
 	CcpSelectUnionAll unionAll(Collection<CcpJsonRepresentation> values, CcpEntity... entities);
 
-	default CcpSelectUnionAll unionAll(CcpJsonRepresentation values, CcpEntity... entities) {
-		List<CcpJsonRepresentation> asList = Arrays.asList(values);
+	default CcpSelectUnionAll unionAll(CcpJsonRepresentation json, CcpEntity... entities) {
+		List<CcpJsonRepresentation> asList = Arrays.asList(json);
 		CcpSelectUnionAll unionAll = this.unionAll(asList, entities);
 		return unionAll;
 	}
 
 
-	CcpJsonRepresentation createOrUpdate(CcpEntity entity, CcpJsonRepresentation data, String id);
+	CcpJsonRepresentation createOrUpdate(CcpEntity entity, CcpJsonRepresentation json, String id);
 
 	boolean exists(CcpEntity entity, String id);
 
 	boolean delete(CcpEntity entity, String id); 
 	
-	default boolean delete(CcpEntity entity, CcpJsonRepresentation values) {
-		String id = entity.getId(values);
+	default boolean delete(CcpEntity entity, CcpJsonRepresentation json) {
+		String id = entity.calculateId(json);
 
 		boolean deleted = this.delete(entity, id);
 		return deleted;
