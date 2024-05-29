@@ -221,7 +221,7 @@ public final class CcpJsonRepresentation {
 		try {
 			return Double.valueOf("" + object);
 		} catch (Exception e) {
-			throw new RuntimeException("The value '" + object + "' from the key '" + key + "is not a double");
+			throw new RuntimeException("The value '" + object + "' from the key '" + key + "' is not a double");
 		}
 	}
 	

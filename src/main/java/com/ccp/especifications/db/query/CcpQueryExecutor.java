@@ -24,5 +24,5 @@ public interface CcpQueryExecutor {
 
 	CcpJsonRepresentation getMap(CcpDbQueryOptions elasticQuery, String[] resourcesNames, String field);
 	
-	CcpJsonRepresentation getAggregations(CcpDbQueryOptions elasticQuery, String[] resourcesNames) ;	
+	CcpJsonRepresentation getAggregations(CcpDbQueryOptions elasticQuery, String... resourcesNames) ;	
 }

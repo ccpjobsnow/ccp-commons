@@ -103,7 +103,7 @@ public interface CcpEntity{
 	default boolean create(CcpJsonRepresentation json) {
 		CcpJsonRepresentation onlyExistingFields = this.getOnlyExistingFields(json);
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
-
+		
 		CcpJsonRepresentation createOrUpdate = crud.createOrUpdate(this, onlyExistingFields);
 		String result = createOrUpdate.getAsString("result");
 		boolean created = "created".equals(result);
