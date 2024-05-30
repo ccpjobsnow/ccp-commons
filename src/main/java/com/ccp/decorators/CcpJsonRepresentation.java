@@ -583,16 +583,8 @@ public final class CcpJsonRepresentation {
 				List<Object> fromJson = jsonHandler.fromJson(object.toString());
 				return fromJson;
 			} catch (Exception e) {
+				return Arrays.asList(object.toString());
 			}
-			List<Object> lista = new ArrayList<>();
-			
-			String[] split = object.toString().split(",");
-			
-			for (String string : split) {
-				lista.add(string);
-			}
-			
-			return lista;
 		}
 		
 		if(object instanceof Collection<?> list) {
