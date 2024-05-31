@@ -1,6 +1,7 @@
 package com.ccp.especifications.db.crud;
 
 import java.util.List;
+import java.util.function.Function;
 
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
@@ -58,23 +59,30 @@ public class CcpSelectUnionAll {
 		boolean recordNotFound = entity.isPresentInThisUnionAll(this, searchParameter) == false;
 		
 		if(recordNotFound) {
-			T whenRecordWasNotFoundInTheEntitySearch = handler.whenRecordWasNotFoundInTheEntitySearch(searchParameter);
+			Function<CcpJsonRepresentation, CcpJsonRepresentation> doBeforeSavingIfRecordIsNotFound = handler.doBeforeSavingIfRecordIsNotFound();
+			CcpJsonRepresentation apply = doBeforeSavingIfRecordIsNotFound.apply(searchParameter);
+			T whenRecordWasNotFoundInTheEntitySearch = handler.whenRecordWasNotFoundInTheEntitySearch(apply);
 			return whenRecordWasNotFoundInTheEntitySearch;
 		}
 		
 		CcpJsonRepresentation recordFound = this.getRequiredEntityRow(entity, searchParameter);
 		
-		T whenRecordWasFoundInTheEntitySearch = handler.whenRecordWasFoundInTheEntitySearch(searchParameter, recordFound);
+		Function<CcpJsonRepresentation, CcpJsonRepresentation> doBeforeSavingIfRecordIsFound = handler.doBeforeSavingIfRecordIsFound();
+		
+		CcpJsonRepresentation apply = doBeforeSavingIfRecordIsFound.apply(searchParameter);
+		
+		T whenRecordWasFoundInTheEntitySearch = handler.whenRecordWasFoundInTheEntitySearch(apply, recordFound);
 		
 		return whenRecordWasFoundInTheEntitySearch;
 	}
 	
-	
+	//TODO DESCOMPLICAR
 	public CcpJsonRepresentation getRequiredEntityRow(CcpEntity entity, CcpJsonRepresentation json) {
 		
 		boolean notFound = entity.isPresentInThisUnionAll(this, json) == false;
 
 		if(notFound) {
+
 			throw new CcpEntityRecordNotFound(entity, json);
 		}
 		

@@ -20,12 +20,12 @@ public final class CcpHttpHandler {
 	}
 
 	public CcpHttpHandler(Integer httpStatus, Function<CcpJsonRepresentation, CcpJsonRepresentation> alternativeFlow) {
-		this.flows = CcpConstants.EMPTY_JSON.put(httpStatus.toString(), CcpConstants.DO_BY_PASS);
+		this.flows = CcpConstants.EMPTY_JSON.put(httpStatus.toString(), CcpConstants.DO_NOTHING);
 		this.alternativeFlow = alternativeFlow;
 	}
 	
 	public CcpHttpHandler(Integer httpStatus) {
-		this.flows = CcpConstants.EMPTY_JSON.put(httpStatus.toString(), CcpConstants.DO_BY_PASS);
+		this.flows = CcpConstants.EMPTY_JSON.put(httpStatus.toString(), CcpConstants.DO_NOTHING);
 		this.alternativeFlow = null;
 	}
 	

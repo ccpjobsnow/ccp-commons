@@ -35,6 +35,8 @@ public interface CcpEntity{
 	
 	CcpEntityField[] getFields();
 	
+	CcpEntity fromCache();
+	
 	boolean canSaveCopy();
 	
 	boolean hasMirrorEntity();
@@ -150,4 +152,7 @@ public interface CcpEntity{
 		return onlyPrimaryKey;
 	}
 	
+	default boolean isVirtual() {
+		return false;
+	}
 }

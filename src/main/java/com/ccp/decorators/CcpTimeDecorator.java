@@ -57,17 +57,22 @@ public class CcpTimeDecorator {
 	}
 	
 	public void sleep(int i) {
-		
-		if(i <= 0) {
+
+		if (i <= 0) {
 			return;
 		}
-		
+
 		try {
 			Thread.sleep(i);
 		} catch (Exception e) {
 		}
-
 	}
 
-
+	public static void log(Object message) {
+		
+		CcpTimeDecorator ccpTimeDecorator = new CcpTimeDecorator();
+		
+		new CcpStringDecorator("c:\\logs\\caca_erro_union_all.txt").file().append(ccpTimeDecorator.getFormattedDateTime("dd/MM/yyyy HH:mm:ss.SSS") + ": " + message);
+		
+	}
 }
