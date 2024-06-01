@@ -155,4 +155,41 @@ public interface CcpEntity{
 	default boolean isVirtual() {
 		return false;
 	}
+	
+	default CcpJsonRepresentation getOneByIdFromMirrorOrFromCache(CcpJsonRepresentation json) {
+		
+		CcpEntity fromCache = this.fromCache();
+		
+		boolean existsInMainEntity = fromCache.exists(json);
+		
+		if(existsInMainEntity) {
+			CcpJsonRepresentation oneById = fromCache.getOneById(json);
+			return oneById;
+		}
+		
+		CcpEntity mirrorEntity = this.getMirrorEntity();
+		CcpEntity cacheMirror = mirrorEntity.fromCache();
+
+		boolean existsInMirrorEntity = cacheMirror.exists(json);
+		
+		if(existsInMirrorEntity) {
+			CcpJsonRepresentation oneById = cacheMirror.getOneById(json);
+			return oneById;
+		}
+		throw new CcpFlow(json, 404);
+	}
+	
+	default CcpJsonRepresentation getRequiredEntityRow(CcpSelectUnionAll unionAll, CcpJsonRepresentation json) {
+		
+		boolean notFound = this.isPresentInThisUnionAll(unionAll, json) == false;
+
+		if(notFound) {
+			throw new CcpEntityRecordNotFound(this, json);
+		}
+		
+		CcpJsonRepresentation entityRow = this.getRecordFromUnionAll(unionAll, json);
+		
+		return entityRow;
+	}
+
 }

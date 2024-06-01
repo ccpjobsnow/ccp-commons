@@ -8,7 +8,6 @@ import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.utils.CcpDbRequester;
 import com.ccp.especifications.db.utils.CcpEntity;
-import com.ccp.exceptions.db.CcpEntityRecordNotFound;
 
 public class CcpSelectUnionAll {
 
@@ -65,7 +64,7 @@ public class CcpSelectUnionAll {
 			return whenRecordWasNotFoundInTheEntitySearch;
 		}
 		
-		CcpJsonRepresentation recordFound = this.getRequiredEntityRow(entity, searchParameter);
+		CcpJsonRepresentation recordFound = entity.getRequiredEntityRow(this, searchParameter);
 		
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> doBeforeSavingIfRecordIsFound = handler.doBeforeSavingIfRecordIsFound();
 		
@@ -75,22 +74,6 @@ public class CcpSelectUnionAll {
 		
 		return whenRecordWasFoundInTheEntitySearch;
 	}
-	
-	//TODO DESCOMPLICAR
-	public CcpJsonRepresentation getRequiredEntityRow(CcpEntity entity, CcpJsonRepresentation json) {
-		
-		boolean notFound = entity.isPresentInThisUnionAll(this, json) == false;
-
-		if(notFound) {
-
-			throw new CcpEntityRecordNotFound(entity, json);
-		}
-		
-		CcpJsonRepresentation entityRow = entity.getRecordFromUnionAll(this, json);
-		
-		return entityRow;
-	}
-	
 	
 	public CcpJsonRepresentation getEntityRow(String index, String id) {
 		
