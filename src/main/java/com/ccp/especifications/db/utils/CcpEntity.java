@@ -192,4 +192,18 @@ public interface CcpEntity{
 		return entityRow;
 	}
 
+	default boolean isPresentInThisJsonInMainEntity(CcpJsonRepresentation json) {
+		CcpJsonRepresentation innerJsonFromPath = json.getInnerJsonFromPath("_entities", this.getEntityName());
+		return innerJsonFromPath.isEmpty() == false;
+	}
+
+	default CcpJsonRepresentation getInnerJsonFromMainAndMirrorEntities(CcpJsonRepresentation json) {
+		String entityName = this.getEntityName();
+		CcpEntity mirrorEntity = this.getMirrorEntity();
+		String mirrorEntityName = mirrorEntity.getEntityName();
+		CcpJsonRepresentation j1 = json.getInnerJsonFromPath("_entities", entityName);
+		CcpJsonRepresentation j2 = json.getInnerJsonFromPath("_entities", mirrorEntityName);
+		CcpJsonRepresentation putAll = j1.putAll(j2);
+		return putAll;
+	}
 }

@@ -24,7 +24,7 @@ public class CcpSelectUnionAll {
 			String id = result.getAsString(fieldNameToId);
 			String index = result.getAsString(fieldNameToEntity);
 			CcpJsonRepresentation removeKeys = result.removeKeys(fieldNameToId, fieldNameToEntity);
-			condensed = condensed.putSubKey(index, id, removeKeys);
+			condensed = condensed.addToItem(index, id, removeKeys);
 		}
 		this.condensed = condensed;
 	}

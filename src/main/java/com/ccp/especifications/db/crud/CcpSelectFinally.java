@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.utils.CcpEntity;
@@ -25,21 +24,21 @@ public class CcpSelectFinally {
 
 	}
 
-	public void endThisProcedure() {
+	public void endThisProcedure(Function<CcpJsonRepresentation, CcpJsonRepresentation> whenFlowError) {
 		List<CcpJsonRepresentation> statements = this.statements.getAsJsonList("statements");
 		CcpJsonRepresentation[] array = statements.toArray(new CcpJsonRepresentation[statements.size()]);
-		this.findById(this.id, array);
+		this.findById(this.id, whenFlowError, array);
 	}
 
-	public CcpJsonRepresentation endThisProcedureRetrievingTheResultingData() {
+	public CcpJsonRepresentation endThisProcedureRetrievingTheResultingData(Function<CcpJsonRepresentation, CcpJsonRepresentation> whenFlowError) {
 		List<CcpJsonRepresentation> statements = this.statements.getAsJsonList("statements");
 		CcpJsonRepresentation[] array = statements.toArray(new CcpJsonRepresentation[statements.size()]);
-		CcpJsonRepresentation findById = this.findById(this.id, array);
+		CcpJsonRepresentation findById = this.findById(this.id,whenFlowError, array);
 		return findById;
 	}
 
 	
-	private CcpJsonRepresentation findById(CcpJsonRepresentation json, CcpJsonRepresentation... specifications) {
+	private CcpJsonRepresentation findById(CcpJsonRepresentation json, Function<CcpJsonRepresentation, CcpJsonRepresentation> whenFlowError, CcpJsonRepresentation... specifications) {
 		List<CcpEntity> keySet = Arrays.asList(specifications).stream()
 				.filter(x -> x.getAsObject("entity") != null)
 				.map(x -> (CcpEntity) x.get("entity") )
@@ -78,7 +77,7 @@ public class CcpSelectFinally {
 				}
 				String entityName = entity.getEntityName();
 				CcpJsonRepresentation dataBaseRow = entity.getRequiredEntityRow(unionAll, json);
-				json = json.putSubKey(CcpConstants.ENTITIES_LABEL, entityName, dataBaseRow);
+				json = json.addToItem("_entities", entityName, dataBaseRow);
 				continue;
 			}
 			
@@ -95,7 +94,9 @@ public class CcpSelectFinally {
 				
 				CcpProcessStatus status = specification.getAsObject("status");
 				String message = specification.getOrDefault("message", status.name());
-				throw new CcpFlow(json, status.status() , message, this.fields);
+				CcpJsonRepresentation put = json.addToItem("errorDetails", "message", message).addToItem("errorDetails", "status", status);
+				CcpJsonRepresentation apply = whenFlowError.apply(put);
+				throw new CcpFlow(apply, status.status() , message, this.fields);
 			}
 			
 			Function<CcpJsonRepresentation, CcpJsonRepresentation> action = specification.getAsObject("action");
@@ -106,12 +107,14 @@ public class CcpSelectFinally {
 			}
 			String entityName = entity.getEntityName();
 			CcpJsonRepresentation dataBaseRow = entity.getRequiredEntityRow(unionAll, json);
-			CcpJsonRepresentation context = json.putSubKey(CcpConstants.ENTITIES_LABEL, entityName, dataBaseRow);
+			CcpJsonRepresentation context = json.addToItem("_entities", entityName, dataBaseRow);
 			json = action.apply(context);
 		}
 		
-		if(this.fields.length <= 0) {
-			return CcpConstants.EMPTY_JSON;
+		boolean returnWholeJson = this.fields.length <= 0;
+		
+		if(returnWholeJson) {
+			return json;
 		}
 		
 		CcpJsonRepresentation subMap = json.getJsonPiece(this.fields);

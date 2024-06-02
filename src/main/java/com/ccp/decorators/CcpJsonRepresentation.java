@@ -345,27 +345,6 @@ public final class CcpJsonRepresentation {
 		return put;
 	}
 
-	public CcpJsonRepresentation putSubKey(String key, String subKey, CcpJsonRepresentation value) {
-		CcpJsonRepresentation internalMap = this.getInnerJson(key);
-		internalMap = internalMap.put(subKey, value);
-		CcpJsonRepresentation put = this.put(key, internalMap);
-		return put;
-	}
-
-	
-	public CcpJsonRepresentation putSubKey(String key, String subKey, Object value) {
-		CcpJsonRepresentation internalMap = this.getInnerJson(key);
-		internalMap = internalMap.put(subKey, value);
-		CcpJsonRepresentation put = this.put(key, internalMap);
-		return put;
-	}
-	public CcpJsonRepresentation putSubKeyAsString(String key, String subKey, Object value) {
-		CcpJsonRepresentation internalMap = this.getInnerJson(key);
-		internalMap = internalMap.put(subKey, value);
-		CcpJsonRepresentation put = this.put(key, internalMap.asUgglyJson());
-		return put;
-	}
-
 	public CcpJsonRepresentation put(String key, Collection<CcpJsonRepresentation> list) {
 		List<Map<String, Object>> collect = list.stream().map(x -> x.content).collect(Collectors.toList());
 		CcpJsonRepresentation put = this.put(key, collect);
