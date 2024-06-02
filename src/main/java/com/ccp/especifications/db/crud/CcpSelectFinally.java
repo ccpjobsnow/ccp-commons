@@ -111,10 +111,10 @@ public class CcpSelectFinally {
 			json = action.apply(context);
 		}
 		
-		boolean returnWholeJson = this.fields.length <= 0;
+		boolean zeroFields = this.fields.length <= 0;
 		
-		if(returnWholeJson) {
-			return json;
+		if(zeroFields) {
+			throw new RuntimeException("at least one field must be mentioned");
 		}
 		
 		CcpJsonRepresentation subMap = json.getJsonPiece(this.fields);
