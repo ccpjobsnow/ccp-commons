@@ -30,6 +30,11 @@ public final class CcpDbQueryMust extends CcpDbQueryBooleanOperator{
 	}
 
 	@SuppressWarnings("unchecked")
+	public CcpDbQueryMust terms(CcpEntityField field, Object value) {
+		return super.terms(field, value);
+	}
+
+	@SuppressWarnings("unchecked")
 	protected <T extends CcpDbQueryComponent> T getInstanceCopy() {
 		return (T)new CcpDbQueryMust(this.parent);
 	}

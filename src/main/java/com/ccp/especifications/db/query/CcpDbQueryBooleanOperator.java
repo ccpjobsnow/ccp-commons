@@ -22,6 +22,11 @@ abstract class CcpDbQueryBooleanOperator extends CcpDbQueryComponent{
 		return addCondition;
 	}
 
+	public <T extends CcpDbQueryBooleanOperator> T terms(CcpEntityField field, Object value) {
+		T addCondition = this.addCondition(field.name(), value, "terms");
+		return addCondition;
+	}
+
 	public <T extends CcpDbQueryBooleanOperator> T prefix(CcpEntityField field, Object value) {
 		T addCondition = this.addCondition(field.name(), value, "prefix");
 		return addCondition;

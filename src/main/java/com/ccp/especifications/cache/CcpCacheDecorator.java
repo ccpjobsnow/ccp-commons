@@ -68,7 +68,7 @@ public class CcpCacheDecorator {
 	public CcpCacheDecorator incrementKeys(CcpJsonRepresentation jsonPiece) {
 		CcpCacheDecorator result = this;
 		
-		Set<String> keySet = jsonPiece.keySet();
+		Set<String> keySet = jsonPiece.fieldSet();
 		
 		for (String key : keySet) {
 			Object value = jsonPiece.get(key);

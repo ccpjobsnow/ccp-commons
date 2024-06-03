@@ -35,6 +35,8 @@ public interface CcpEntity{
 	
 	CcpEntityField[] getFields();
 	
+	CcpEntity fromCache();
+	
 	boolean canSaveCopy();
 	
 	boolean hasMirrorEntity();
@@ -103,7 +105,7 @@ public interface CcpEntity{
 	default boolean create(CcpJsonRepresentation json) {
 		CcpJsonRepresentation onlyExistingFields = this.getOnlyExistingFields(json);
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
-
+		
 		CcpJsonRepresentation createOrUpdate = crud.createOrUpdate(this, onlyExistingFields);
 		String result = createOrUpdate.getAsString("result");
 		boolean created = "created".equals(result);
@@ -150,4 +152,58 @@ public interface CcpEntity{
 		return onlyPrimaryKey;
 	}
 	
+	default boolean isVirtual() {
+		return false;
+	}
+	
+	default CcpJsonRepresentation getOneByIdFromMirrorOrFromCache(CcpJsonRepresentation json) {
+		
+		CcpEntity fromCache = this.fromCache();
+		
+		boolean existsInMainEntity = fromCache.exists(json);
+		
+		if(existsInMainEntity) {
+			CcpJsonRepresentation oneById = fromCache.getOneById(json);
+			return oneById;
+		}
+		
+		CcpEntity mirrorEntity = this.getMirrorEntity();
+		CcpEntity cacheMirror = mirrorEntity.fromCache();
+
+		boolean existsInMirrorEntity = cacheMirror.exists(json);
+		
+		if(existsInMirrorEntity) {
+			CcpJsonRepresentation oneById = cacheMirror.getOneById(json);
+			return oneById;
+		}
+		throw new CcpFlow(json, 404);
+	}
+	
+	default CcpJsonRepresentation getRequiredEntityRow(CcpSelectUnionAll unionAll, CcpJsonRepresentation json) {
+		
+		boolean notFound = this.isPresentInThisUnionAll(unionAll, json) == false;
+
+		if(notFound) {
+			throw new CcpEntityRecordNotFound(this, json);
+		}
+		
+		CcpJsonRepresentation entityRow = this.getRecordFromUnionAll(unionAll, json);
+		
+		return entityRow;
+	}
+
+	default boolean isPresentInThisJsonInMainEntity(CcpJsonRepresentation json) {
+		CcpJsonRepresentation innerJsonFromPath = json.getInnerJsonFromPath("_entities", this.getEntityName());
+		return innerJsonFromPath.isEmpty() == false;
+	}
+
+	default CcpJsonRepresentation getInnerJsonFromMainAndMirrorEntities(CcpJsonRepresentation json) {
+		String entityName = this.getEntityName();
+		CcpEntity mirrorEntity = this.getMirrorEntity();
+		String mirrorEntityName = mirrorEntity.getEntityName();
+		CcpJsonRepresentation j1 = json.getInnerJsonFromPath("_entities", entityName);
+		CcpJsonRepresentation j2 = json.getInnerJsonFromPath("_entities", mirrorEntityName);
+		CcpJsonRepresentation putAll = j1.putAll(j2);
+		return putAll;
+	}
 }

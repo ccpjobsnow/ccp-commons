@@ -1,13 +1,13 @@
 package com.ccp.especifications.db.crud;
 
 import java.util.List;
+import java.util.function.Function;
 
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.utils.CcpDbRequester;
 import com.ccp.especifications.db.utils.CcpEntity;
-import com.ccp.exceptions.db.CcpEntityRecordNotFound;
 
 public class CcpSelectUnionAll {
 
@@ -23,15 +23,15 @@ public class CcpSelectUnionAll {
 		for (CcpJsonRepresentation result : results) {
 			String id = result.getAsString(fieldNameToId);
 			String index = result.getAsString(fieldNameToEntity);
-			CcpJsonRepresentation removeKeys = result.removeKeys(fieldNameToId, fieldNameToEntity);
-			condensed = condensed.putSubKey(index, id, removeKeys);
+			CcpJsonRepresentation removeKeys = result.removeFields(fieldNameToId, fieldNameToEntity);
+			condensed = condensed.addToItem(index, id, removeKeys);
 		}
 		this.condensed = condensed;
 	}
 	
 	public boolean isPresent(String entityName, String id) {
 		
-		boolean entityNotFound = this.condensed.containsAllKeys(entityName) == false;
+		boolean entityNotFound = this.condensed.containsAllFields(entityName) == false;
 		
 		if(entityNotFound) {
 			return false;
@@ -58,35 +58,26 @@ public class CcpSelectUnionAll {
 		boolean recordNotFound = entity.isPresentInThisUnionAll(this, searchParameter) == false;
 		
 		if(recordNotFound) {
-			T whenRecordWasNotFoundInTheEntitySearch = handler.whenRecordWasNotFoundInTheEntitySearch(searchParameter);
+			Function<CcpJsonRepresentation, CcpJsonRepresentation> doBeforeSavingIfRecordIsNotFound = handler.doBeforeSavingIfRecordIsNotFound();
+			CcpJsonRepresentation apply = doBeforeSavingIfRecordIsNotFound.apply(searchParameter);
+			T whenRecordWasNotFoundInTheEntitySearch = handler.whenRecordWasNotFoundInTheEntitySearch(apply);
 			return whenRecordWasNotFoundInTheEntitySearch;
 		}
 		
-		CcpJsonRepresentation recordFound = this.getRequiredEntityRow(entity, searchParameter);
+		CcpJsonRepresentation recordFound = entity.getRequiredEntityRow(this, searchParameter);
 		
-		T whenRecordWasFoundInTheEntitySearch = handler.whenRecordWasFoundInTheEntitySearch(searchParameter, recordFound);
+		Function<CcpJsonRepresentation, CcpJsonRepresentation> doBeforeSavingIfRecordIsFound = handler.doBeforeSavingIfRecordIsFound();
+		
+		CcpJsonRepresentation apply = doBeforeSavingIfRecordIsFound.apply(searchParameter);
+		
+		T whenRecordWasFoundInTheEntitySearch = handler.whenRecordWasFoundInTheEntitySearch(apply, recordFound);
 		
 		return whenRecordWasFoundInTheEntitySearch;
 	}
 	
-	
-	public CcpJsonRepresentation getRequiredEntityRow(CcpEntity entity, CcpJsonRepresentation json) {
-		
-		boolean notFound = entity.isPresentInThisUnionAll(this, json) == false;
-
-		if(notFound) {
-			throw new CcpEntityRecordNotFound(entity, json);
-		}
-		
-		CcpJsonRepresentation entityRow = entity.getRecordFromUnionAll(this, json);
-		
-		return entityRow;
-	}
-	
-	
 	public CcpJsonRepresentation getEntityRow(String index, String id) {
 		
-		boolean indexNotFound = this.condensed.containsAllKeys(index) == false;
+		boolean indexNotFound = this.condensed.containsAllFields(index) == false;
 		
 		if(indexNotFound) {
 			return CcpConstants.EMPTY_JSON;
@@ -94,7 +85,7 @@ public class CcpSelectUnionAll {
 		
 		CcpJsonRepresentation innerJson = this.condensed.getInnerJson(index);
 
-		boolean idNotFound = innerJson.containsAllKeys(id) == false;
+		boolean idNotFound = innerJson.containsAllFields(id) == false;
 		
 		if(idNotFound) {
 			return CcpConstants.EMPTY_JSON;

@@ -96,7 +96,7 @@ public class CcpJsonFieldsValidations {
 						.put("value", value)
 						;
 				errors = errors.addToList("wrongFields", fieldDetails);
-				result = result.putSubKey("errors", completeRuleName, errors);
+				result = result.addToItem("errors", completeRuleName, errors);
 			}
 		}
 
@@ -117,8 +117,8 @@ public class CcpJsonFieldsValidations {
 			String[] fields = dumb.fields();
 			
 			String completeRuleName = getCompleteRuleName(AllowedValues.class, rule);
-			specification = specification.putSubKey(completeRuleName, "evaluatedFields", fields);
-			specification = specification.putSubKey(completeRuleName, "restrictedValues", restrictedValues);
+			specification = specification.addToItem(completeRuleName, "evaluatedFields", fields);
+			specification = specification.addToItem(completeRuleName, "restrictedValues", restrictedValues);
 		}
 		
 		ArrayNumbers[] arrayNumbers = rules.arrayNumbers();
@@ -129,8 +129,8 @@ public class CcpJsonFieldsValidations {
 			double bound = dumb.bound();
 			
 			String completeRuleName = getCompleteRuleName(ArrayNumbers.class, rule);
-			specification = specification.putSubKey(completeRuleName, "evaluatedFields", fields);
-			specification = specification.putSubKey(completeRuleName, "bound", bound);
+			specification = specification.addToItem(completeRuleName, "evaluatedFields", fields);
+			specification = specification.addToItem(completeRuleName, "bound", bound);
 		}
 		
 		ArraySize[] arraySize = rules.arraySize();
@@ -141,8 +141,8 @@ public class CcpJsonFieldsValidations {
 			String[] fields = dumb.fields();
 			
 			String completeRuleName = getCompleteRuleName(ArraySize.class, rule);
-			specification = specification.putSubKey(completeRuleName, "evaluatedFields", fields);
-			specification = specification.putSubKey(completeRuleName, "bound", bound);
+			specification = specification.addToItem(completeRuleName, "evaluatedFields", fields);
+			specification = specification.addToItem(completeRuleName, "bound", bound);
 
 		}
 		ArrayTextSize[] arrayTextSize = rules.arrayTextSize();
@@ -153,8 +153,8 @@ public class CcpJsonFieldsValidations {
 			String[] fields = dumb.fields();
 			
 			String completeRuleName = getCompleteRuleName(ArrayTextSize.class, rule);
-			specification = specification.putSubKey(completeRuleName, "evaluatedFields", fields);
-			specification = specification.putSubKey(completeRuleName, "bound", bound);
+			specification = specification.addToItem(completeRuleName, "evaluatedFields", fields);
+			specification = specification.addToItem(completeRuleName, "bound", bound);
 		}
 		
 		Day[] day = rules.day();
@@ -165,8 +165,8 @@ public class CcpJsonFieldsValidations {
 			String[] fields = dumb.fields();
 			
 			String completeRuleName = getCompleteRuleName(Day.class, rule);
-			specification = specification.putSubKey(completeRuleName, "evaluatedFields", fields);
-			specification = specification.putSubKey(completeRuleName, "bound", bound);
+			specification = specification.addToItem(completeRuleName, "evaluatedFields", fields);
+			specification = specification.addToItem(completeRuleName, "bound", bound);
 
 		}
 		ObjectNumbers[] objectNumbers = rules.objectNumbers();
@@ -176,8 +176,8 @@ public class CcpJsonFieldsValidations {
 			String[] fields = dumb.fields();
 			
 			String completeRuleName = getCompleteRuleName(ObjectNumbers.class, rule);
-			specification = specification.putSubKey(completeRuleName, "evaluatedFields", fields);
-			specification = specification.putSubKey(completeRuleName, "bound", bound);
+			specification = specification.addToItem(completeRuleName, "evaluatedFields", fields);
+			specification = specification.addToItem(completeRuleName, "bound", bound);
 
 		}
 		ObjectTextSize[] objectTextSize = rules.objectTextSize();
@@ -187,8 +187,8 @@ public class CcpJsonFieldsValidations {
 			String[] fields = dumb.fields();
 			
 			String completeRuleName = getCompleteRuleName(ObjectTextSize.class, rule);
-			specification = specification.putSubKey(completeRuleName, "evaluatedFields", fields);
-			specification = specification.putSubKey(completeRuleName, "bound", bound);
+			specification = specification.addToItem(completeRuleName, "evaluatedFields", fields);
+			specification = specification.addToItem(completeRuleName, "bound", bound);
 
 		}
 		Regex[] regex = rules.regex();
@@ -198,8 +198,8 @@ public class CcpJsonFieldsValidations {
 			String[] fields = dumb.fields();
 			
 			String completeRuleName = Regex.class.getSimpleName();
-			specification = specification.putSubKey(completeRuleName, "evaluatedFields", fields);
-			specification = specification.putSubKey(completeRuleName, "value", value);
+			specification = specification.addToItem(completeRuleName, "evaluatedFields", fields);
+			specification = specification.addToItem(completeRuleName, "value", value);
 
 		}
 		
@@ -210,7 +210,7 @@ public class CcpJsonFieldsValidations {
 			String[] fields = dumb.fields();
 			
 			String completeRuleName = getCompleteRuleName(SimpleObject.class, rule);
-			specification = specification.putSubKey(completeRuleName, "evaluatedFields", fields);
+			specification = specification.addToItem(completeRuleName, "evaluatedFields", fields);
 
 		}
 		
@@ -221,8 +221,8 @@ public class CcpJsonFieldsValidations {
 			String[] fields = dumb.fields();
 			
 			String completeRuleName = getCompleteRuleName(Year.class, rule);
-			specification = specification.putSubKey(completeRuleName, "evaluatedFields", fields);
-			specification = specification.putSubKey(completeRuleName, "bound", bound);
+			specification = specification.addToItem(completeRuleName, "evaluatedFields", fields);
+			specification = specification.addToItem(completeRuleName, "bound", bound);
 
 		}
 		return specification;
@@ -255,7 +255,7 @@ public class CcpJsonFieldsValidations {
 				}
 				errors = errors.put("restrictedValues", restrictedValues);
 				
-				boolean containsKey = json.containsKey(field);
+				boolean containsKey = json.containsField(field);
 				if(containsKey) {
 					continue;
 				}
@@ -266,7 +266,7 @@ public class CcpJsonFieldsValidations {
 						.put("value", value)
 						;
 				errors = errors.addToList("wrongFields", fieldDetails);
-				result = result.putSubKey("errors", completeRuleName, errors);
+				result = result.addToItem("errors", completeRuleName, errors);
 			}
 		}
 		return result;
@@ -300,7 +300,7 @@ public class CcpJsonFieldsValidations {
 					.put("value", value)
 					;
 			errors = errors.addToList("wrongFields", fieldDetails);
-			result = result.putSubKey("errors", completeRuleName, errors);
+			result = result.addToItem("errors", completeRuleName, errors);
 		}
 		
 		return result;
@@ -429,7 +429,7 @@ public class CcpJsonFieldsValidations {
 							.put("value", value)
 							;
 					errors = errors.addToList("wrongFields", fieldDetails);
-					result = result.putSubKey("errors", "regex", errors);
+					result = result.addToItem("errors", "regex", errors);
 					
 				}
 			}

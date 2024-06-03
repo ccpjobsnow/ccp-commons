@@ -34,7 +34,7 @@ public enum CcpEntityOperationType {
 	public CcpBulkItem getReprocess(Function<CcpBulkOperationResult, CcpJsonRepresentation> reprocessJsonProducer, CcpBulkOperationResult result, CcpEntity entityToReprocess) {
 		
 		int status = result.status();
-		boolean statusNotFound = this.handlers.containsAllKeys("" + status) == false;
+		boolean statusNotFound = this.handlers.containsAllFields("" + status) == false;
 		
 		if(statusNotFound) {
 			CcpJsonRepresentation json = reprocessJsonProducer.apply(result);

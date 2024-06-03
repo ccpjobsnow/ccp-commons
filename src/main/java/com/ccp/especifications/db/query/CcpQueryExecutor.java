@@ -12,7 +12,8 @@ public interface CcpQueryExecutor {
 	
 	CcpJsonRepresentation update(CcpDbQueryOptions elasticQuery, String[] resourcesNames, CcpJsonRepresentation newValues) ;
 	
-	void consumeQueryResult(CcpDbQueryOptions elasticQuery, String[] resourcesNames, String scrollTime, int size, Consumer<CcpJsonRepresentation> consumer, String...fields);
+	void consumeQueryResult(CcpDbQueryOptions elasticQuery, String[] resourcesNames, String scrollTime, Long size, 
+			Consumer<List<CcpJsonRepresentation>> consumer, String...fields);
 
 	long total(CcpDbQueryOptions elasticQuery, String[] resourcesNames);
 
@@ -24,5 +25,8 @@ public interface CcpQueryExecutor {
 
 	CcpJsonRepresentation getMap(CcpDbQueryOptions elasticQuery, String[] resourcesNames, String field);
 	
-	CcpJsonRepresentation getAggregations(CcpDbQueryOptions elasticQuery, String[] resourcesNames) ;	
+	CcpJsonRepresentation getAggregations(CcpDbQueryOptions elasticQuery, String... resourcesNames) ;
+
+	void consumeQueryResult(CcpDbQueryOptions elasticQuery, String[] resourcesNames, String scrollTime, Integer size,
+			Consumer<CcpJsonRepresentation> consumer, String... fields);	
 }
