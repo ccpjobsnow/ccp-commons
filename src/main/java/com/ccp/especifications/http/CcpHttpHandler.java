@@ -1,5 +1,6 @@
 package com.ccp.especifications.http;
 
+import java.util.Set;
 import java.util.function.Function;
 
 import com.ccp.constantes.CcpConstants;
@@ -20,12 +21,12 @@ public final class CcpHttpHandler {
 	}
 
 	public CcpHttpHandler(Integer httpStatus, Function<CcpJsonRepresentation, CcpJsonRepresentation> alternativeFlow) {
-		this.flows = CcpConstants.EMPTY_JSON.put(httpStatus.toString(), CcpConstants.DO_NOTHING);
+		this.flows = CcpConstants.EMPTY_JSON.addJsonTransformer(httpStatus.toString(), CcpConstants.DO_NOTHING);
 		this.alternativeFlow = alternativeFlow;
 	}
 	
 	public CcpHttpHandler(Integer httpStatus) {
-		this.flows = CcpConstants.EMPTY_JSON.put(httpStatus.toString(), CcpConstants.DO_NOTHING);
+		this.flows = CcpConstants.EMPTY_JSON.addJsonTransformer(httpStatus.toString(), CcpConstants.DO_NOTHING);
 		this.alternativeFlow = null;
 	}
 	
@@ -60,7 +61,8 @@ public final class CcpHttpHandler {
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> flow = this.flows.getOrDefault("" + status, this.alternativeFlow);
 	
 		if(flow == null) {
-			throw new CcpHttpError(trace, url, method, headers, request, status, response.httpResponse, this.flows.keySet());
+			Set<String> fieldSet = this.flows.fieldSet();
+			throw new CcpHttpError(trace, url, method, headers, request, status, response.httpResponse, fieldSet);
 		}
 	
 		boolean invalidSingleJson = response.isValidSingleJson() == false;

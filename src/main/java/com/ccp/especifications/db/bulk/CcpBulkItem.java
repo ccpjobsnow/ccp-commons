@@ -25,11 +25,6 @@ public class CcpBulkItem {
 	}
 
 
-	public CcpJsonRepresentation getJson() {
-		return new CcpJsonRepresentation(this);
-	}
-	
-	
 	public String toString() {
 		return "CcpBulkItem [operation=" + operation + ", json=" + json + ", entity=" + entity + ", id=" + id
 				+ "]";

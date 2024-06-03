@@ -255,7 +255,7 @@ public class CcpJsonFieldsValidations {
 				}
 				errors = errors.put("restrictedValues", restrictedValues);
 				
-				boolean containsKey = json.containsKey(field);
+				boolean containsKey = json.containsField(field);
 				if(containsKey) {
 					continue;
 				}

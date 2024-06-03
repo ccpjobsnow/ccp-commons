@@ -54,7 +54,7 @@ public class CcpSelectFinally {
 		
 		for (CcpJsonRepresentation specification : specifications) {
 			
-			boolean executeFreeAction = specification.containsKey("entity") == false;
+			boolean executeFreeAction = specification.containsField("entity") == false;
 			
 			if(executeFreeAction) {
 				Function<CcpJsonRepresentation, CcpJsonRepresentation> action = specification.getAsObject("action");
@@ -82,11 +82,11 @@ public class CcpSelectFinally {
 			}
 			
 			
-			boolean willNotExecuteAction = specification.containsKey("action") == false;
+			boolean willNotExecuteAction = specification.containsField("action") == false;
 			
 			if(willNotExecuteAction) {
 			
-				boolean willNotThrowException = specification.containsKey("status") == false;
+				boolean willNotThrowException = specification.containsField("status") == false;
 				
 				if(willNotThrowException) {
 					continue;

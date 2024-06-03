@@ -6,13 +6,13 @@ public enum SimpleObjectValidations {
 	requiredFields {
 		
 		public boolean isValidJson(CcpJsonRepresentation json, String... fields) {
-			return json.containsAllKeys(fields);
+			return json.containsAllFields(fields);
 		}
 	},
 	requiredAtLeastOne {
 		
 		public boolean isValidJson(CcpJsonRepresentation json, String... fields) {
-			return json.containsAnyKeys(fields);
+			return json.containsAnyFields(fields);
 		}
 	},
 	booleanFields {

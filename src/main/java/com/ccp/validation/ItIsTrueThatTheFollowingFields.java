@@ -16,7 +16,7 @@ public class ItIsTrueThatTheFollowingFields {
 
 	public ItIsTrueThatTheFollowingFields(CcpJsonRepresentation content, String[] fields) {
 		this.content = content;
-		List<String> collect = Arrays.asList(fields).stream().filter(x -> content.containsKey(x)).collect(Collectors.toList());
+		List<String> collect = Arrays.asList(fields).stream().filter(x -> content.containsField(x)).collect(Collectors.toList());
 		this.fields = collect.toArray(new String[collect.size()]);
 	}
 
