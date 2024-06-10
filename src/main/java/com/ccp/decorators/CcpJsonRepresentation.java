@@ -667,4 +667,28 @@ public final class CcpJsonRepresentation {
 		InputStream stream = new ByteArrayInputStream(bytes);
 		return stream;
 	}
+	
+	private String getHash(String algorithm) {
+		String asUgglyJson = this.asUgglyJson();
+		String hash = new CcpStringDecorator(asUgglyJson).hash().asString("SHA1");
+		return hash;
+	}
+
+	public int hashCode() {
+		String hash2 = this.getHash("SHA1");
+		int hashCode = hash2.hashCode();
+		return hashCode;
+	}
+	
+	public boolean equals(Object obj) {
+		if(obj instanceof CcpJsonRepresentation other) {
+			String hash = other.getHash("SHA1");
+			String hash2 = this.getHash("SHA1");
+			boolean equals = hash.equals(hash2);
+			return equals;
+		}
+		
+		return false;
+		
+	}
 }
