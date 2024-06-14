@@ -481,7 +481,8 @@ public final class CcpJsonRepresentation {
 	
 	
 	public CcpJsonRepresentation putAll(Map<String, Object> map) {
-		Map<String, Object> content = new HashMap<>(this.getContent());
+		Map<String, Object> content2 = this.getContent();
+		Map<String, Object> content = new LinkedHashMap<>(content2);
 		content.putAll(map);
 		CcpJsonRepresentation mapDecorator = new CcpJsonRepresentation(content);
 		return mapDecorator;
