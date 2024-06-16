@@ -56,15 +56,17 @@ public class CcpTimeDecorator {
 		return (Calendar)cal.clone();
 	}
 	
-	public void sleep(int i) {
+	public boolean sleep(int i) {
 
 		if (i <= 0) {
-			return;
+			return false;
 		}
 
 		try {
 			Thread.sleep(i);
+			return true;
 		} catch (Exception e) {
+			return false;
 		}
 	}
 
