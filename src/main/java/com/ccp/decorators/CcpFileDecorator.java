@@ -12,8 +12,12 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import com.ccp.dependency.injection.CcpDependencyInjection;
+import com.ccp.especifications.json.CcpJsonHandler;
  
 public class CcpFileDecorator {
 	public final String content;
@@ -185,5 +189,19 @@ public class CcpFileDecorator {
 	}
 	public CcpFolderDecorator asFolder() {
 		return new CcpFolderDecorator(this.content);
+	}
+	
+	public CcpJsonRepresentation asSingleJson() {
+		String string = this.extractStringContent();
+		CcpJsonRepresentation json = new CcpJsonRepresentation(string);
+		return json;
+	}
+	
+	public List<CcpJsonRepresentation> asJsonList(){
+		CcpJsonHandler dependency = CcpDependencyInjection.getDependency(CcpJsonHandler.class);
+		String string = this.extractStringContent();
+		List<CcpJsonRepresentation> list = dependency.fromJson(string);
+		list.stream().collect(Collectors.toList());
+		return list;
 	}
 }
