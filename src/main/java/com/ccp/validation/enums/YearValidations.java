@@ -17,33 +17,69 @@ public enum YearValidations implements BoundValidations, TimeEnlapsedValidations
 	equalsOrGreaterThan
 	{
 		public boolean isValidJson(CcpJsonRepresentation json, double bound, String... fields) {
-			boolean isTrue = super.isTrue(json, value -> bound >= value, fields);
-			
-			return isTrue;
+			boolean fieldsIsNotPresent = json.containsAllFields(fields) == false;
+			if(fieldsIsNotPresent) {
+				return true;
+			}
+			for (String field : fields) {
+				Double asDoubleNumber = json.getAsDoubleNumber(field);
+				if(bound <= asDoubleNumber) {
+					continue;
+				}
+				return false;
+			}
+			return true;
 		}
 	},
 	equalsOrLessThan
 	{
 		public boolean isValidJson(CcpJsonRepresentation json, double bound, String... fields) {
-			boolean isTrue = super.isTrue(json, value -> bound <= value, fields);
-			
-			return isTrue;
+			boolean fieldsIsNotPresent = json.containsAllFields(fields) == false;
+			if(fieldsIsNotPresent) {
+				return true;
+			}
+			for (String field : fields) {
+				Double asDoubleNumber = json.getAsDoubleNumber(field);
+				if(bound >= asDoubleNumber) {
+					continue;
+				}
+				return false;
+			}
+			return true;
 		}
 	},
 	greaterThan
 	{
 		public boolean isValidJson(CcpJsonRepresentation json, double bound, String... fields) {
-			boolean isTrue = super.isTrue(json, value -> bound > value, fields);
-			
-			return isTrue;
+			boolean fieldsIsNotPresent = json.containsAllFields(fields) == false;
+			if(fieldsIsNotPresent) {
+				return true;
+			}
+			for (String field : fields) {
+				Double asDoubleNumber = json.getAsDoubleNumber(field);
+				if(bound < asDoubleNumber) {
+					continue;
+				}
+				return false;
+			}
+			return true;
 		}
 	},
 	lessThan
 	{
 		public boolean isValidJson(CcpJsonRepresentation json, double bound, String... fields) {
-			boolean isTrue = super.isTrue(json, value -> bound < value, fields);
-			
-			return isTrue;
+			boolean fieldsIsNotPresent = json.containsAllFields(fields) == false;
+			if(fieldsIsNotPresent) {
+				return true;
+			}
+			for (String field : fields) {
+				Double asDoubleNumber = json.getAsDoubleNumber(field);
+				if(bound > asDoubleNumber) {
+					continue;
+				}
+				return false;
+			}
+			return true;
 		}
 	},
 	;

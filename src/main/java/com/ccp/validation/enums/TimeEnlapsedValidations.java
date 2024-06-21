@@ -12,6 +12,10 @@ public interface TimeEnlapsedValidations {
 			String... fields) {
 		
 		for (String field : fields) {
+			boolean fieldIsNotPresent = json.containsAllFields(field) == false;
+			if(fieldIsNotPresent) {
+				continue;
+			}
 			Double value = json.getAsDoubleNumber(field);
 			double enlapsed = function.apply(value);
 			boolean isTrue = predicate.test(enlapsed);

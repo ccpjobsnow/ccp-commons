@@ -294,6 +294,15 @@ public class CcpJsonFieldsValidations {
 				continue;
 			}
 			errors = errors.put("bound", bound);
+			boolean fieldIsNotPresent = json.containsAllFields(field) == false;
+			if(fieldIsNotPresent) {
+				CcpJsonRepresentation fieldDetails = CcpConstants.EMPTY_JSON
+						.put("name", field)
+						;
+				errors = errors.addToList("wrongFields", fieldDetails);
+				result = result.addToItem("errors", completeRuleName, errors);
+				continue;
+			}
 			Object value = json.get(field);
 			CcpJsonRepresentation fieldDetails = CcpConstants.EMPTY_JSON
 					.put("name", field)
