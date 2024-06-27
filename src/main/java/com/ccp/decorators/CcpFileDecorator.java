@@ -60,6 +60,11 @@ public class CcpFileDecorator {
 		String name = file.getName();
 		return name;
 	}
+	public String getPath() {
+		File file = new File(this.content);
+		String absolutePath = file.getAbsolutePath();
+		return absolutePath;
+	}
 
 	private void zip(File fileToZip, ZipOutputStream zipOut) throws IOException {
         if (fileToZip.isHidden()) {

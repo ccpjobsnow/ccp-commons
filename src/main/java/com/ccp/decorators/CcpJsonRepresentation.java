@@ -99,6 +99,9 @@ public final class CcpJsonRepresentation {
 	}
 	
 	public CcpJsonRepresentation(Map<String, Object> content) {
+		if(content == null) {
+			throw new RuntimeException("this json is null");
+		}
 		this.content = Collections.unmodifiableMap(content);
 	}
 
