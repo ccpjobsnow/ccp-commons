@@ -74,30 +74,8 @@ public class CcpJsonFieldsValidations {
 
 		for (SimpleObject validation : simples) {
 			
-			String[] fields = validation.fields();
-			
 			SimpleObjectValidations rule = validation.rule();
-			
-			String completeRuleName = getCompleteRuleName(SimpleObject.class, rule);
-			
-			CcpJsonRepresentation errors = CcpConstants.EMPTY_JSON;
-			
-			for (String field : fields) {
-				
-				boolean validJson = rule.isValidJson(json,  field);
-				
-				if(validJson) {
-					continue;
-				}
-				
-				Object value = json.content.get(field);
-				CcpJsonRepresentation fieldDetails = CcpConstants.EMPTY_JSON
-						.put("name", field)
-						.put("value", value)
-						;
-				errors = errors.addToList("wrongFields", fieldDetails);
-				result = result.addToItem("errors", completeRuleName, errors);
-			}
+			result = rule.validate(json, result, validation);
 		}
 
 		return result;
@@ -228,7 +206,7 @@ public class CcpJsonFieldsValidations {
 		return specification;
 	}
 	
-	private static String getCompleteRuleName(Class<?> ruleClazz, BoundValidations rule) {
+	public static String getCompleteRuleName(Class<?> ruleClazz, BoundValidations rule) {
 		String completeRuleName = getCompleteRuleName(ruleClazz, (Enum<?>)rule);
 		return completeRuleName;
 	}
@@ -315,7 +293,7 @@ public class CcpJsonFieldsValidations {
 		return result;
 	}
 
-	private static String getCompleteRuleName(Class<?> ruleClazz, Enum<?> enumClass) {
+	public static String getCompleteRuleName(Class<?> ruleClazz, Enum<?> enumClass) {
 		
 		String ruleClassName = ruleClazz.getSimpleName();
 		

@@ -1,6 +1,9 @@
 package com.ccp.validation.enums;
 
+import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
+import com.ccp.validation.CcpJsonFieldsValidations;
+import com.ccp.validation.annotations.SimpleObject;
 
 public enum SimpleObjectValidations {
 	requiredFields {
@@ -13,6 +16,23 @@ public enum SimpleObjectValidations {
 		
 		public boolean isValidJson(CcpJsonRepresentation json, String... fields) {
 			return json.containsAnyFields(fields);
+		}
+		
+		public CcpJsonRepresentation validate(CcpJsonRepresentation json, CcpJsonRepresentation result, SimpleObject validation) {
+			
+			String[] fields = validation.fields();
+			
+			boolean containsAnyFields = json.containsAnyFields(fields);
+			
+			if(containsAnyFields) {
+				return result;
+			}
+			
+			String completeRuleName = CcpJsonFieldsValidations.getCompleteRuleName(SimpleObject.class, this);
+			CcpJsonRepresentation errors = CcpConstants.EMPTY_JSON.addToList("wrongFields", (Object[])fields);
+			result = result.addToItem("errors", completeRuleName, errors);
+			return result;
+
 		}
 	},
 	booleanFields {
@@ -53,4 +73,33 @@ public enum SimpleObjectValidations {
 	},
 	;
 	public abstract boolean isValidJson(CcpJsonRepresentation json, String... fields);
+	
+	public CcpJsonRepresentation validate(CcpJsonRepresentation json, CcpJsonRepresentation result,
+			SimpleObject validation) {
+		String[] fields = validation.fields();
+		
+		
+		String completeRuleName = CcpJsonFieldsValidations.getCompleteRuleName(SimpleObject.class, this);
+		
+		CcpJsonRepresentation errors = CcpConstants.EMPTY_JSON;
+		
+		for (String field : fields) {
+			
+			boolean validJson = this.isValidJson(json,  field);
+			
+			if(validJson) {
+				continue;
+			}
+			
+			Object value = json.content.get(field);
+			CcpJsonRepresentation fieldDetails = CcpConstants.EMPTY_JSON
+					.put("name", field)
+					.put("value", value)
+					;
+			errors = errors.addToList("wrongFields", fieldDetails);
+			result = result.addToItem("errors", completeRuleName, errors);
+		}
+		return result;
+	}
+
 }

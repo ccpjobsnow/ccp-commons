@@ -6,3 +6,4 @@ public @interface SimpleObject {
 	SimpleObjectValidations rule ();
 	String[] fields();
 }
+
