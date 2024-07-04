@@ -1,3 +1,4 @@
+
 package com.ccp.especifications.db.bulk;
 
 import java.util.function.Function;

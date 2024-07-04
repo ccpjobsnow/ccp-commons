@@ -10,23 +10,23 @@ import com.ccp.dependency.injection.CcpDependencyInjection;
 public class CcpCacheDecorator {
 	private final CcpCache cache = CcpDependencyInjection.getDependency(CcpCache.class);
 	
-	private final CcpJsonRepresentation json;
+	private final CcpJsonRepresentation cacheParameters;
 
 	private final String key;
 	
 
 	public CcpCacheDecorator(String key) {
-		this.json = CcpConstants.EMPTY_JSON;
+		this.cacheParameters = CcpConstants.EMPTY_JSON;
 		this.key = key;
 	}
 	
 	private CcpCacheDecorator(CcpJsonRepresentation json, String key) {
-		this.json = json;
+		this.cacheParameters = json;
 		this.key = key;
 	}
 
 	public <V> V get(Function<CcpJsonRepresentation,V> taskToGetValue, int cacheSeconds) {
-		return this.cache.get(this.key, this.json, taskToGetValue, cacheSeconds);
+		return this.cache.get(this.key, this.cacheParameters, taskToGetValue, cacheSeconds);
 	}
 
 	public <V> V getOrDefault(V defaultValue) {
@@ -51,7 +51,7 @@ public class CcpCacheDecorator {
 	
 	public CcpCacheDecorator incrementKey(String key, Object value) {
 		String _key = this.key + "." + key + "." + value;
-		CcpJsonRepresentation put = this.json.put(key, value);
+		CcpJsonRepresentation put = this.cacheParameters.put(key, value);
 		CcpCacheDecorator ccpCacheDecorator = new CcpCacheDecorator(put, _key);
 		return ccpCacheDecorator;
 	}

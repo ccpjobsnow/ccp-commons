@@ -101,7 +101,8 @@ public class CcpFileDecorator {
 		File file = new File(this.content);
 		boolean fileIsMissing = file.exists() == false;
 		if(fileIsMissing) {
-			throw new RuntimeException("it is missing the file: " + this.content);
+			String absolutePath = new File(this.content).getParentFile().getAbsolutePath();
+			throw new RuntimeException("in the file " + absolutePath + " is missing the file: " + this.content);
 		}
 		try {
 			Path path = file.toPath();
