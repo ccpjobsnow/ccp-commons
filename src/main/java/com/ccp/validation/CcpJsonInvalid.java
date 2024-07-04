@@ -11,4 +11,10 @@ public class CcpJsonInvalid extends RuntimeException {
 		super(result.toString());
 		this.result = result;
 	}
+	
+	public CcpJsonRepresentation getErrorAsJson() {
+		String message = this.getMessage();
+		CcpJsonRepresentation json = new CcpJsonRepresentation(message);
+		return json;
+	}
 }
