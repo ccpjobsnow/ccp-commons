@@ -233,7 +233,7 @@ public class CcpJsonFieldsValidations {
 				}
 				errors = errors.put("restrictedValues", restrictedValues);
 				
-				boolean containsKey = json.containsField(field);
+				boolean containsKey = json.containsField(field) == false;
 				if(containsKey) {
 					continue;
 				}
