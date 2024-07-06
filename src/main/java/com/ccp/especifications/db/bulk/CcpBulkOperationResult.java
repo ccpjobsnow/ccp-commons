@@ -11,7 +11,7 @@ public interface CcpBulkOperationResult {
 	
 	CcpBulkItem getBulkItem();
 	
-	boolean isError();
+	boolean hasError();
 	
 	int status();
 	

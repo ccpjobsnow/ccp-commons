@@ -264,7 +264,7 @@ public class CcpTextDecorator {
 	}
 	
 	public boolean regexMatches(String regex) {
-		Pattern p = Pattern.compile(regex);
+		Pattern p = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 		Matcher m = p.matcher(this.content);
 		boolean find = m.find();
 		return find;
@@ -307,7 +307,8 @@ public class CcpTextDecorator {
 		for (String delimiter : delimiters) {
 			text = text.replace(delimiter, " ");
 		}
-		CcpTextDecorator ctd = new CcpStringDecorator(text).text().stripAccents();
+		String upperCase = text.toUpperCase();
+		CcpTextDecorator ctd = new CcpStringDecorator(upperCase).text().stripAccents();
 		return ctd;
 	}
 

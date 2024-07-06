@@ -1,5 +1,6 @@
 package com.ccp.especifications.db.bulk;
 
+import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.utils.CcpEntity;
 
@@ -26,8 +27,19 @@ public class CcpBulkItem {
 
 
 	public String toString() {
-		return "CcpBulkItem [operation=" + operation + ", json=" + json + ", entity=" + entity + ", id=" + id
-				+ "]";
+		CcpJsonRepresentation put = this.asMap();
+		String string = put.toString();
+		return string;
+	}
+
+	public CcpJsonRepresentation asMap() {
+		String entityName = this.entity.getEntityName();
+		CcpJsonRepresentation put = CcpConstants.EMPTY_JSON
+				.put("operation", this.operation)
+				.put("entity", entityName)
+				.put("json", this.json)
+				.put("id", this.id);
+		return put;
 	}
 	
 	public int hashCode() {
