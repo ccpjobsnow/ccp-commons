@@ -17,6 +17,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import com.ccp.constantes.CcpConstants;
+
 public class CcpTextDecorator {
 	public final String content;
 
@@ -267,4 +269,46 @@ public class CcpTextDecorator {
 		boolean find = m.find();
 		return find;
 	}
+	
+	public boolean contains(String phrase) {
+		boolean contains = this.contains(CcpConstants.DELIMITERS, phrase);
+		return contains;
+	}
+	
+	public boolean contains(String[] delimiters, String phrase) {
+		CcpTextDecorator s1 = this.sanitize(delimiters);
+		CcpTextDecorator ctd = new CcpTextDecorator(phrase);
+		CcpTextDecorator s2 = ctd.sanitize(delimiters);
+		boolean notContained = s1.content.toUpperCase().contains(s2.content.toUpperCase()) == false;
+		
+		if(notContained) {
+			return false;
+		}
+		
+		List<String> split1 = s1.split();
+		List<String> split2 = s2.split();
+		
+		boolean containsAll = split1.containsAll(split2);
+		return containsAll;
+	}
+	
+	private List<String> split(){
+		String[] split = this.content.split(" ");
+		List<String> asList = Arrays.asList(split);
+		return asList;
+	}
+	
+	public CcpTextDecorator sanitize() {
+		return this.sanitize(CcpConstants.DELIMITERS);
+	}
+	
+	public CcpTextDecorator sanitize(String[] delimiters) {
+		String text = this.content;
+		for (String delimiter : delimiters) {
+			text = text.replace(delimiter, " ");
+		}
+		CcpTextDecorator ctd = new CcpStringDecorator(text).text().stripAccents();
+		return ctd;
+	}
+
 }

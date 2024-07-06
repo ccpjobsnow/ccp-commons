@@ -189,6 +189,13 @@ public final class CcpJsonRepresentation {
 		return put;
 	}
 	
+	public CcpTextDecorator getAsTextDecorator(String field) {
+		String asString = this.getAsString(field);
+		CcpStringDecorator ccpStringDecorator = new CcpStringDecorator(asString);
+		CcpTextDecorator text = ccpStringDecorator.text();
+		return text;
+	}
+	
 	public String getAsString(String field) {
 
 		Object object = this.content.get(field);
@@ -693,6 +700,11 @@ public final class CcpJsonRepresentation {
 		}
 		
 		return false;
-		
+	}
+	
+	public List<CcpTextDecorator> getAsTextDecoratorList(String field){
+		List<String> asStringList = this.getAsStringList(field);
+		List<CcpTextDecorator> collect = asStringList.stream().map(x -> new CcpTextDecorator(x)).collect(Collectors.toList());
+		return collect;
 	}
 }

@@ -11,5 +11,6 @@ public interface CcpConstants {
 	Function<CcpJsonRepresentation, CcpJsonRepresentation> DO_NOTHING = json -> json;
 	CcpJsonRepresentation EMPTY_JSON = CcpJsonRepresentation.getEmptyJson();
 	String EMAIL_REGEX = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$"; 
+	String[] DELIMITERS = new String[] {"/", "\\", ".","\t", "\n", ":", "," , ";", "!", "?", "[", "]", "{", "}", "<", ">", "=", "(", ")", "'", "`",  "\""};
 
 }
