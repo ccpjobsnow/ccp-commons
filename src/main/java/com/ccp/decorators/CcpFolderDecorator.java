@@ -126,4 +126,19 @@ public class CcpFolderDecorator {
 	public CcpFileDecorator writeInTheFile(String fileName, String fileContent) {
 		return new CcpFileDecorator(this.content +"\\" + fileName).write(fileContent);
 	}
+	
+	public CcpFolderDecorator remove() {
+		File index = new File(this.content);
+		String[]entries = index.list();
+		
+		for(String fileName: entries){
+		    String path = index.getPath();
+			File currentFile = new File(path, fileName);
+		    currentFile.delete();
+		}
+		
+		index.delete();
+		
+		return this;
+	}
 }

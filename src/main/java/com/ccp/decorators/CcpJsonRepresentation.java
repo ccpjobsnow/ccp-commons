@@ -138,7 +138,7 @@ public final class CcpJsonRepresentation {
 			return Double.valueOf("" + object).longValue();
 		} catch (Exception e) {
 			
-			throw new RuntimeException("The value '" + object + "' from the field '" + field + "is not a long");
+			throw new RuntimeException("The value '" + object + "' from the field '" + field + " is not a long");
 		}
 	}
 
@@ -329,6 +329,13 @@ public final class CcpJsonRepresentation {
 		CcpJsonRepresentation json = new CcpJsonRepresentation(copy);
 		return json;
 	}
+	
+	public CcpJsonRepresentation removeFields(Collection<String> fields) {
+		String[] array = fields.toArray(new String[fields.size()]);
+		CcpJsonRepresentation removeFields = this.removeFields(array);
+		return removeFields;
+	}
+	
 	
 	public CcpJsonRepresentation removeFields(String... fields) {
 		CcpJsonRepresentation json = this;

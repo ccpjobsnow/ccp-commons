@@ -4,9 +4,9 @@ import com.ccp.dependency.injection.CcpDependencyInjection;
 
 public enum CcpFileBucketOperation {
 
-	delete {
+	deleteFolder {
 		String execute(CcpFileBucket bucket, String tenant, String folderName, String fileName) {
-			String result = bucket.delete(tenant, folderName, fileName);
+			String result = bucket.delete(tenant, folderName);
 			return result;
 		}
 	},

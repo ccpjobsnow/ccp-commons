@@ -44,7 +44,7 @@ public class CcpFileDecorator {
 
 	public void zip() {
 		
-		File fileToZip = new File(this.content);
+		File fileToZip = tryToCreateFolder();
 		
 		String fileName = fileToZip.getName();
 		
@@ -56,12 +56,12 @@ public class CcpFileDecorator {
 	}
 
 	public String getName() {
-		File file = new File(this.content);
+		File file = tryToCreateFolder();
 		String name = file.getName();
 		return name;
 	}
 	public String getPath() {
-		File file = new File(this.content);
+		File file = tryToCreateFolder();
 		String absolutePath = file.getAbsolutePath();
 		return absolutePath;
 	}
@@ -98,7 +98,7 @@ public class CcpFileDecorator {
 		}
     }
 	public  String extractStringContent() {
-		File file = new File(this.content);
+		File file = tryToCreateFolder();
 		boolean fileIsMissing = file.exists() == false;
 		if(fileIsMissing) {
 			String absolutePath = new File(this.content).getParentFile().getAbsolutePath();
@@ -135,7 +135,8 @@ public class CcpFileDecorator {
 	}
 	public CcpFileDecorator reset() {
 
-		File f = new File(this.content);
+		File f = this.tryToCreateFolder();
+		
 		f.delete();
 		try {
 			f.createNewFile();
@@ -143,6 +144,20 @@ public class CcpFileDecorator {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private File tryToCreateFolder() {
+		File f = new File(this.content);
+		File parentFile = f.getParentFile();
+		boolean alreadyCreated = parentFile.exists();
+
+		if(alreadyCreated) {
+			return f;
+		}
+		
+		parentFile.mkdir();
+		
+		return f;
 	}
 	public List<String> getLines(){
 		String filePath = this.content;
@@ -180,7 +195,7 @@ public class CcpFileDecorator {
 	}
 
 	public boolean exists() {
-		File file = new File(this.content);
+		File file = tryToCreateFolder();
 		return file.exists();
 	}
 	public boolean isFile() {
@@ -210,5 +225,12 @@ public class CcpFileDecorator {
 		List<Map<String, Object>> list = dependency.fromJson(string);
 		List<CcpJsonRepresentation> collect = list.stream().map(x -> new CcpJsonRepresentation(x)).collect(Collectors.toList());
 		return collect;
+	}
+	
+	public CcpFileDecorator remove() {
+		
+		File file = tryToCreateFolder();
+		file.delete();
+		return this;
 	}
 }
