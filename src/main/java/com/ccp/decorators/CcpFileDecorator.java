@@ -19,7 +19,8 @@ import java.util.zip.ZipOutputStream;
 
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.json.CcpJsonHandler;
- 
+
+
 public class CcpFileDecorator {
 	public final String content;
 	public final CcpFileDecorator parent;
@@ -29,6 +30,7 @@ public class CcpFileDecorator {
 	}
 
 	private CcpFileDecorator getParent(String content) {
+		
 		File file = new File(content);
 		String ap = file.getAbsolutePath();
 		String replace = ap.replace('\\', File.separatorChar);

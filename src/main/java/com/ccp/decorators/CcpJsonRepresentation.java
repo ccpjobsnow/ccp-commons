@@ -70,7 +70,6 @@ public final class CcpJsonRepresentation {
 			Object value = props.get(key);
 			this.content.put("" + key, value);
 		}
-
 	}
 
 	private String extractJson(InputStream is) {
