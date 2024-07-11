@@ -15,6 +15,7 @@ import com.ccp.especifications.db.crud.CcpCrud;
 import com.ccp.especifications.db.crud.CcpSelectUnionAll;
 import com.ccp.exceptions.db.CcpEntityRecordNotFound;
 import com.ccp.exceptions.process.CcpFlow;
+import com.ccp.process.CcpProcessStatus;
 
 
 public interface CcpEntity{
@@ -64,7 +65,7 @@ public interface CcpEntity{
 
 	default CcpJsonRepresentation getOneById(CcpJsonRepresentation json) {
 		String entityName = this.getEntityName();
-		CcpJsonRepresentation md = this.getOneById(json, x -> {throw new CcpFlow(x.put("entity", entityName), 404);});
+		CcpJsonRepresentation md = this.getOneById(json, x -> {throw new CcpFlow(x.put("entity", entityName), CcpProcessStatus.NOT_FOUND);});
 		return md;
 	}
 	
@@ -78,7 +79,7 @@ public interface CcpEntity{
 		} catch (CcpEntityRecordNotFound e) {
 			String entityName = this.getEntityName();
 			CcpJsonRepresentation put = CcpConstants.EMPTY_JSON.put("id", id).put("entity", entityName);
-			throw new CcpFlow(put, 404);
+			throw new CcpFlow(put, CcpProcessStatus.NOT_FOUND);
 		}
 	}
 	
@@ -176,7 +177,7 @@ public interface CcpEntity{
 			CcpJsonRepresentation oneById = cacheMirror.getOneById(json);
 			return oneById;
 		}
-		throw new CcpFlow(json, 404);
+		throw new CcpFlow(json, CcpProcessStatus.NOT_FOUND);
 	}
 	
 	default CcpJsonRepresentation getRequiredEntityRow(CcpSelectUnionAll unionAll, CcpJsonRepresentation json) {

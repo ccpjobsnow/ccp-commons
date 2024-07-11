@@ -281,6 +281,17 @@ public final class CcpJsonRepresentation {
 		return execute;
 	}
 	
+	@SuppressWarnings("unchecked") 
+	public CcpJsonRepresentation getTransformedJson(Function<CcpJsonRepresentation, CcpJsonRepresentation>... transformers) {
+	
+		CcpJsonRepresentation response = this;
+		
+		for (Function<CcpJsonRepresentation, CcpJsonRepresentation> transformer : transformers) {
+			response = transformer.apply(response);
+		}
+		
+		return response;
+	}
 	public CcpJsonRepresentation addJsonTransformer(String field, Function<CcpJsonRepresentation, CcpJsonRepresentation> process) {
 		CcpJsonRepresentation put = this.put(field, process);
 		return put;
@@ -652,6 +663,19 @@ public final class CcpJsonRepresentation {
 		return execute;
 	}
 
+	public CcpJsonRepresentation copyIfNotContains(String fieldToCopy, String fieldToPaste) {
+
+		boolean containsAllFields = this.containsAllFields(fieldToPaste);
+		
+		if(containsAllFields) {
+			return this;
+		}
+	
+		CcpJsonRepresentation duplicateValueFromField = this.duplicateValueFromField(fieldToCopy, fieldToPaste);
+		
+		return duplicateValueFromField;
+	}		
+	
 	public CcpJsonRepresentation putIfNotContains(String field, Object value) {
 
 		boolean containsAllFields = this.containsAllFields(field);
