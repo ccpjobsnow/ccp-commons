@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.function.Predicate;
 
 import com.ccp.decorators.CcpJsonRepresentation;
+import com.ccp.decorators.CcpTimeDecorator;
 
 public enum YearValidations implements BoundValidations, TimeEnlapsedValidations{
 	equalsTo 
@@ -22,7 +23,7 @@ public enum YearValidations implements BoundValidations, TimeEnlapsedValidations
 				return true;
 			}
 			for (String field : fields) {
-				Double asDoubleNumber = json.getAsDoubleNumber(field);
+				Double asDoubleNumber = super.getDifference(json, field);
 				if(bound <= asDoubleNumber) {
 					continue;
 				}
@@ -39,7 +40,7 @@ public enum YearValidations implements BoundValidations, TimeEnlapsedValidations
 				return true;
 			}
 			for (String field : fields) {
-				Double asDoubleNumber = json.getAsDoubleNumber(field);
+				Double asDoubleNumber =  super.getDifference(json, field);
 				if(bound >= asDoubleNumber) {
 					continue;
 				}
@@ -56,7 +57,7 @@ public enum YearValidations implements BoundValidations, TimeEnlapsedValidations
 				return true;
 			}
 			for (String field : fields) {
-				Double asDoubleNumber = json.getAsDoubleNumber(field);
+				Double asDoubleNumber = super.getDifference(json, field);
 				if(bound < asDoubleNumber) {
 					continue;
 				}
@@ -73,7 +74,7 @@ public enum YearValidations implements BoundValidations, TimeEnlapsedValidations
 				return true;
 			}
 			for (String field : fields) {
-				Double asDoubleNumber = json.getAsDoubleNumber(field);
+				Double asDoubleNumber = super.getDifference(json, field);
 				if(bound > asDoubleNumber) {
 					continue;
 				}
@@ -84,6 +85,14 @@ public enum YearValidations implements BoundValidations, TimeEnlapsedValidations
 	},
 	;
 	
+	private static Double getDifference(CcpJsonRepresentation json, String field) {
+		Double asDoubleNumber = json.getAsDoubleNumber(field);
+		CcpTimeDecorator ctd = new CcpTimeDecorator();
+		int currentYear = ctd.getYear();
+		double diff = currentYear - asDoubleNumber;
+		return diff;
+	}
+
 	protected boolean isTrue(CcpJsonRepresentation json, Predicate<Double> predicate , String... fields) {
 		
 		Calendar instance = Calendar.getInstance();
