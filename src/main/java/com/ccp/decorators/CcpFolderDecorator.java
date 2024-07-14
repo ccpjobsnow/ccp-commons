@@ -118,9 +118,16 @@ public class CcpFolderDecorator {
 	}
 
 	public CcpFolderDecorator createNewFolderIfNotExists(String folderName) {
-		String path = this.content + folderName;
+		String path = this.content + "\\" + folderName;
 		new File(path).mkdir();
 		return new CcpFolderDecorator(path);
+	}
+	
+	public CcpFileDecorator createNewFileIfNotExists(String fileName) {
+		String path = this.content +"\\"+ fileName;
+		CcpFileDecorator ccpFileDecorator = new CcpFileDecorator(path);
+		CcpFileDecorator append = ccpFileDecorator.append("");
+		return append;
 	}
 	
 	public CcpFileDecorator writeInTheFile(String fileName, String fileContent) {
