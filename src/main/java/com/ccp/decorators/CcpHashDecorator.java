@@ -47,5 +47,5 @@ public class CcpHashDecorator {
 		return bi;
 	}
 
-
+	
 }

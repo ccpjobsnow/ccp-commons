@@ -64,11 +64,11 @@ public class CcpSelectUnionAll {
 			return whenRecordWasNotFoundInTheEntitySearch;
 		}
 		
-		CcpJsonRepresentation recordFound = entity.getRequiredEntityRow(this, searchParameter);
+		CcpJsonRepresentation recordFound = entity.getRequiredEntityRow(this, searchParameter).putAll(searchParameter);
 		
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> doBeforeSavingIfRecordIsFound = handler.doBeforeSavingIfRecordIsFound();
 		
-		CcpJsonRepresentation apply = doBeforeSavingIfRecordIsFound.apply(searchParameter);
+		CcpJsonRepresentation apply = doBeforeSavingIfRecordIsFound.apply(recordFound);
 		
 		T whenRecordWasFoundInTheEntitySearch = handler.whenRecordWasFoundInTheEntitySearch(apply, recordFound);
 		

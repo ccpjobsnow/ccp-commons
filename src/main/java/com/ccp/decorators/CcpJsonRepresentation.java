@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import com.ccp.constantes.CcpConstants;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.json.CcpJsonHandler;
+import com.ccp.especifications.password.CcpPasswordHandler;
 import com.ccp.exceptions.json.JsonFieldNotFound;
 import com.ccp.exceptions.json.JsonFieldIncorrectType;
 import com.ccp.validation.ItIsTrueThatTheFollowingFields;
@@ -281,8 +282,8 @@ public final class CcpJsonRepresentation {
 		return execute;
 	}
 	
-	@SuppressWarnings("unchecked") 
-	public CcpJsonRepresentation getTransformedJson(Function<CcpJsonRepresentation, CcpJsonRepresentation>... transformers) {
+	@SafeVarargs
+	public final CcpJsonRepresentation getTransformedJson(Function<CcpJsonRepresentation, CcpJsonRepresentation>... transformers) {
 	
 		CcpJsonRepresentation response = this;
 		
@@ -728,7 +729,6 @@ public final class CcpJsonRepresentation {
 			boolean equals = hash.equals(hash2);
 			return equals;
 		}
-		
 		return false;
 	}
 	
@@ -737,4 +737,74 @@ public final class CcpJsonRepresentation {
 		List<CcpTextDecorator> collect = asStringList.stream().map(x -> new CcpTextDecorator(x)).collect(Collectors.toList());
 		return collect;
 	}
+	
+	public CcpJsonRepresentation putNewFieldHash(String oldField, String newField, String hashType) {
+		String value = this.getAsString(oldField);
+		CcpHashDecorator hash2 = new CcpStringDecorator(value).hash();
+		String hash = hash2.asString(hashType);
+		CcpJsonRepresentation put2 = this.put(oldField, hash);
+		CcpJsonRepresentation put = put2.put(newField, value);
+		return put;
+	}
+	
+	public CcpJsonRepresentation putEmailHash(String hashType) {
+		CcpJsonRepresentation putNewFieldHash = this.putNewFieldHash("email", "originalEmail", hashType);
+		return putNewFieldHash;
+	}
+	
+	public CcpJsonRepresentation putHashPassword(String fieldName, String hashType) {
+		String value = this.getAsString(fieldName);
+		CcpHashDecorator hash2 = new CcpStringDecorator(value).hash();
+		String hash = hash2.asString(hashType);
+		CcpJsonRepresentation put2 = this.put(fieldName, hash);
+		return put2;
+	}
+	
+	public CcpJsonRepresentation putRandomToken(int tokenSize, String fieldName) {
+		
+		CcpStringDecorator csd = new CcpStringDecorator(CcpConstants.CHARACTERS_TO_GENERATE_TOKEN);
+		CcpTextDecorator text = csd.text();
+		CcpTextDecorator generateToken = text.generateToken(tokenSize);
+		String token = generateToken.content;
+		
+		CcpJsonRepresentation put = this.put(fieldName, token);
+		
+		return put;
+	}
+
+	public CcpJsonRepresentation putRandomPassword(int tokenSize, String fieldName, String fieldHashName) {
+		
+		CcpJsonRepresentation transformed = this.putRandomToken(tokenSize, fieldName);
+		
+		String token = transformed.getAsString(fieldName);
+		
+		CcpPasswordHandler dependency = CcpDependencyInjection.getDependency(CcpPasswordHandler.class);
+		
+		String tokenHash = dependency.getHash(token);
+		
+		CcpJsonRepresentation put = transformed.put(fieldHashName, tokenHash);
+		
+		return put;
+
+	}
+
+	public CcpJsonRepresentation putPasswordHash(String fieldName) {
+		CcpJsonRepresentation putPasswordHash = this.putPasswordHash(fieldName, fieldName);
+		return putPasswordHash;
+	}
+	
+	public CcpJsonRepresentation putPasswordHash(String fieldName, String fieldHashName) {
+		
+		String password = this.getAsString(fieldName);
+		
+		CcpPasswordHandler dependency = CcpDependencyInjection.getDependency(CcpPasswordHandler.class);
+		
+		String passwordHash = dependency.getHash(password);
+		
+		CcpJsonRepresentation put = this.put(fieldHashName, passwordHash);
+		
+		return put;
+
+	}
+
 }

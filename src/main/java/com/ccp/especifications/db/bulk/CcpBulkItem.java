@@ -2,6 +2,7 @@ package com.ccp.especifications.db.bulk;
 
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
+import com.ccp.especifications.db.crud.CcpSelectUnionAll;
 import com.ccp.especifications.db.utils.CcpEntity;
 
 public class CcpBulkItem {
@@ -11,6 +12,17 @@ public class CcpBulkItem {
 	public final CcpEntity entity;
 	public final String id;
 
+	public CcpBulkItem (CcpJsonRepresentation json, CcpSelectUnionAll unionAll, CcpEntity entity) {
+
+		boolean presentInThisUnionAll = entity.isPresentInThisUnionAll(unionAll, json);
+		
+		this.operation = presentInThisUnionAll ? CcpEntityOperationType.delete : CcpEntityOperationType.create;
+		this.json = entity.getRequiredEntityRow(unionAll, json);
+		this.id = entity.calculateId(json);
+		this.entity = entity;
+		
+	}
+	
 	public CcpBulkItem(CcpJsonRepresentation json, CcpEntityOperationType operation, CcpEntity entity) {
 		this.json = entity.getOnlyExistingFields(json);
 		this.id = entity.calculateId(json);
@@ -28,7 +40,8 @@ public class CcpBulkItem {
 
 	public String toString() {
 		CcpJsonRepresentation put = this.asMap();
-		String string = put.toString();
+		CcpJsonRepresentation jsonPiece = put.getJsonPiece("entity", "operation", "id");
+		String string = jsonPiece.toString();
 		return string;
 	}
 
