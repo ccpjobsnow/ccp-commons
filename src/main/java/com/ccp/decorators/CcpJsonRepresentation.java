@@ -575,9 +575,16 @@ public final class CcpJsonRepresentation {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <T> T getAsObject(String field) {
-		Object object = this.content.get(field);
-		return (T) object;
+	public <T> T getAsObject(String... fields) {
+		for (String field : fields) {
+			Object object = this.content.get(field);
+			if(object == null) {
+				continue;
+			}
+			return (T) object;
+		}
+		String message = "fields " + Arrays.asList(fields) + " not found in the json " + this;
+		throw new RuntimeException(message);
 	}
 	
 	public boolean isEmpty() {
@@ -595,12 +602,7 @@ public final class CcpJsonRepresentation {
 	}
 	
 	public CcpJsonRepresentation addToList(String field, Object value) {
-		List<Object> list = this.getAsObject(field);
-		
-		if(list == null) {
-			list = new ArrayList<>();
-		}
-		
+		List<Object> list = this.getAsObjectList(field);
 		list = new ArrayList<>(list);
 		list.add(value);
 		CcpJsonRepresentation put = this.put(field, list);
@@ -608,12 +610,7 @@ public final class CcpJsonRepresentation {
 	}
 
 	public CcpJsonRepresentation addToList(String field, CcpJsonRepresentation value) {
-		List<Object> list = this.getAsObject(field);
-		
-		if(list == null) {
-			list = new ArrayList<>();
-		}
-		
+		List<Object> list = this.getAsObjectList(field);
 		list = new ArrayList<>(list);
 		list.add(value.content);
 		CcpJsonRepresentation put = this.put(field, list);

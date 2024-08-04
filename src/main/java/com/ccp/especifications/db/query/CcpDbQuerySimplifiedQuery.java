@@ -12,6 +12,11 @@ public final class CcpDbQuerySimplifiedQuery  extends CcpDbQueryBooleanOperator 
 		super(parent, "query");
 	}
 
+	@SuppressWarnings("unchecked")
+	public CcpDbQuerySimplifiedQuery  terms(CcpEntityField field, Object value) {
+		return super.terms(field, value);
+	}
+	
 	
 	@SuppressWarnings("unchecked")
 	public CcpDbQuerySimplifiedQuery prefix(CcpEntityField field, Object value) {
