@@ -25,7 +25,6 @@ import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.json.CcpJsonHandler;
 import com.ccp.especifications.password.CcpPasswordHandler;
 import com.ccp.exceptions.json.JsonFieldNotFound;
-import com.ccp.exceptions.json.JsonFieldIncorrectType;
 import com.ccp.validation.ItIsTrueThatTheFollowingFields;
  
 public final class CcpJsonRepresentation {
@@ -482,29 +481,28 @@ public final class CcpJsonRepresentation {
 	public List<Object> getAsObjectList(String field) {
 		
 		boolean isNotPresent = this.containsAllFields(field) == false;
+		
 		if(isNotPresent) {
 			return new ArrayList<>();
 		}
 		
 		Object object = this.content.get(field);
+		
 		if(object == null) {
 			return new ArrayList<>();
-		}
-		if(object instanceof String) {
-			CcpJsonHandler jsonHandler = CcpDependencyInjection.getDependency(CcpJsonHandler.class);
-			try {
-				List<Object> fromJson = jsonHandler.fromJson(object.toString());
-				return fromJson;
-			} catch (Exception e) {
-				return Arrays.asList(object.toString());
-			}
 		}
 		
 		if(object instanceof Collection<?> list) {
 			return new ArrayList<Object>(list);
 		}
 		
-		throw new JsonFieldIncorrectType(field, Collection.class, object.getClass());
+		CcpJsonHandler jsonHandler = CcpDependencyInjection.getDependency(CcpJsonHandler.class);
+		try {
+			List<Object> fromJson = jsonHandler.fromJson(object.toString());
+			return fromJson;
+		} catch (Exception e) {
+			return Arrays.asList(object.toString());
+		}
 	}
 	
 	

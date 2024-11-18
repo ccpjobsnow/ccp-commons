@@ -264,7 +264,7 @@ public class CcpJsonFieldsValidations {
 		
 		for (String field : fields) {
 			
-			Double boundValue = Double.valueOf("" + bound);
+			double boundValue = Double.valueOf("" + bound);
 			
 			boolean validJson = rule.isValidJson(json, boundValue, field);
 			
