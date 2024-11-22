@@ -28,6 +28,20 @@ public interface CcpProcessStatus {
 		}
 	};
 	
+	CcpProcessStatus INACTIVE_RECORD = new CcpProcessStatus() {
+		
+		@Override
+		public int status() {
+			return 302;
+		}
+		
+		@Override
+		public String name() {
+			return "INACTIVE_RECORD";
+		}
+	};
+
+	
 	default void verifyStatus(int actualStatus) {
 		int expectedStatus = this.status();
 		

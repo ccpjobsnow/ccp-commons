@@ -157,29 +157,6 @@ public interface CcpEntity{
 		return false;
 	}
 	
-	default CcpJsonRepresentation getOneByIdFromMirrorOrFromCache(CcpJsonRepresentation json) {
-		
-		CcpEntity fromCache = this.fromCache();
-		
-		boolean existsInMainEntity = fromCache.exists(json);
-		
-		if(existsInMainEntity) {
-			CcpJsonRepresentation oneById = fromCache.getOneById(json);
-			return oneById;
-		}
-		
-		CcpEntity mirrorEntity = this.getMirrorEntity();
-		CcpEntity cacheMirror = mirrorEntity.fromCache();
-
-		boolean existsInMirrorEntity = cacheMirror.exists(json);
-		
-		if(existsInMirrorEntity) {
-			CcpJsonRepresentation oneById = cacheMirror.getOneById(json);
-			return oneById;
-		}
-		throw new CcpFlow(json, CcpProcessStatus.NOT_FOUND);
-	}
-	
 	default CcpJsonRepresentation getRequiredEntityRow(CcpSelectUnionAll unionAll, CcpJsonRepresentation json) {
 		
 		boolean notFound = this.isPresentInThisUnionAll(unionAll, json) == false;
@@ -207,4 +184,24 @@ public interface CcpEntity{
 		CcpJsonRepresentation putAll = j1.putAll(j2);
 		return putAll;
 	}
+	
+	default CcpJsonRepresentation getData(CcpJsonRepresentation json) {
+		
+		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
+		
+		CcpEntity mirrorEntity = this.getMirrorEntity();
+		CcpSelectUnionAll searchResults = crud.unionAll(json, this, mirrorEntity);
+		
+		boolean inactive = mirrorEntity.isPresentInThisUnionAll(searchResults, json);
+		
+		if(inactive) {
+			CcpJsonRepresentation requiredEntityRow = mirrorEntity.getRequiredEntityRow(searchResults, json);
+			throw new CcpFlow(requiredEntityRow, CcpProcessStatus.INACTIVE_RECORD);
+		}
+		
+		CcpJsonRepresentation requiredEntityRow = this.getRequiredEntityRow(searchResults, json);
+
+		return requiredEntityRow;
+	}
+
 }
