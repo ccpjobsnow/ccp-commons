@@ -28,5 +28,7 @@ public interface CcpQueryExecutor {
 	CcpJsonRepresentation getAggregations(CcpDbQueryOptions elasticQuery, String... resourcesNames) ;
 
 	void consumeQueryResult(CcpDbQueryOptions elasticQuery, String[] resourcesNames, String scrollTime, Integer size,
-			Consumer<CcpJsonRepresentation> consumer, String... fields);	
+			Consumer<CcpJsonRepresentation> consumer, String... fields);
+	
+
 }

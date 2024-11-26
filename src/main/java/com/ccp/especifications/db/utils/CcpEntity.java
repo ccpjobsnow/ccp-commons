@@ -203,5 +203,13 @@ public interface CcpEntity{
 
 		return requiredEntityRow;
 	}
+	
+	default String[] getEntitiesToSelect() {
+		CcpEntity mirrorEntity = this.getMirrorEntity();
+		String mirrorName = mirrorEntity.getEntityName();
+		String entityName = this.getEntityName();
+		String[] resourcesNames = new String[]{entityName, mirrorName};
+		return resourcesNames;
+	}
 
 }
