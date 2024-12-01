@@ -2,17 +2,22 @@ package com.ccp.especifications.db.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
+import com.ccp.decorators.CcpTimeDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpEntityOperationType;
 import com.ccp.especifications.db.crud.CcpCrud;
 import com.ccp.especifications.db.crud.CcpSelectUnionAll;
+import com.ccp.especifications.db.utils.decorators.CcpLongevityEntity;
 import com.ccp.exceptions.db.CcpEntityRecordNotFound;
 import com.ccp.exceptions.process.CcpFlow;
 import com.ccp.process.CcpProcessStatus;
@@ -36,18 +41,16 @@ public interface CcpEntity{
 	
 	CcpEntityField[] getFields();
 	
-	CcpEntity fromCache();
+	boolean isCopyableEntity();
 	
-	boolean canSaveCopy();
-	
-	boolean hasMirrorEntity();
+	boolean hasTwinEntity();
 
 	default CcpBulkItem toBulkItem(CcpJsonRepresentation json, CcpEntityOperationType operation) {
 		CcpBulkItem ccpBulkItem = new CcpBulkItem(json, operation, this);
 		return ccpBulkItem;
 	}
 	
-	default CcpEntity getMirrorEntity() {
+	default CcpEntity getTwinEntity() {
 		return this;
 	}
 
@@ -135,11 +138,6 @@ public interface CcpEntity{
 	}
 	
 
-	default List<CcpBulkItem> getFirstRecordsToInsert(){
-		return new ArrayList<>();
-	}
-	
-	
 	default CcpJsonRepresentation getOnlyExistingFields(CcpJsonRepresentation json) {
 		CcpEntityField[] fields = this.getFields();
 		String[] array = Arrays.asList(fields).stream().map(x -> x.name()).collect(Collectors.toList()).toArray(new String[fields.length]);
@@ -153,7 +151,7 @@ public interface CcpEntity{
 		return onlyPrimaryKey;
 	}
 	
-	default boolean isVirtual() {
+	default boolean isVirtualEntity() {
 		return false;
 	}
 	
@@ -175,9 +173,9 @@ public interface CcpEntity{
 		return innerJsonFromPath.isEmpty() == false;
 	}
 
-	default CcpJsonRepresentation getInnerJsonFromMainAndMirrorEntities(CcpJsonRepresentation json) {
+	default CcpJsonRepresentation getInnerJsonFromMainAndTwinEntities(CcpJsonRepresentation json) {
 		String entityName = this.getEntityName();
-		CcpEntity mirrorEntity = this.getMirrorEntity();
+		CcpEntity mirrorEntity = this.getTwinEntity();
 		String mirrorEntityName = mirrorEntity.getEntityName();
 		CcpJsonRepresentation j1 = json.getInnerJsonFromPath("_entities", entityName);
 		CcpJsonRepresentation j2 = json.getInnerJsonFromPath("_entities", mirrorEntityName);
@@ -189,7 +187,7 @@ public interface CcpEntity{
 		
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
 		
-		CcpEntity mirrorEntity = this.getMirrorEntity();
+		CcpEntity mirrorEntity = this.getTwinEntity();
 		CcpSelectUnionAll searchResults = crud.unionAll(json, this, mirrorEntity);
 		
 		boolean inactive = mirrorEntity.isPresentInThisUnionAll(searchResults, json);
@@ -205,11 +203,45 @@ public interface CcpEntity{
 	}
 	
 	default String[] getEntitiesToSelect() {
-		CcpEntity mirrorEntity = this.getMirrorEntity();
+		CcpEntity mirrorEntity = this.getTwinEntity();
 		String mirrorName = mirrorEntity.getEntityName();
 		String entityName = this.getEntityName();
 		String[] resourcesNames = new String[]{entityName, mirrorName};
 		return resourcesNames;
+	}
+	
+	default ArrayList<Object> getSortedPrimaryKeyValues(CcpJsonRepresentation json) {
+		
+		CcpJsonRepresentation primaryKeyValues = this.getPrimaryKeyValues(json);
+		
+		List<String> primaryKeyNames = this.getPrimaryKeyNames();
+		
+		Set<String> missingKeys = primaryKeyValues.getMissingFields(primaryKeyNames);
+
+		boolean isMissingKeys = missingKeys.isEmpty() == false;
+		
+		if(isMissingKeys) {
+			throw new RuntimeException("It is missing the keys '" + missingKeys + "' from entity '" + this + "' in the object " + json );
+		}
+		
+		TreeMap<String, Object> treeMap = new TreeMap<>(primaryKeyValues.content);
+		Collection<Object> values2 = treeMap.values();
+		ArrayList<Object> onlyPrimaryKeys = new ArrayList<>(values2);
+		return onlyPrimaryKeys;
+	}
+	
+	default CcpJsonRepresentation addTimeFields(CcpJsonRepresentation json) {
+		CcpTimeDecorator ctd = new CcpTimeDecorator();
+		String formattedDateTime = ctd.getFormattedDateTime(CcpLongevityEntity.millisecond.format);
+		boolean containsAllFields = json.containsAllFields(CcpEntityField.TIMESTAMP.name());
+		
+		if(containsAllFields) {
+			return json;
+		}
+		
+		CcpJsonRepresentation put = json.put(CcpEntityField.TIMESTAMP.name(), ctd.time).put(CcpEntityField.DATE.name(), formattedDateTime);
+		
+		return put;
 	}
 
 }

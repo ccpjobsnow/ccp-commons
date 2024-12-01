@@ -99,7 +99,7 @@ public class CcpFileDecorator {
 			throw new RuntimeException(e);
 		}
     }
-	public  String extractStringContent() {
+	public  String getStringContent() {
 		File file = tryToCreateFolder();
 		boolean fileIsMissing = file.exists() == false;
 		if(fileIsMissing) {
@@ -216,14 +216,14 @@ public class CcpFileDecorator {
 	}
 	
 	public CcpJsonRepresentation asSingleJson() {
-		String string = this.extractStringContent();
+		String string = this.getStringContent();
 		CcpJsonRepresentation json = new CcpJsonRepresentation(string);
 		return json;
 	}
 	
 	public List<CcpJsonRepresentation> asJsonList(){
 		CcpJsonHandler dependency = CcpDependencyInjection.getDependency(CcpJsonHandler.class);
-		String string = this.extractStringContent();
+		String string = this.getStringContent();
 		List<Map<String, Object>> list = dependency.fromJson(string);
 		List<CcpJsonRepresentation> collect = list.stream().map(x -> new CcpJsonRepresentation(x)).collect(Collectors.toList());
 		return collect;

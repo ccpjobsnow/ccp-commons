@@ -92,5 +92,6 @@ public class CcpBulkItem {
 		CcpBulkItem recordToBulkOperation = this.entity.getRecordCopyToBulkOperation(this.json, this.operation);
 		return recordToBulkOperation;
 	}
+
 	
 }

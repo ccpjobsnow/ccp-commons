@@ -37,7 +37,7 @@ public class CcpCacheDecorator {
 		return this.cache.getOrThrowException(this.key, e);
 	}
 
-	public boolean exists() {
+	public boolean isPresentInTheCache() {
 		return this.cache.isPresent(this.key);
 	}
 
