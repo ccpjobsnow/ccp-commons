@@ -20,7 +20,7 @@ import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpEntityOperationType;
 import com.ccp.especifications.db.crud.CcpCrud;
 import com.ccp.especifications.db.crud.CcpSelectUnionAll;
-import com.ccp.especifications.db.utils.decorators.CcpLongevityEntity;
+import com.ccp.especifications.db.utils.decorators.CcpEntityExpurg;
 import com.ccp.exceptions.db.CcpEntityRecordNotFound;
 import com.ccp.exceptions.process.CcpFlow;
 import com.ccp.process.CcpProcessStatus;
@@ -261,7 +261,7 @@ public interface CcpEntity{
 	
 	default CcpJsonRepresentation addTimeFields(CcpJsonRepresentation json) {
 		CcpTimeDecorator ctd = new CcpTimeDecorator();
-		String formattedDateTime = ctd.getFormattedDateTime(CcpLongevityEntity.millisecond.format);
+		String formattedDateTime = ctd.getFormattedDateTime(CcpEntityExpurg.millisecond.format);
 		boolean containsAllFields = json.containsAllFields(CcpEntityField.TIMESTAMP.name());
 		
 		if(containsAllFields) {

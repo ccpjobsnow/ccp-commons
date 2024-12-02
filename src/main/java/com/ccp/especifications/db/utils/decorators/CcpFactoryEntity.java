@@ -22,10 +22,10 @@ public class CcpFactoryEntity {
 		
 		CcpEntity entity = getSimpleEntity(configurationClass);
 		
-		boolean isAuditableEntity = configurationClass.isAnnotationPresent(CcpEntityAuditable.class);
+		boolean isAuditableEntity = configurationClass.isAnnotationPresent(CcpEntityVersionable.class);
 		if(isAuditableEntity) {
-			CcpEntityAuditable annotation = configurationClass.getAnnotation(CcpEntityAuditable.class);
-			Class<?>auditableEntityFactory = annotation.auditableEntityFactory();
+			CcpEntityVersionable annotation = configurationClass.getAnnotation(CcpEntityVersionable.class);
+			Class<?>auditableEntityFactory = annotation.versionableEntityFactory();
 			entity = getAuditEntity(auditableEntityFactory, entity);
 		}		
 
@@ -33,16 +33,16 @@ public class CcpFactoryEntity {
 		
 		if(isAuditableEntity && isExpurgableEntity) {
 			throw new RuntimeException("The class '" + configurationClass.getName() + "' can not be annoted by '" 
-		+ CcpEntityAuditable.class.getName() + "' annotation and '" + CcpEntityExpurgable.class.getName() + "' at the same time");
+		+ CcpEntityVersionable.class.getName() + "' annotation and '" + CcpEntityExpurgable.class.getName() + "' at the same time");
 
 		}
-		int cacheExpires = CcpLongevityEntity.daily.cacheExpires;
+		int cacheExpires = CcpEntityExpurg.daily.cacheExpires;
 		
 		if(isExpurgableEntity) {
 			CcpEntityExpurgable annotation = configurationClass.getAnnotation(CcpEntityExpurgable.class);
 			
 			Class<?>expurgableEntityFactory = annotation.expurgableEntityFactory();
-			CcpLongevityEntity longevity = annotation.longevityEntity();
+			CcpEntityExpurg longevity = annotation.expurgTime();
 			cacheExpires = longevity.cacheExpires;
 			entity = getExpurgableEntity(expurgableEntityFactory, longevity, entity);
 		}		
@@ -76,9 +76,9 @@ public class CcpFactoryEntity {
 		}
 	}
 
-	private static CcpEntity getExpurgableEntity(Class<?> auditClass, CcpLongevityEntity longevity, CcpEntity entity) {
+	private static CcpEntity getExpurgableEntity(Class<?> auditClass, CcpEntityExpurg longevity, CcpEntity entity) {
 		try {
-			Constructor<?> declaredConstructor = auditClass.getDeclaredConstructor(CcpEntity.class, CcpLongevityEntity.class);
+			Constructor<?> declaredConstructor = auditClass.getDeclaredConstructor(CcpEntity.class, CcpEntityExpurg.class);
 			declaredConstructor.setAccessible(true);
 			CcpEntity newInstance = (CcpEntity) declaredConstructor.newInstance(entity, longevity);
 			return newInstance;

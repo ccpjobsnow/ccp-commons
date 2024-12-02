@@ -8,7 +8,7 @@ import com.ccp.especifications.cache.CcpCacheDecorator;
 import com.ccp.especifications.db.crud.CcpSelectUnionAll;
 import com.ccp.especifications.db.utils.CcpEntity;
 
-public class CacheEntity extends CcpDelegatorEntity{
+class CacheEntity extends CcpDelegatorEntity{
 
 	private final int cacheExpires;
 

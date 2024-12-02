@@ -10,6 +10,6 @@ import java.lang.annotation.Target;
 public @interface CcpEntityExpurgable {
 
 	Class<?> expurgableEntityFactory();
-	CcpLongevityEntity longevityEntity();
+	CcpEntityExpurg expurgTime();
 
 }
