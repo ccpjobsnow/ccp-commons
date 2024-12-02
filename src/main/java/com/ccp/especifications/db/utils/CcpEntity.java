@@ -6,11 +6,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.ccp.constantes.CcpConstants;
+import com.ccp.decorators.CcpHashDecorator;
 import com.ccp.decorators.CcpJsonRepresentation;
+import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.decorators.CcpTimeDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
@@ -33,7 +36,24 @@ public interface CcpEntity{
 
 	String getEntityName();
 
-	String calculateId(CcpJsonRepresentation json) ;
+	default String calculateId(CcpJsonRepresentation json) {
+		List<String> primaryKeyNames = this.getPrimaryKeyNames();
+		
+		boolean hasNoPrimaryKey = primaryKeyNames.isEmpty();
+		
+		if(hasNoPrimaryKey) {
+			String string = UUID.randomUUID().toString();
+			String hash = new CcpStringDecorator(string).hash().asString("SHA1");
+			return hash;
+		}
+		
+		ArrayList<Object> sortedPrimaryKeyValues = this.getSortedPrimaryKeyValues(json);
+		
+		String replace = sortedPrimaryKeyValues.toString().replace("[", "").replace("]", "");
+		CcpHashDecorator hash2 = new CcpStringDecorator(replace).hash();
+		String hash = hash2.asString("SHA1");
+		return hash;
+	}
 	
 	CcpJsonRepresentation getPrimaryKeyValues(CcpJsonRepresentation json);
 	
@@ -41,9 +61,18 @@ public interface CcpEntity{
 	
 	CcpEntityField[] getFields();
 	
-	boolean isCopyableEntity();
+	default boolean isCopyableEntity() {
+		
+		List<String> primaryKeyNames = this.getPrimaryKeyNames();
+		int primaryKeyFieldsSize = primaryKeyNames.size();
+		CcpEntityField[] fields = this.getFields();
+		boolean thisEntityHasMoreFieldsBesidesPrimaryKeys = primaryKeyFieldsSize < fields.length;
+		return thisEntityHasMoreFieldsBesidesPrimaryKeys;
+	}
 	
-	boolean hasTwinEntity();
+	default boolean hasTwinEntity() {
+		return false;
+	}
 
 	default CcpBulkItem toBulkItem(CcpJsonRepresentation json, CcpEntityOperationType operation) {
 		CcpBulkItem ccpBulkItem = new CcpBulkItem(json, operation, this);

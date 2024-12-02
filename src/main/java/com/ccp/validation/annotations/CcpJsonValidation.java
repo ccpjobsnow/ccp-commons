@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD, ElementType.TYPE })
-public @interface ValidationRules {
+public @interface CcpJsonValidation {
 
 	SimpleObject[] simpleObject() default {};
 

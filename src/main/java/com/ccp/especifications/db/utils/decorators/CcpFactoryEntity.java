@@ -2,6 +2,7 @@ package com.ccp.especifications.db.utils.decorators;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -17,21 +18,11 @@ import com.ccp.especifications.json.CcpJsonHandler;
 
 public class CcpFactoryEntity {
 
-	
 	public static CcpEntity getEntityInstance(Class<?> configurationClass) {
 		
 		CcpEntity entity = getSimpleEntity(configurationClass);
-
-		boolean isCacheableEntity = configurationClass.isAnnotationPresent(CcpEntityCacheable.class);
-		
-		if(isCacheableEntity) {
-			CcpEntityCacheable annotation = configurationClass.getAnnotation(CcpEntityCacheable.class);
-			CcpLongevityCache cacheLongevity = annotation.cacheLongevity();
-			entity = new CacheEntity(entity, cacheLongevity.cacheLongevity);
-		}
 		
 		boolean isAuditableEntity = configurationClass.isAnnotationPresent(CcpEntityAuditable.class);
-		
 		if(isAuditableEntity) {
 			CcpEntityAuditable annotation = configurationClass.getAnnotation(CcpEntityAuditable.class);
 			Class<?>auditableEntityFactory = annotation.auditableEntityFactory();
@@ -40,15 +31,28 @@ public class CcpFactoryEntity {
 
 		boolean isExpurgableEntity = configurationClass.isAnnotationPresent(CcpEntityExpurgable.class);
 		
+		if(isAuditableEntity && isExpurgableEntity) {
+			throw new RuntimeException("The class '" + configurationClass.getName() + "' can not be annoted by '" 
+		+ CcpEntityAuditable.class.getName() + "' annotation and '" + CcpEntityExpurgable.class.getName() + "' at the same time");
+
+		}
+		int cacheExpires = CcpLongevityEntity.daily.cacheExpires;
+		
 		if(isExpurgableEntity) {
 			CcpEntityExpurgable annotation = configurationClass.getAnnotation(CcpEntityExpurgable.class);
 			
 			Class<?>expurgableEntityFactory = annotation.expurgableEntityFactory();
 			CcpLongevityEntity longevity = annotation.longevityEntity();
-			
+			cacheExpires = longevity.cacheExpires;
 			entity = getExpurgableEntity(expurgableEntityFactory, longevity, entity);
 		}		
 
+		CcpEntitySpecifications configuration = configurationClass.getAnnotation(CcpEntitySpecifications.class);
+		boolean isCacheableEntity = configuration.cacheableEntity();
+		
+		if(isCacheableEntity) {
+			entity = new CacheEntity(entity, cacheExpires);
+		}
 		
 		boolean isReplicableEntity = configurationClass.isAnnotationPresent(CcpEntityTwin.class);
 		
@@ -85,34 +89,39 @@ public class CcpFactoryEntity {
 	}
 
 	private static CcpEntity getSimpleEntity(Class<?> configurationClass) {
-		boolean isNotAnotted = configurationClass.isAnnotationPresent(CcpEntitySpecifcations.class) == false;
+		boolean isNotAnotted = configurationClass.isAnnotationPresent(CcpEntitySpecifications.class) == false;
 
 		if(isNotAnotted) {
-			throw new RuntimeException("The class '" + configurationClass.getName() + "' must be annoted with '" + CcpEntitySpecifcations.class.getName() + "' annotation");
+			throw new RuntimeException("The class '" + configurationClass.getName() + "' must be annoted with '" + CcpEntitySpecifications.class.getName() + "' annotation");
 		}
 
-		CcpEntitySpecifcations annotation = configurationClass.getAnnotation(CcpEntitySpecifcations.class);
+		CcpEntitySpecifications annotation = configurationClass.getAnnotation(CcpEntitySpecifications.class);
 		
 		CcpEntityField[] entityFields = getFields(configurationClass);
-		boolean copyableEntity = annotation.copyableEntity();
 		boolean virtualEntity = annotation.virtualEntity();
 		
-		CcpEntity entity = new CcpEntityBase(configurationClass, copyableEntity, virtualEntity, entityFields);
+		CcpEntity entity = new BaseEntity(configurationClass, virtualEntity, entityFields);
 		return entity;
 	}
 
 	public static List<CcpBulkItem> getFirstRecordsToInsert(Class<?> configurationClass) {
 		
-		boolean isNotAnotted = configurationClass.isAnnotationPresent(CcpEntitySpecifcations.class) == false;
+		boolean isNotAnotted = configurationClass.isAnnotationPresent(CcpEntitySpecifications.class) == false;
 
 		if(isNotAnotted) {
-			throw new RuntimeException("The class '" + configurationClass.getName() + "' must be annoted with '" + CcpEntitySpecifcations.class.getName() + "' annotation");
+			throw new RuntimeException("The class '" + configurationClass.getName() + "' must be annoted with '" + CcpEntitySpecifications.class.getName() + "' annotation");
 		}
 
-		CcpEntitySpecifcations annotation = configurationClass.getAnnotation(CcpEntitySpecifcations.class);
+		CcpEntitySpecifications annotation = configurationClass.getAnnotation(CcpEntitySpecifications.class);
 		CcpEntity entityInstance = getEntityInstance(configurationClass);
 		String pathToFirstRecords = annotation.pathToFirstRecords();
-
+		
+		boolean hasNoFirstRecordsToInsert = pathToFirstRecords.trim().isEmpty();
+		
+		if(hasNoFirstRecordsToInsert) {
+			return new ArrayList<>();
+		}
+		
 		String stringContent = new CcpStringDecorator(pathToFirstRecords).file().getStringContent();
 		List<Map<String, Object>> list =  CcpDependencyInjection.getDependency(CcpJsonHandler.class).fromJson(stringContent);
 		List<CcpJsonRepresentation> jsons = list.stream().map(x -> new CcpJsonRepresentation(x)).collect(Collectors.toList());

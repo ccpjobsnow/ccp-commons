@@ -7,15 +7,15 @@ import java.util.List;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.validation.CcpJsonFieldsValidations;
-import com.ccp.validation.annotations.ValidationRules;
+import com.ccp.validation.annotations.CcpJsonValidation;
 
 public interface CcpCrud {
 
 	default CcpJsonRepresentation createOrUpdate(CcpEntity entity, CcpJsonRepresentation json) {
 		
 		Class<? extends CcpEntity> class1 = entity.getClass();
-		if(class1.isAnnotationPresent(ValidationRules.class)) {
-			ValidationRules annotation = class1.getAnnotation(ValidationRules.class);
+		if(class1.isAnnotationPresent(CcpJsonValidation.class)) {
+			CcpJsonValidation annotation = class1.getAnnotation(CcpJsonValidation.class);
 			String actionName = "save" + entity.getClass().getSimpleName();
 			CcpJsonFieldsValidations.validate(annotation, json.content, actionName);
 		}

@@ -1,11 +1,7 @@
 package com.ccp.especifications.db.utils.decorators;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import com.ccp.constantes.CcpConstants;
@@ -19,39 +15,17 @@ import com.ccp.especifications.db.utils.CcpDbRequester;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.db.utils.CcpEntityField;
 
-public class CcpEntityBase implements CcpEntity{
+final class BaseEntity implements CcpEntity{
 
 	final String name = this.getEntityName();
 	final Class<?> configurationClass;
 	final CcpEntityField[] fields;
-	final boolean copyableEntity;
 	final boolean virtualEntity;
 	
-	public CcpEntityBase( Class<?> configurationClass, boolean copyableEntity, boolean virtualEntity, CcpEntityField... fields) {
+	public BaseEntity( Class<?> configurationClass, boolean virtualEntity, CcpEntityField... fields) {
 		this.configurationClass = configurationClass;
-		this.copyableEntity = copyableEntity;
 		this.virtualEntity = virtualEntity;
 		this.fields = fields;
-	}
-
-	public ArrayList<Object> getSortedPrimaryKeyValues(CcpJsonRepresentation json) {
-		
-		CcpJsonRepresentation primaryKeyValues = this.getPrimaryKeyValues(json);
-		
-		List<String> primaryKeyNames = this.getPrimaryKeyNames();
-		
-		Set<String> missingKeys = primaryKeyValues.getMissingFields(primaryKeyNames);
-
-		boolean isMissingKeys = missingKeys.isEmpty() == false;
-		
-		if(isMissingKeys) {
-			throw new RuntimeException("It is missing the keys '" + missingKeys + "' from entity '" + this + "' in the object " + json );
-		}
-		
-		TreeMap<String, Object> treeMap = new TreeMap<>(primaryKeyValues.content);
-		Collection<Object> values2 = treeMap.values();
-		ArrayList<Object> onlyPrimaryKeys = new ArrayList<>(values2);
-		return onlyPrimaryKeys;
 	}
 
 	public final CcpJsonRepresentation getPrimaryKeyValues(CcpJsonRepresentation json) {
@@ -92,7 +66,7 @@ public class CcpEntityBase implements CcpEntity{
 	
 	public final boolean equals(Object obj) {
 		try {
-			String entityName = ((CcpEntityBase)obj).getEntityName();
+			String entityName = ((BaseEntity)obj).getEntityName();
 			String entityName2 = this.getEntityName();
 			boolean equals = entityName.equals(entityName2);
 			return equals;
@@ -100,10 +74,7 @@ public class CcpEntityBase implements CcpEntity{
 			return false;
 		}
 	}
-	
-	public boolean hasTwinEntity() {
-		return false;
-	}
+
 	public List<CcpJsonRepresentation> getParametersToSearch(CcpJsonRepresentation json) {
 		
 		CcpDbRequester dependency = CcpDependencyInjection.getDependency(CcpDbRequester.class);
@@ -166,10 +137,6 @@ public class CcpEntityBase implements CcpEntity{
 		return bulkItem;
 	}
 
-	public String calculateId(CcpJsonRepresentation json) {
-		throw new UnsupportedOperationException();
-	}
-
 	public CcpBulkItem getRecordCopyToBulkOperation(CcpJsonRepresentation json, CcpEntityOperationType operation) {
 		throw new UnsupportedOperationException();
 	}
@@ -178,16 +145,5 @@ public class CcpEntityBase implements CcpEntity{
 		return this.virtualEntity;
 	}
 	
-	public boolean isCopyableEntity() {
-		
-		if(this.copyableEntity == false) {
-			return false;
-		}
-		
-		List<String> primaryKeyNames = this.getPrimaryKeyNames();
-		int primaryKeyFieldsSize = primaryKeyNames.size();
-		boolean thisEntityHasMoreFieldsBesidesPrimaryKeys = primaryKeyFieldsSize < this.fields.length;
-		return thisEntityHasMoreFieldsBesidesPrimaryKeys;
-	}
 	
 }
