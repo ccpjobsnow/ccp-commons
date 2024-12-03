@@ -8,7 +8,7 @@ import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.exceptions.process.CcpFlow;
 import com.ccp.process.CcpProcessStatus;
 
-class CopyableEntity  extends CcpDelegatorEntity{
+class CopyableEntity  extends CcpEntityDelegator{
 	
 	public CopyableEntity(CcpEntity entity) {
 		super(entity);

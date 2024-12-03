@@ -2,7 +2,7 @@ package com.ccp.especifications.db.utils.decorators;
 
 import com.ccp.especifications.db.utils.CcpEntity;
 
-class ReplicableEntity extends CcpDelegatorEntity{
+class ReplicableEntity extends CcpEntityDelegator{
 	private final String twinEntityName;
 
 	public ReplicableEntity(String twinEntityName, CcpEntity entity) {

@@ -2,7 +2,7 @@ package com.ccp.especifications.db.utils.decorators;
 
 import com.ccp.especifications.db.utils.CcpEntity;
 
-class TwinEntity extends CcpDelegatorEntity {
+class TwinEntity extends CcpEntityDelegator {
 
 	private final String twinEntityName;
 	private final CcpEntity parent;

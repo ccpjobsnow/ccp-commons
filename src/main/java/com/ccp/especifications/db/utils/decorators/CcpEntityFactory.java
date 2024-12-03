@@ -16,11 +16,40 @@ import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.db.utils.CcpEntityField;
 import com.ccp.especifications.json.CcpJsonHandler;
 
-public class CcpFactoryEntity {
+public class CcpEntityFactory {
 
-	public static CcpEntity getEntityInstance(Class<?> configurationClass) {
+	public final List<CcpBulkItem> firstRecordsToInsert;
+
+	public final CcpEntityField[] entityFields;
+
+	public final CcpEntity entityInstance;
+
+	public final boolean isVirtualEntity;
+
+	public final boolean hasTwinEntity;
+	
+	public CcpEntityFactory(Class<?> configurationClass) {
 		
-		CcpEntity entity = getSimpleEntity(configurationClass);
+		this.hasTwinEntity = configurationClass.isAnnotationPresent(CcpEntityTwin.class);
+		this.isVirtualEntity = this.isVirtualEntity(configurationClass);
+
+		this.entityFields = this.getFields(configurationClass);
+		this.entityInstance = this.getEntityInstance(configurationClass);
+		this.firstRecordsToInsert = this.getFirstRecordsToInsert(configurationClass);
+	}
+	
+	private boolean isVirtualEntity(Class<?> configurationClass) {
+
+		CcpEntitySpecifications annotation = configurationClass.getAnnotation(CcpEntitySpecifications.class);
+		boolean virtualEntity = annotation.virtualEntity();
+		return virtualEntity;
+	}
+
+
+	private CcpEntity getEntityInstance(Class<?> configurationClass) {
+		
+		CcpEntity entity = new BaseEntity(configurationClass,  this.entityFields);
+
 		
 		boolean isAuditableEntity = configurationClass.isAnnotationPresent(CcpEntityVersionable.class);
 		if(isAuditableEntity) {
@@ -36,13 +65,13 @@ public class CcpFactoryEntity {
 		+ CcpEntityVersionable.class.getName() + "' annotation and '" + CcpEntityExpurgable.class.getName() + "' at the same time");
 
 		}
-		int cacheExpires = CcpEntityExpurg.daily.cacheExpires;
+		int cacheExpires = CcpEntityExpurgableOptions.daily.cacheExpires;
 		
 		if(isExpurgableEntity) {
 			CcpEntityExpurgable annotation = configurationClass.getAnnotation(CcpEntityExpurgable.class);
 			
 			Class<?>expurgableEntityFactory = annotation.expurgableEntityFactory();
-			CcpEntityExpurg longevity = annotation.expurgTime();
+			CcpEntityExpurgableOptions longevity = annotation.expurgTime();
 			cacheExpires = longevity.cacheExpires;
 			entity = getExpurgableEntity(expurgableEntityFactory, longevity, entity);
 		}		
@@ -76,9 +105,9 @@ public class CcpFactoryEntity {
 		}
 	}
 
-	private static CcpEntity getExpurgableEntity(Class<?> auditClass, CcpEntityExpurg longevity, CcpEntity entity) {
+	private static CcpEntity getExpurgableEntity(Class<?> auditClass, CcpEntityExpurgableOptions longevity, CcpEntity entity) {
 		try {
-			Constructor<?> declaredConstructor = auditClass.getDeclaredConstructor(CcpEntity.class, CcpEntityExpurg.class);
+			Constructor<?> declaredConstructor = auditClass.getDeclaredConstructor(CcpEntity.class, CcpEntityExpurgableOptions.class);
 			declaredConstructor.setAccessible(true);
 			CcpEntity newInstance = (CcpEntity) declaredConstructor.newInstance(entity, longevity);
 			return newInstance;
@@ -88,23 +117,7 @@ public class CcpFactoryEntity {
 		}
 	}
 
-	private static CcpEntity getSimpleEntity(Class<?> configurationClass) {
-		boolean isNotAnotted = configurationClass.isAnnotationPresent(CcpEntitySpecifications.class) == false;
-
-		if(isNotAnotted) {
-			throw new RuntimeException("The class '" + configurationClass.getName() + "' must be annoted with '" + CcpEntitySpecifications.class.getName() + "' annotation");
-		}
-
-		CcpEntitySpecifications annotation = configurationClass.getAnnotation(CcpEntitySpecifications.class);
-		
-		CcpEntityField[] entityFields = getFields(configurationClass);
-		boolean virtualEntity = annotation.virtualEntity();
-		
-		CcpEntity entity = new BaseEntity(configurationClass, virtualEntity, entityFields);
-		return entity;
-	}
-
-	public static List<CcpBulkItem> getFirstRecordsToInsert(Class<?> configurationClass) {
+	private List<CcpBulkItem> getFirstRecordsToInsert(Class<?> configurationClass) {
 		
 		boolean isNotAnotted = configurationClass.isAnnotationPresent(CcpEntitySpecifications.class) == false;
 
@@ -113,7 +126,7 @@ public class CcpFactoryEntity {
 		}
 
 		CcpEntitySpecifications annotation = configurationClass.getAnnotation(CcpEntitySpecifications.class);
-		CcpEntity entityInstance = getEntityInstance(configurationClass);
+		CcpEntity entityInstance = this.entityInstance;
 		String pathToFirstRecords = annotation.pathToFirstRecords();
 		
 		boolean hasNoFirstRecordsToInsert = pathToFirstRecords.trim().isEmpty();
@@ -131,7 +144,7 @@ public class CcpFactoryEntity {
 		return bulkItems;
 	}
 
-	private static CcpEntityField[] getFields(Class<?> configurationClass) {
+	private CcpEntityField[] getFields(Class<?> configurationClass) {
 		String className = configurationClass.getName();
 
 		Class<?>[] declaredClasses = configurationClass.getDeclaredClasses();

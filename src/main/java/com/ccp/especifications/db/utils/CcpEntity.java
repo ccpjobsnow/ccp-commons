@@ -14,13 +14,11 @@ import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpHashDecorator;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.decorators.CcpStringDecorator;
-import com.ccp.decorators.CcpTimeDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpEntityOperationType;
 import com.ccp.especifications.db.crud.CcpCrud;
 import com.ccp.especifications.db.crud.CcpSelectUnionAll;
-import com.ccp.especifications.db.utils.decorators.CcpEntityExpurg;
 import com.ccp.exceptions.db.CcpEntityRecordNotFound;
 import com.ccp.exceptions.process.CcpFlow;
 import com.ccp.process.CcpProcessStatus;
@@ -55,7 +53,12 @@ public interface CcpEntity{
 		return hash;
 	}
 	
-	CcpJsonRepresentation getPrimaryKeyValues(CcpJsonRepresentation json);
+	default CcpJsonRepresentation getPrimaryKeyValues(CcpJsonRepresentation json) {
+		
+		List<String> onlyPrimaryKey = this.getPrimaryKeyNames();
+		CcpJsonRepresentation jsonPiece = json.getJsonPiece(onlyPrimaryKey);
+		return jsonPiece;
+	}
 	
 	CcpBulkItem getRecordCopyToBulkOperation(CcpJsonRepresentation json, CcpEntityOperationType operation);
 	
@@ -70,10 +73,6 @@ public interface CcpEntity{
 		return thisEntityHasMoreFieldsBesidesPrimaryKeys;
 	}
 	
-	default boolean hasTwinEntity() {
-		return false;
-	}
-
 	default CcpBulkItem toBulkItem(CcpJsonRepresentation json, CcpEntityOperationType operation) {
 		CcpBulkItem ccpBulkItem = new CcpBulkItem(json, operation, this);
 		return ccpBulkItem;
@@ -173,15 +172,11 @@ public interface CcpEntity{
 		CcpJsonRepresentation subMap = json.getJsonPiece(array);
 		return subMap;
 	}
-	
+
 	default List<String> getPrimaryKeyNames() {
 		CcpEntityField[] fields = this.getFields();
 		List<String> onlyPrimaryKey = new ArrayList<>(Arrays.asList(fields).stream().filter(x -> x.isPrimaryKey()).map(x -> x.name()).collect(Collectors.toList()));
 		return onlyPrimaryKey;
-	}
-	
-	default boolean isVirtualEntity() {
-		return false;
 	}
 	
 	default CcpJsonRepresentation getRequiredEntityRow(CcpSelectUnionAll unionAll, CcpJsonRepresentation json) {
@@ -232,13 +227,13 @@ public interface CcpEntity{
 	}
 	
 	default String[] getEntitiesToSelect() {
+		//TODO ADEQUAR PARA ENTIDADES SEM TWIN
 		CcpEntity mirrorEntity = this.getTwinEntity();
 		String mirrorName = mirrorEntity.getEntityName();
 		String entityName = this.getEntityName();
 		String[] resourcesNames = new String[]{entityName, mirrorName};
 		return resourcesNames;
 	}
-	
 	default ArrayList<Object> getSortedPrimaryKeyValues(CcpJsonRepresentation json) {
 		
 		CcpJsonRepresentation primaryKeyValues = this.getPrimaryKeyValues(json);
@@ -259,18 +254,5 @@ public interface CcpEntity{
 		return onlyPrimaryKeys;
 	}
 	
-	default CcpJsonRepresentation addTimeFields(CcpJsonRepresentation json) {
-		CcpTimeDecorator ctd = new CcpTimeDecorator();
-		String formattedDateTime = ctd.getFormattedDateTime(CcpEntityExpurg.millisecond.format);
-		boolean containsAllFields = json.containsAllFields(CcpEntityField.TIMESTAMP.name());
-		
-		if(containsAllFields) {
-			return json;
-		}
-		
-		CcpJsonRepresentation put = json.put(CcpEntityField.TIMESTAMP.name(), ctd.time).put(CcpEntityField.DATE.name(), formattedDateTime);
-		
-		return put;
-	}
 
 }

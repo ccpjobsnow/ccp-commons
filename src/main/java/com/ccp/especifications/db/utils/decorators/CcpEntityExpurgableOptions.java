@@ -6,7 +6,7 @@ import java.util.Date;
 
 import com.ccp.decorators.CcpTimeDecorator;
 
-public enum CcpEntityExpurg{
+public enum CcpEntityExpurgableOptions{
 	yearly(Calendar.YEAR, "yyyy", 86400)
 	,monthly(Calendar.MONTH, "yyyyMM", 86400)
 	,minute(Calendar.MINUTE, "ddMMyyyy HH:mm", 60)
@@ -19,7 +19,7 @@ public enum CcpEntityExpurg{
 	public final int cacheExpires;
 	public final String format;
 	
-	private CcpEntityExpurg(int calendarField, String format, int cacheExpires) {
+	private CcpEntityExpurgableOptions(int calendarField, String format, int cacheExpires) {
 		this.calendarField = calendarField;
 		this.cacheExpires = cacheExpires;
 		this.format = format;

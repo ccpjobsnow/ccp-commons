@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.decorators.CcpStringDecorator;
+import com.ccp.decorators.CcpTimeDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpEntityOperationType;
@@ -20,19 +21,10 @@ final class BaseEntity implements CcpEntity{
 	final String name = this.getEntityName();
 	final Class<?> configurationClass;
 	final CcpEntityField[] fields;
-	final boolean virtualEntity;
 	
-	public BaseEntity( Class<?> configurationClass, boolean virtualEntity, CcpEntityField... fields) {
+	public BaseEntity( Class<?> configurationClass,  CcpEntityField... fields) {
 		this.configurationClass = configurationClass;
-		this.virtualEntity = virtualEntity;
 		this.fields = fields;
-	}
-
-	public final CcpJsonRepresentation getPrimaryKeyValues(CcpJsonRepresentation json) {
-		
-		List<String> onlyPrimaryKey = this.getPrimaryKeyNames();
-		CcpJsonRepresentation jsonPiece = json.getJsonPiece(onlyPrimaryKey);
-		return jsonPiece;
 	}
 
 	public String getEntityName() {
@@ -141,9 +133,18 @@ final class BaseEntity implements CcpEntity{
 		throw new UnsupportedOperationException();
 	}
 	
-	public boolean isVirtualEntity() {
-		return this.virtualEntity;
+	private CcpJsonRepresentation addTimeFields(CcpJsonRepresentation json) {
+		CcpTimeDecorator ctd = new CcpTimeDecorator();
+		String formattedDateTime = ctd.getFormattedDateTime(CcpEntityExpurgableOptions.millisecond.format);
+		boolean containsAllFields = json.containsAllFields(CcpEntityField.TIMESTAMP.name());
+		
+		if(containsAllFields) {
+			return json;
+		}
+		
+		CcpJsonRepresentation put = json.put(CcpEntityField.TIMESTAMP.name(), ctd.time).put(CcpEntityField.DATE.name(), formattedDateTime);
+		
+		return put;
 	}
-	
-	
+
 }

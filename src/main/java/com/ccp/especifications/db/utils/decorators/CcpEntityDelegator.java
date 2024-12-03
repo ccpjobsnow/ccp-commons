@@ -11,11 +11,11 @@ import com.ccp.especifications.db.crud.CcpSelectUnionAll;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.db.utils.CcpEntityField;
 
-public abstract class CcpDelegatorEntity implements CcpEntity{
+public abstract class CcpEntityDelegator implements CcpEntity{
 
 	protected final CcpEntity entity;
 
-	public CcpDelegatorEntity(CcpEntity entity) {
+	public CcpEntityDelegator(CcpEntity entity) {
 		this.entity = entity;
 	}
 
@@ -53,10 +53,6 @@ public abstract class CcpDelegatorEntity implements CcpEntity{
 
 	public boolean isCopyableEntity() {
 		return entity.isCopyableEntity();
-	}
-
-	public boolean hasTwinEntity() {
-		return entity.hasTwinEntity();
 	}
 
 	public CcpBulkItem toBulkItem(CcpJsonRepresentation json, CcpEntityOperationType operation) {
@@ -116,10 +112,6 @@ public abstract class CcpDelegatorEntity implements CcpEntity{
 		return entity.getPrimaryKeyNames();
 	}
 
-	public boolean isVirtualEntity() {
-		return entity.isVirtualEntity();
-	}
-
 	public CcpJsonRepresentation getRequiredEntityRow(CcpSelectUnionAll unionAll, CcpJsonRepresentation json) {
 		return entity.getRequiredEntityRow(unionAll, json);
 	}
@@ -143,10 +135,5 @@ public abstract class CcpDelegatorEntity implements CcpEntity{
 	public ArrayList<Object> getSortedPrimaryKeyValues(CcpJsonRepresentation json) {
 		return entity.getSortedPrimaryKeyValues(json);
 	}
-
-	public CcpJsonRepresentation addTimeFields(CcpJsonRepresentation json) {
-		return entity.addTimeFields(json);
-	}
-
 	
 }
