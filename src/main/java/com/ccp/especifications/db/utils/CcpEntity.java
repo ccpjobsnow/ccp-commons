@@ -228,11 +228,8 @@ public interface CcpEntity{
 	}
 	
 	default String[] getEntitiesToSelect() {
-		//TODO ADEQUAR PARA ENTIDADES SEM TWIN
-		CcpEntity mirrorEntity = this.getTwinEntity();
-		String mirrorName = mirrorEntity.getEntityName();
 		String entityName = this.getEntityName();
-		String[] resourcesNames = new String[]{entityName, mirrorName};
+		String[] resourcesNames = new String[]{entityName};
 		return resourcesNames;
 	}
 	default ArrayList<Object> getSortedPrimaryKeyValues(CcpJsonRepresentation json) {

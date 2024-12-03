@@ -20,4 +20,13 @@ class TwinEntity extends CcpEntityDelegator {
 	public CcpEntity getTwinEntity() {
 		return this.parent;
 	}
+	
+	public String[] getEntitiesToSelect() {
+		CcpEntity mirrorEntity = this.getTwinEntity();
+		String mirrorName = mirrorEntity.getEntityName();
+		String entityName = this.getEntityName();
+		String[] resourcesNames = new String[]{entityName, mirrorName};
+		return resourcesNames;
+	}
+
 }
