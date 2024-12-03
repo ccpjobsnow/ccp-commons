@@ -69,13 +69,14 @@ final class BaseEntity implements CcpEntity{
 
 	public List<CcpJsonRepresentation> getParametersToSearch(CcpJsonRepresentation json) {
 		
+		String id = this.calculateId(json);
+
 		CcpDbRequester dependency = CcpDependencyInjection.getDependency(CcpDbRequester.class);
 		
 		String fieldNameToEntity = dependency.getFieldNameToEntity();
 		String fieldNameToId = dependency.getFieldNameToId();
 		
 		String entityName = this.getEntityName();
-		String id = this.calculateId(json);
 		
 		CcpJsonRepresentation mainRecord = CcpConstants.EMPTY_JSON
 		.put(fieldNameToEntity, entityName)

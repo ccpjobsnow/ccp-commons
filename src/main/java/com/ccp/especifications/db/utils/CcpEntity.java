@@ -15,6 +15,7 @@ import com.ccp.decorators.CcpHashDecorator;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
+import com.ccp.especifications.cache.CcpCacheDecorator;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpEntityOperationType;
 import com.ccp.especifications.db.crud.CcpCrud;
@@ -253,6 +254,22 @@ public interface CcpEntity{
 		ArrayList<Object> onlyPrimaryKeys = new ArrayList<>(values2);
 		return onlyPrimaryKeys;
 	}
-	
+	default CcpCacheDecorator getCache(String id) {
+		String entityName = this.getEntityName();
+		
+		CcpCacheDecorator cache = new CcpCacheDecorator("records")
+				.incrementKey("entity", entityName)	
+				.incrementKey("id", id)	
+				;
+		return cache;
+	}
+	default CcpCacheDecorator getCache(CcpJsonRepresentation json) {
+		
+		String id = this.calculateId(json);
+		
+		CcpCacheDecorator cache = this.getCache(id);
+		
+		return cache;
+	}
 
 }

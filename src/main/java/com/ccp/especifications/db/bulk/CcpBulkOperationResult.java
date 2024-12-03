@@ -3,6 +3,7 @@ package com.ccp.especifications.db.bulk;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpJsonRepresentation;
+import com.ccp.especifications.cache.CcpCacheDecorator;
 import com.ccp.especifications.db.utils.CcpEntity;
 
 public interface CcpBulkOperationResult {
@@ -21,4 +22,9 @@ public interface CcpBulkOperationResult {
 		return reprocess;
 	}
 	
+	default String getCacheKey() {
+		CcpBulkItem bulkItem = this.getBulkItem();
+		CcpCacheDecorator cache = bulkItem.entity.getCache(bulkItem.json);
+		return cache.key;
+	}
 }

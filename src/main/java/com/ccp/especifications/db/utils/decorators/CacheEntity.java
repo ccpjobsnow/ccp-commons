@@ -132,26 +132,6 @@ class CacheEntity extends CcpEntityDelegator{
 		return createOrUpdate;
 	}
 
-	private CcpCacheDecorator getCache(CcpJsonRepresentation json) {
-		
-		String id = this.calculateId(json);
-		
-		CcpCacheDecorator cache = this.getCache(id);
-		
-		return cache;
-	}
-	
-	private CcpCacheDecorator getCache(String id) {
-		String entityName = this.getEntityName();
-		
-		CcpCacheDecorator cache = new CcpCacheDecorator("records")
-				.incrementKey("entity", entityName)	
-				.incrementKey("id", id)	
-				;
-		return cache;
-	}
-
-
 	public boolean isPresentInThisUnionAll(CcpSelectUnionAll unionAll, CcpJsonRepresentation json) {
 		
 		CcpCacheDecorator cache = this.getCache(json);
@@ -195,5 +175,4 @@ class CacheEntity extends CcpEntityDelegator{
 		cache.put(recordFromUnionAll, this.cacheExpires);
 		return recordFromUnionAll;
 	}
-	
 }

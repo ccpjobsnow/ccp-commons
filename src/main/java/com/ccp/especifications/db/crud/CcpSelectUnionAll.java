@@ -22,9 +22,9 @@ public class CcpSelectUnionAll {
 		
 		for (CcpJsonRepresentation result : results) {
 			String id = result.getAsString(fieldNameToId);
-			String index = result.getAsString(fieldNameToEntity);
+			String entity = result.getAsString(fieldNameToEntity);
 			CcpJsonRepresentation removeKeys = result.removeFields(fieldNameToId, fieldNameToEntity);
-			condensed = condensed.addToItem(index, id, removeKeys);
+			condensed = condensed.addToItem(entity, id, removeKeys);
 		}
 		this.condensed = condensed;
 	}

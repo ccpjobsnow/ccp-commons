@@ -12,7 +12,7 @@ public class CcpCacheDecorator {
 	
 	private final CcpJsonRepresentation cacheParameters;
 
-	private final String key;
+	public final String key;
 	
 
 	public CcpCacheDecorator(String key) {
