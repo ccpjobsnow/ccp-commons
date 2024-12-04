@@ -200,12 +200,8 @@ public interface CcpEntity{
 
 	default CcpJsonRepresentation getInnerJsonFromMainAndTwinEntities(CcpJsonRepresentation json) {
 		String entityName = this.getEntityName();
-		CcpEntity twinEntity = this.getTwinEntity();
-		String twinEntityName = twinEntity.getEntityName();
 		CcpJsonRepresentation j1 = json.getInnerJsonFromPath("_entities", entityName);
-		CcpJsonRepresentation j2 = json.getInnerJsonFromPath("_entities", twinEntityName);
-		CcpJsonRepresentation putAll = j1.putAll(j2);
-		return putAll;
+		return j1;
 	}
 	
 	default CcpJsonRepresentation getData(CcpJsonRepresentation json) {
@@ -213,15 +209,6 @@ public interface CcpEntity{
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
 		
 		CcpSelectUnionAll searchResults = crud.unionBetweenMainAndTwinEntities(json, this);
-		
-		CcpEntity twinEntity = this.getTwinEntity();
-
-		boolean inactive = twinEntity.isPresentInThisUnionAll(searchResults, json);
-		
-		if(inactive) {
-			CcpJsonRepresentation requiredEntityRow = twinEntity.getRequiredEntityRow(searchResults, json);
-			throw new CcpFlow(requiredEntityRow, CcpProcessStatus.INACTIVE_RECORD);
-		}
 		
 		CcpJsonRepresentation requiredEntityRow = this.getRequiredEntityRow(searchResults, json);
 
