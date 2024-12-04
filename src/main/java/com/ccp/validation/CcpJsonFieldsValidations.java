@@ -13,7 +13,7 @@ import com.ccp.validation.annotations.ObjectNumbers;
 import com.ccp.validation.annotations.ObjectTextSize;
 import com.ccp.validation.annotations.Regex;
 import com.ccp.validation.annotations.SimpleObject;
-import com.ccp.validation.annotations.CcpJsonValidation;
+import com.ccp.validation.annotations.CcpJsonFieldsValidation;
 import com.ccp.validation.annotations.Year;
 import com.ccp.validation.enums.AllowedValuesValidations;
 import com.ccp.validation.enums.BoundValidations;
@@ -23,24 +23,24 @@ public class CcpJsonFieldsValidations {
 	// Valida o conteúdo das informações do JSON com os campos da tabela que receberá os dados
 	public static void validate(Class<?> clazz, Map<String, Object> map, String featureName) {
 		// Verifica se há algum campo do JSON que não está presente na tabela
-		boolean isNotPresent = clazz.isAnnotationPresent(CcpJsonValidation.class) == false;
+		boolean isNotPresent = clazz.isAnnotationPresent(CcpJsonFieldsValidation.class) == false;
 		// Se algum campo do JSON não estiver na tabela, retorna.
 		if(isNotPresent) {
 			return;
 		}
 		// Se todos campos do JSON estiverem na tabela, dá continuidade organizando
-		CcpJsonValidation rules = clazz.getAnnotation(CcpJsonValidation.class);
+		CcpJsonFieldsValidation rules = clazz.getAnnotation(CcpJsonFieldsValidation.class);
 		// Organiza os dados e executa o método de validação
 		validate(rules, map, featureName);
 	}
 	// Após a organização do método, é chamado aqui para execução
-	public static void validate(CcpJsonValidation rules, Map<String, Object> map, String featureName) {
+	public static void validate(CcpJsonFieldsValidation rules, Map<String, Object> map, String featureName) {
 		// Recebe o JSON mapeado
 		CcpJsonRepresentation json = new CcpJsonRepresentation(map);
 		// ???
 		Class<?> rulesClass = rules.rulesClass();
 		// ???
-		rules = rulesClass.isAnnotationPresent(CcpJsonValidation.class) ? rulesClass.getAnnotation(CcpJsonValidation.class) : rules;
+		rules = rulesClass.isAnnotationPresent(CcpJsonFieldsValidation.class) ? rulesClass.getAnnotation(CcpJsonFieldsValidation.class) : rules;
 		// Cria variável de evidência em formato JSON vazia
 		CcpJsonRepresentation evidences = CcpConstants.EMPTY_JSON;
 		// Validando os limites
@@ -66,7 +66,7 @@ public class CcpJsonFieldsValidations {
 	}
 
 	private static CcpJsonRepresentation simpleValidation(
-			CcpJsonValidation rules, 
+			CcpJsonFieldsValidation rules, 
 			CcpJsonRepresentation json,
 			CcpJsonRepresentation result
 			) {
@@ -81,7 +81,7 @@ public class CcpJsonFieldsValidations {
 		return result;
 	}
 
-	private static CcpJsonRepresentation getSpecification(String featureName, CcpJsonValidation rules) {
+	private static CcpJsonRepresentation getSpecification(String featureName, CcpJsonFieldsValidation rules) {
 
 		CcpJsonRepresentation specification = CcpConstants.EMPTY_JSON;
 		
@@ -211,7 +211,7 @@ public class CcpJsonFieldsValidations {
 		return completeRuleName;
 	}
 
-	private static CcpJsonRepresentation validateRestricted(CcpJsonValidation rules, CcpJsonRepresentation json,
+	private static CcpJsonRepresentation validateRestricted(CcpJsonFieldsValidation rules, CcpJsonRepresentation json,
 			CcpJsonRepresentation result) {
 		AllowedValues[] restricteds = rules.allowedValues();
 
@@ -305,7 +305,7 @@ public class CcpJsonFieldsValidations {
 	}	
 	
 	private static CcpJsonRepresentation validateBounds(
-			CcpJsonValidation rules, 
+			CcpJsonFieldsValidation rules, 
 			CcpJsonRepresentation json,
 			CcpJsonRepresentation result) {
 

@@ -2,50 +2,25 @@ package com.ccp.especifications.db.utils.decorators;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-import com.ccp.decorators.CcpJsonRepresentation;
-import com.ccp.decorators.CcpStringDecorator;
-import com.ccp.dependency.injection.CcpDependencyInjection;
-import com.ccp.especifications.db.bulk.CcpBulkItem;
-import com.ccp.especifications.db.bulk.CcpEntityOperationType;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.db.utils.CcpEntityField;
-import com.ccp.especifications.json.CcpJsonHandler;
 
 public class CcpEntityFactory {
-
-	public final List<CcpBulkItem> firstRecordsToInsert;
 
 	public final CcpEntityField[] entityFields;
 
 	public final CcpEntity entityInstance;
-
-	public final boolean isVirtualEntity;
 
 	public final boolean hasTwinEntity;
 	
 	public CcpEntityFactory(Class<?> configurationClass) {
 		
 		this.hasTwinEntity = configurationClass.isAnnotationPresent(CcpEntityTwin.class);
-		this.isVirtualEntity = this.isVirtualEntity(configurationClass);
-
-		this.entityFields = this.getFields(configurationClass);
 		this.entityInstance = this.getEntityInstance(configurationClass);
-		this.firstRecordsToInsert = this.getFirstRecordsToInsert(configurationClass);
+		this.entityFields = this.getFields(configurationClass);
 	}
 	
-	private boolean isVirtualEntity(Class<?> configurationClass) {
-
-		CcpEntitySpecifications annotation = configurationClass.getAnnotation(CcpEntitySpecifications.class);
-		boolean virtualEntity = annotation.virtualEntity();
-		return virtualEntity;
-	}
-
-
 	private CcpEntity getEntityInstance(Class<?> configurationClass) {
 		
 		CcpEntity entity = new BaseEntity(configurationClass,  this.entityFields);
@@ -115,33 +90,6 @@ public class CcpEntityFactory {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	private List<CcpBulkItem> getFirstRecordsToInsert(Class<?> configurationClass) {
-		
-		boolean isNotAnotted = configurationClass.isAnnotationPresent(CcpEntitySpecifications.class) == false;
-
-		if(isNotAnotted) {
-			throw new RuntimeException("The class '" + configurationClass.getName() + "' must be annoted with '" + CcpEntitySpecifications.class.getName() + "' annotation");
-		}
-
-		CcpEntitySpecifications annotation = configurationClass.getAnnotation(CcpEntitySpecifications.class);
-		CcpEntity entityInstance = this.entityInstance;
-		String pathToFirstRecords = annotation.pathToFirstRecords();
-		
-		boolean hasNoFirstRecordsToInsert = pathToFirstRecords.trim().isEmpty();
-		
-		if(hasNoFirstRecordsToInsert) {
-			return new ArrayList<>();
-		}
-		
-		String stringContent = new CcpStringDecorator(pathToFirstRecords).file().getStringContent();
-		List<Map<String, Object>> list =  CcpDependencyInjection.getDependency(CcpJsonHandler.class).fromJson(stringContent);
-		List<CcpJsonRepresentation> jsons = list.stream().map(x -> new CcpJsonRepresentation(x)).collect(Collectors.toList());
-		
-		List<CcpBulkItem> bulkItems = jsons.stream().map(json -> new CcpBulkItem(json, CcpEntityOperationType.create, entityInstance)).collect(Collectors.toList());
-		
-		return bulkItems;
 	}
 
 	private CcpEntityField[] getFields(Class<?> configurationClass) {

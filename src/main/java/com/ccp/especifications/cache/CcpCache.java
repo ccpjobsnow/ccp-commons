@@ -23,9 +23,32 @@ public interface CcpCache {
 	}
 	
 	
-	<V> V getOrDefault(String key, V defaultValue);
-	<V> V getOrThrowException(String key, RuntimeException e);
-	boolean isPresent(String key);
+	@SuppressWarnings("unchecked")
+	default <V> V getOrDefault(String key, V defaultValue) {
+		Object object = this.get(key);
+		
+		if(object == null) {
+			return defaultValue;
+		}
+		return (V) object;
+	}
+	
+	@SuppressWarnings("unchecked")
+	default <V> V getOrThrowException(String key, RuntimeException e) {
+		Object object = this.get(key);
+		
+		if(object == null) {
+			throw e;
+		}
+		
+		return (V) object;
+	}
+	
+	default boolean isPresent(String key) {
+		boolean isPresent = this.get(key) != null;
+		return isPresent;
+	}
+
 	void put(String key, Object value, int secondsDelay);
 	<V> V delete(String key);
 }

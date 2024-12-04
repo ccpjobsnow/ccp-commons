@@ -9,7 +9,5 @@ import java.lang.annotation.Target;
 @Target({ ElementType.TYPE })
 public @interface CcpEntitySpecifications {
 
-	String pathToFirstRecords() default "";
-	boolean virtualEntity() default false;
 	boolean cacheableEntity();
 }
