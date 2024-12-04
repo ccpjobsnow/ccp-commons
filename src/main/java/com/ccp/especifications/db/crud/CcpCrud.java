@@ -49,7 +49,13 @@ public interface CcpCrud {
 	}
 	
 	CcpSelectUnionAll unionAll(Collection<CcpJsonRepresentation> values, CcpEntity... entities);
-
+	
+	default CcpSelectUnionAll unionBetweenMainAndTwinEntities(CcpJsonRepresentation json, CcpEntity entity) {
+		CcpEntity[] thisEntityAndHisTwinEntity = entity.getThisEntityAndHisTwinEntity();
+		CcpSelectUnionAll unionAll = this.unionAll(json, thisEntityAndHisTwinEntity);
+		return unionAll;
+	}
+	
 	default CcpSelectUnionAll unionAll(CcpJsonRepresentation json, CcpEntity... entities) {
 		List<CcpJsonRepresentation> asList = Arrays.asList(json);
 		CcpSelectUnionAll unionAll = this.unionAll(asList, entities);

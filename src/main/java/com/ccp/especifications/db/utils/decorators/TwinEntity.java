@@ -22,11 +22,17 @@ class TwinEntity extends CcpEntityDelegator {
 	}
 	
 	public String[] getEntitiesToSelect() {
-		CcpEntity mirrorEntity = this.getTwinEntity();
-		String mirrorName = mirrorEntity.getEntityName();
+		CcpEntity twinEntity = this.getTwinEntity();
+		String twinName = twinEntity.getEntityName();
 		String entityName = this.getEntityName();
-		String[] resourcesNames = new String[]{entityName, mirrorName};
+		String[] resourcesNames = new String[]{entityName, twinName};
 		return resourcesNames;
+	}
+	
+	public CcpEntity[] getThisEntityAndHisTwinEntity() {
+		CcpEntity twinEntity = this.getTwinEntity();
+		CcpEntity[] ccpEntities = new CcpEntity[] {this, twinEntity};
+		return ccpEntities;
 	}
 
 }

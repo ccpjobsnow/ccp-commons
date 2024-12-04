@@ -80,7 +80,7 @@ public interface CcpEntity{
 	}
 	
 	default CcpEntity getTwinEntity() {
-		return this;
+		throw new UnsupportedOperationException();
 	}
 
 	default CcpJsonRepresentation getOneById(CcpJsonRepresentation json, Function<CcpJsonRepresentation, CcpJsonRepresentation> ifNotFound) {
@@ -200,10 +200,10 @@ public interface CcpEntity{
 
 	default CcpJsonRepresentation getInnerJsonFromMainAndTwinEntities(CcpJsonRepresentation json) {
 		String entityName = this.getEntityName();
-		CcpEntity mirrorEntity = this.getTwinEntity();
-		String mirrorEntityName = mirrorEntity.getEntityName();
+		CcpEntity twinEntity = this.getTwinEntity();
+		String twinEntityName = twinEntity.getEntityName();
 		CcpJsonRepresentation j1 = json.getInnerJsonFromPath("_entities", entityName);
-		CcpJsonRepresentation j2 = json.getInnerJsonFromPath("_entities", mirrorEntityName);
+		CcpJsonRepresentation j2 = json.getInnerJsonFromPath("_entities", twinEntityName);
 		CcpJsonRepresentation putAll = j1.putAll(j2);
 		return putAll;
 	}
@@ -212,13 +212,14 @@ public interface CcpEntity{
 		
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
 		
-		CcpEntity mirrorEntity = this.getTwinEntity();
-		CcpSelectUnionAll searchResults = crud.unionAll(json, this, mirrorEntity);
+		CcpSelectUnionAll searchResults = crud.unionBetweenMainAndTwinEntities(json, this);
 		
-		boolean inactive = mirrorEntity.isPresentInThisUnionAll(searchResults, json);
+		CcpEntity twinEntity = this.getTwinEntity();
+
+		boolean inactive = twinEntity.isPresentInThisUnionAll(searchResults, json);
 		
 		if(inactive) {
-			CcpJsonRepresentation requiredEntityRow = mirrorEntity.getRequiredEntityRow(searchResults, json);
+			CcpJsonRepresentation requiredEntityRow = twinEntity.getRequiredEntityRow(searchResults, json);
 			throw new CcpFlow(requiredEntityRow, CcpProcessStatus.INACTIVE_RECORD);
 		}
 		
@@ -267,6 +268,10 @@ public interface CcpEntity{
 		CcpCacheDecorator cache = this.getCache(id);
 		
 		return cache;
+	}
+	
+	default CcpEntity[] getThisEntityAndHisTwinEntity() {
+		return new CcpEntity[] {this};
 	}
 
 }

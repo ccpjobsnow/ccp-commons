@@ -175,5 +175,10 @@ public abstract class CcpEntityDelegator implements CcpEntity{
 		CcpCacheDecorator cache = this.entity.getCache(json);
 		return cache;
 	}
+
+	public CcpEntity[] getThisEntityAndHisTwinEntity() {
+		CcpEntity[] thisEntityAndHisTwinEntity = this.entity.getThisEntityAndHisTwinEntity();
+		return thisEntityAndHisTwinEntity;
+	}
 	
 }
