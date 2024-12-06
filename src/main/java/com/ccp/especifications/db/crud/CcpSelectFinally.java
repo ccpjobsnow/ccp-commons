@@ -96,7 +96,11 @@ public class CcpSelectFinally {
 				String message = specification.getOrDefault("message", status.name());
 				CcpJsonRepresentation put = json.addToItem("errorDetails", "message", message).addToItem("errorDetails", "status", status);
 				CcpJsonRepresentation apply = whenFlowError.apply(put);
-				throw new CcpFlow(apply, status , message, this.fields);
+				List<CcpJsonRepresentation> asList = Arrays.asList(specifications).stream()
+						.map(FlowFormater.INSTANCE)
+						.collect(Collectors.toList());
+				CcpJsonRepresentation result = apply.put("flow", asList);
+				throw new CcpFlow(result, status , message, this.fields);
 			}
 			
 			Function<CcpJsonRepresentation, CcpJsonRepresentation> action = specification.getAsObject("action");

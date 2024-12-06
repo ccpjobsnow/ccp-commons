@@ -253,9 +253,19 @@ public final class CcpJsonRepresentation {
 	
 	
 	public String toString() {
+		//TODO REFLECTION AQUI
 		CcpJsonHandler json = CcpDependencyInjection.getDependency(CcpJsonHandler.class);
-
-		String _json = json.asPrettyJson(new TreeMap<>(this.content));
+		Set<String> keySet = this.content.keySet();
+		Map<String, Object> map = new TreeMap<>();
+		for (String key : keySet) {
+			Object value = this.content.get(key);
+			if(value == null) {
+				continue;
+			}
+			map.put(key, value);
+		}
+		
+		String _json = json.asPrettyJson(map);
 		return _json;
 	}
 	
@@ -801,7 +811,5 @@ public final class CcpJsonRepresentation {
 		CcpJsonRepresentation put = this.put(fieldHashName, passwordHash);
 		
 		return put;
-
 	}
-
 }

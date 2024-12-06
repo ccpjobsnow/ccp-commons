@@ -50,7 +50,7 @@ public class CcpSelectUnionAll {
 	
 	public <T> T handleRecordInUnionAll(
 			CcpJsonRepresentation searchParameter, 
-			HandleWithSearchResultsInTheEntity<T> handler
+			CcpHandleWithSearchResultsInTheEntity<T> handler
 			) {
 		
 		CcpEntity entity = handler.getEntityToSearch();

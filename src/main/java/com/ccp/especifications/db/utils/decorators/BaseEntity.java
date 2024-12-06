@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
-import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.decorators.CcpTimeDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
@@ -18,21 +17,17 @@ import com.ccp.especifications.db.utils.CcpEntityField;
 
 final class BaseEntity implements CcpEntity{
 
-	final Class<?> configurationClass;
+	final String entityName;
 	final CcpEntityField[] fields;
-	final String name;
 	
-	public BaseEntity( Class<?> configurationClass,  CcpEntityField... fields) {
-		this.configurationClass = configurationClass;
-		this.name = this.getEntityName();
+
+	public BaseEntity(String entityName, CcpEntityField... fields) {
+		this.entityName = entityName;
 		this.fields = fields;
 	}
 
 	public String getEntityName() {
-		String simpleName = this.configurationClass.getSimpleName();
-		String snackCase = new CcpStringDecorator(simpleName).text().toSnakeCase().content;
-		String substring = snackCase.substring(snackCase.indexOf("entity") + 7);
-		return substring;
+		return this.entityName;
 	}
 
 	public final CcpEntityField[] getFields() {

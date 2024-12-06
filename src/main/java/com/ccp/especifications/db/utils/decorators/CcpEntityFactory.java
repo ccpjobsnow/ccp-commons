@@ -3,6 +3,7 @@ package com.ccp.especifications.db.utils.decorators;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
+import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.db.utils.CcpEntityField;
 
@@ -22,9 +23,11 @@ public class CcpEntityFactory {
 	}
 	
 	private CcpEntity getEntityInstance(Class<?> configurationClass) {
-		
-		CcpEntity entity = new BaseEntity(configurationClass,  this.entityFields);
-
+		String simpleName = configurationClass.getSimpleName();
+		String snackCase = new CcpStringDecorator(simpleName).text().toSnakeCase().content;
+		String substring = snackCase.substring(snackCase.indexOf("entity") + 7);
+	
+		CcpEntity entity = new BaseEntity(substring,  this.entityFields);
 		
 		boolean isAuditableEntity = configurationClass.isAnnotationPresent(CcpEntityVersionable.class);
 		if(isAuditableEntity) {

@@ -6,7 +6,7 @@ import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.utils.CcpEntity;
 
-public interface HandleWithSearchResultsInTheEntity<T> {
+public interface CcpHandleWithSearchResultsInTheEntity<T> {
 
 	T whenRecordWasFoundInTheEntitySearch(CcpJsonRepresentation searchParameter, CcpJsonRepresentation recordFound);
 

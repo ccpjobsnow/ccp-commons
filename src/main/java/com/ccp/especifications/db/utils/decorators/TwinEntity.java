@@ -15,8 +15,8 @@ class TwinEntity extends CcpEntityDelegator {
 
 	public TwinEntity(String twinEntityName, CcpEntity parent, CcpEntity entity) {
 		super(entity);
-		this.twinEntityName = twinEntityName;
 		this.parent = parent;
+		this.twinEntityName = twinEntityName;
 	}
 
 	public String getEntityName() {
