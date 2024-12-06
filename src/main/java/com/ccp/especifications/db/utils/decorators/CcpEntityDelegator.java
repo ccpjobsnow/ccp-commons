@@ -181,4 +181,9 @@ public abstract class CcpEntityDelegator implements CcpEntity{
 		return thisEntityAndHisTwinEntity;
 	}
 	
+	public final String toString() {
+		String entityName = this.getEntityName();
+		return entityName;
+	}
+	
 }

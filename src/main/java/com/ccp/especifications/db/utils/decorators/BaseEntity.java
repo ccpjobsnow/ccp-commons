@@ -18,12 +18,13 @@ import com.ccp.especifications.db.utils.CcpEntityField;
 
 final class BaseEntity implements CcpEntity{
 
-	final String name = this.getEntityName();
 	final Class<?> configurationClass;
 	final CcpEntityField[] fields;
+	final String name;
 	
 	public BaseEntity( Class<?> configurationClass,  CcpEntityField... fields) {
 		this.configurationClass = configurationClass;
+		this.name = this.getEntityName();
 		this.fields = fields;
 	}
 

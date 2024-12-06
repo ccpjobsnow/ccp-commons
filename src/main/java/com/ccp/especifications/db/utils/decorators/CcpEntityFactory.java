@@ -17,8 +17,8 @@ public class CcpEntityFactory {
 	public CcpEntityFactory(Class<?> configurationClass) {
 		
 		this.hasTwinEntity = configurationClass.isAnnotationPresent(CcpEntityTwin.class);
-		this.entityInstance = this.getEntityInstance(configurationClass);
 		this.entityFields = this.getFields(configurationClass);
+		this.entityInstance = this.getEntityInstance(configurationClass);
 	}
 	
 	private CcpEntity getEntityInstance(Class<?> configurationClass) {
@@ -104,7 +104,7 @@ public class CcpEntityFactory {
 		
 		Class<?> firstClass = declaredClasses[0];
 		
-		boolean incorrectClassName = firstClass.getSimpleName().equals("FIELDS") == false;
+		boolean incorrectClassName = firstClass.getSimpleName().equals("Fields") == false;
 		
 		if(incorrectClassName) {
 			throw new RuntimeException("The class '" + className + "' must declare a public static enum called 'FIELDS'");
