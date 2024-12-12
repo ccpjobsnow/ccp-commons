@@ -1,10 +1,12 @@
 package com.ccp.especifications.db.crud;
 
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.ccp.decorators.CcpJsonRepresentation;
+import com.ccp.especifications.cache.CcpCacheDecorator;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.validation.CcpJsonFieldsValidations;
 import com.ccp.validation.annotations.CcpJsonFieldsValidation;
@@ -48,7 +50,9 @@ public interface CcpCrud {
 		return oneById;
 	}
 	
-	CcpSelectUnionAll unionAll(Collection<CcpJsonRepresentation> values, CcpEntity... entities);
+	
+	CcpUnionAllExecutor getUnionAllExecutor();
+	
 	
 	default CcpSelectUnionAll unionBetweenMainAndTwinEntities(CcpJsonRepresentation json, CcpEntity entity) {
 		CcpEntity[] thisEntityAndHisTwinEntity = entity.getThisEntityAndHisTwinEntity();
@@ -56,9 +60,20 @@ public interface CcpCrud {
 		return unionAll;
 	}
 	
+	default CcpSelectUnionAll unionAll(CcpJsonRepresentation[] jsons, CcpEntity... entities) {
+		this.deleteKeysInCache(jsons,  entities);
+		List<CcpJsonRepresentation> asList = Arrays.asList(jsons);
+		CcpUnionAllExecutor unionAllExecutor = this.getUnionAllExecutor();
+		CcpSelectUnionAll unionAll = unionAllExecutor.unionAll(asList, entities);
+		return unionAll;
+	}
+
+
+	
 	default CcpSelectUnionAll unionAll(CcpJsonRepresentation json, CcpEntity... entities) {
-		List<CcpJsonRepresentation> asList = Arrays.asList(json);
-		CcpSelectUnionAll unionAll = this.unionAll(asList, entities);
+		CcpJsonRepresentation[] jsons = new CcpJsonRepresentation[] {json};
+		
+		CcpSelectUnionAll unionAll = this.unionAll(jsons, entities);
 		return unionAll;
 	}
 
@@ -75,4 +90,19 @@ public interface CcpCrud {
 		boolean deleted = this.delete(entity, id);
 		return deleted;
 	}
+	
+	default void deleteKeysInCache(CcpJsonRepresentation[] jsons, CcpEntity... entities) {
+		Set<String> keysToDeleteInCache = new HashSet<>();
+		for (CcpEntity entity : entities) {
+			for (CcpJsonRepresentation json : jsons) {
+				CcpCacheDecorator cache = new CcpCacheDecorator(entity, json);
+				keysToDeleteInCache.add(cache.key);
+			}
+		}
+		
+//		String[] array = keysToDeleteInCache.toArray(new String[keysToDeleteInCache.size()]);
+		// FIXME this.deleteKeysInTheCache(array);
+	}
+	
+
 }

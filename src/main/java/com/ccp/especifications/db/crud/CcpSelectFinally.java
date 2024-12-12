@@ -30,7 +30,8 @@ public class CcpSelectFinally {
 		this.findById(this.id, whenFlowError, array);
 	}
 
-	public CcpJsonRepresentation endThisProcedureRetrievingTheResultingData(Function<CcpJsonRepresentation, CcpJsonRepresentation> whenFlowError) {
+	public CcpJsonRepresentation endThisProcedureRetrievingTheResultingData(Function<CcpJsonRepresentation, CcpJsonRepresentation> whenFlowError
+			) {
 		List<CcpJsonRepresentation> statements = this.statements.getAsJsonList("statements");
 		CcpJsonRepresentation[] array = statements.toArray(new CcpJsonRepresentation[statements.size()]);
 		CcpJsonRepresentation findById = this.findById(this.id,whenFlowError, array);
@@ -39,7 +40,10 @@ public class CcpSelectFinally {
 
 	
 	@SuppressWarnings("unchecked")
-	private CcpJsonRepresentation findById(CcpJsonRepresentation json, Function<CcpJsonRepresentation, CcpJsonRepresentation> whenFlowError, CcpJsonRepresentation... specifications) {
+	private CcpJsonRepresentation findById(
+			CcpJsonRepresentation json, Function<CcpJsonRepresentation, 
+			CcpJsonRepresentation> whenFlowError, 
+			CcpJsonRepresentation... specifications) {
 		List<CcpEntity> keySet = Arrays.asList(specifications).stream()
 				.filter(x -> x.containsAllFields("entity"))
 				.map(x -> (CcpEntity) x.get("entity") )
@@ -72,7 +76,6 @@ public class CcpSelectFinally {
 			try {
 				wasActuallyFound = entity.isPresentInThisUnionAll(unionAll, json);
 			} catch (Exception e) {
-				entity.isPresentInThisUnionAll(unionAll, json);
 				throw new RuntimeException(e);
 			}
 			

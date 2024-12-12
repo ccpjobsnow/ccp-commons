@@ -19,7 +19,6 @@ final class BaseEntity implements CcpEntity{
 	final String entityName;
 	final CcpEntityField[] fields;
 	
-
 	public BaseEntity(String entityName, CcpEntityField... fields) {
 		this.entityName = entityName;
 		this.fields = fields;

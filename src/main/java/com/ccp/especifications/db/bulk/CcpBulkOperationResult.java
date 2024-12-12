@@ -24,7 +24,7 @@ public interface CcpBulkOperationResult {
 	
 	default String getCacheKey() {
 		CcpBulkItem bulkItem = this.getBulkItem();
-		CcpCacheDecorator cache = bulkItem.entity.getCache(bulkItem.json);
+		CcpCacheDecorator cache = new CcpCacheDecorator(bulkItem);
 		return cache.key;
 	}
 }

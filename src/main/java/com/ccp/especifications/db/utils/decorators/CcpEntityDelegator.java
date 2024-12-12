@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpJsonRepresentation;
-import com.ccp.especifications.cache.CcpCacheDecorator;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpEntityOperationType;
 import com.ccp.especifications.db.crud.CcpSelectUnionAll;
@@ -164,16 +163,6 @@ public abstract class CcpEntityDelegator implements CcpEntity{
 	public ArrayList<Object> getSortedPrimaryKeyValues(CcpJsonRepresentation json) {
 		ArrayList<Object> sortedPrimaryKeyValues = this.entity.getSortedPrimaryKeyValues(json);
 		return sortedPrimaryKeyValues;
-	}
-
-	public CcpCacheDecorator getCache(String id) {
-		CcpCacheDecorator cache = this.entity.getCache(id);
-		return cache;
-	}
-
-	public CcpCacheDecorator getCache(CcpJsonRepresentation json) {
-		CcpCacheDecorator cache = this.entity.getCache(json);
-		return cache;
 	}
 
 	public CcpEntity[] getThisEntityAndHisTwinEntity() {

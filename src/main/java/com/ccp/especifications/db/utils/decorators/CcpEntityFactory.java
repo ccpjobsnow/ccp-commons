@@ -58,18 +58,18 @@ public class CcpEntityFactory {
 		
 		CcpEntity entity = new BaseEntity(entityName,  this.entityFields);
 		
-		boolean isAuditableEntity = configurationClass.isAnnotationPresent(CcpEntityVersionable.class);
-		if(isAuditableEntity) {
-			CcpEntityVersionable annotation = configurationClass.getAnnotation(CcpEntityVersionable.class);
-			Class<?>auditableEntityFactory = annotation.versionableEntityFactory();
-			entity = getAuditEntity(auditableEntityFactory, entity);
+		boolean hasDecorators = configurationClass.isAnnotationPresent(CcpEntityDecorators.class);
+		if(hasDecorators) {
+			CcpEntityDecorators annotation = configurationClass.getAnnotation(CcpEntityDecorators.class);
+			Class<?>[] decorators = annotation.decorators();
+			entity = getDecoratedEntity(entity, decorators);
 		}		
 
 		boolean isExpurgableEntity = configurationClass.isAnnotationPresent(CcpEntityExpurgable.class);
 		
-		if(isAuditableEntity && isExpurgableEntity) {
+		if(hasDecorators && isExpurgableEntity) {
 			throw new RuntimeException("The class '" + configurationClass.getName() + "' can not be annoted by '" 
-		+ CcpEntityVersionable.class.getName() + "' annotation and '" + CcpEntityExpurgable.class.getName() + "' at the same time");
+		+ CcpEntityDecorators.class.getName() + "' annotation and '" + CcpEntityExpurgable.class.getName() + "' at the same time");
 
 		}
 		int cacheExpires = CcpEntityExpurgableOptions.daily.cacheExpires;
@@ -93,25 +93,26 @@ public class CcpEntityFactory {
 		return entity;
 	}
 
-	private static CcpEntity getAuditEntity(Class<?> auditClass, CcpEntity entity) {
+	private static CcpEntity getDecoratedEntity(CcpEntity entity, Class<?>... decorators) {
 		try {
-			Constructor<?> declaredConstructor = auditClass.getDeclaredConstructor(CcpEntity.class);
-			declaredConstructor.setAccessible(true);
-			CcpEntity newInstance = (CcpEntity) declaredConstructor.newInstance(entity);
-			return newInstance;
+			for (Class<?> decorator : decorators) {
+				Constructor<?> declaredConstructor = decorator.getDeclaredConstructor();
+				CcpEntityDecoratorFactory newInstance = (CcpEntityDecoratorFactory) declaredConstructor.newInstance();
+				entity = newInstance.getEntity(entity);
+			}
+			return entity;
 			
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private static CcpEntity getExpurgableEntity(Class<?> auditClass, CcpEntityExpurgableOptions longevity, CcpEntity entity) {
+	private static CcpEntity getExpurgableEntity(Class<?> decorator, CcpEntityExpurgableOptions longevity, CcpEntity entity) {
 		try {
-			Constructor<?> declaredConstructor = auditClass.getDeclaredConstructor(CcpEntity.class, CcpEntityExpurgableOptions.class);
-			declaredConstructor.setAccessible(true);
-			CcpEntity newInstance = (CcpEntity) declaredConstructor.newInstance(entity, longevity);
-			return newInstance;
-			
+			Constructor<?> declaredConstructor = decorator.getDeclaredConstructor();
+			CcpEntityExpurgableFactory newInstance = (CcpEntityExpurgableFactory) declaredConstructor.newInstance();
+			CcpEntity expurgableEntity = newInstance.getEntity(entity, longevity);
+			return expurgableEntity;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

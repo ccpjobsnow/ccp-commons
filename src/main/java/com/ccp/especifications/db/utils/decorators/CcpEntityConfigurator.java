@@ -12,10 +12,6 @@ import com.ccp.especifications.db.utils.CcpEntity;
 
 public interface CcpEntityConfigurator {
 
-	default boolean isVirtualEntity() {
-		return false;
-	}
-	
 	default List<CcpBulkItem> getFirstRecordsToInsert(){
 		return new ArrayList<>();
 	}

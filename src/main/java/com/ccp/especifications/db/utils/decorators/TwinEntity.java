@@ -109,25 +109,4 @@ class TwinEntity extends CcpEntityDelegator {
 	public final boolean hasTwinEntity() {
 		return true;
 	}
-	
-	public CcpJsonRepresentation getRequiredEntityRow(CcpSelectUnionAll unionAll, CcpJsonRepresentation json) {
-		
-		CcpEntity twinEntity = this.getTwinEntity();
-		
-		boolean itIsInTwinEntity = twinEntity.isPresentInThisUnionAll(unionAll, json);
-		
-		if(itIsInTwinEntity) {
-			CcpJsonRepresentation requiredEntityRow = twinEntity.getRequiredEntityRow(unionAll, json);
-			return requiredEntityRow;
-		}
-		
-		CcpJsonRepresentation requiredEntityRow = this.entity.getRequiredEntityRow(unionAll, json);
-		return requiredEntityRow;
-	}
-
-	public boolean isPresentInThisUnionAll(CcpSelectUnionAll unionAll, CcpJsonRepresentation json) {
-		
-		boolean presentInThisUnionAll = this.entity.isPresentInThisUnionAll(unionAll, json);
-		return presentInThisUnionAll;
-	}
 }

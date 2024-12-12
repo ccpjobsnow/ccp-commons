@@ -6,15 +6,31 @@ import java.util.function.Function;
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.dependency.injection.CcpDependencyInjection;
+import com.ccp.especifications.db.bulk.CcpBulkItem;
+import com.ccp.especifications.db.utils.CcpEntity;
 
-public class CcpCacheDecorator {
+public final class CcpCacheDecorator {
+	
 	private final CcpCache cache = CcpDependencyInjection.getDependency(CcpCache.class);
 	
 	private final CcpJsonRepresentation cacheParameters;
 
 	public final String key;
 	
-
+	public CcpCacheDecorator(CcpBulkItem bulkItem) {
+		this(bulkItem.entity, bulkItem.json);
+	}
+	
+	public CcpCacheDecorator(CcpEntity entity, CcpJsonRepresentation json) {
+		this(entity, entity.calculateId(json));
+	}
+	
+	public CcpCacheDecorator(CcpEntity entity, String id) {
+		String entityName = entity.getEntityName();
+		this.cacheParameters = CcpConstants.EMPTY_JSON;
+		this.key = "records.entity." + entityName + ".id." + id ;
+	}
+	
 	public CcpCacheDecorator(String key) {
 		this.cacheParameters = CcpConstants.EMPTY_JSON;
 		this.key = key;
@@ -75,5 +91,9 @@ public class CcpCacheDecorator {
 			result = result.incrementKey(key, value);
 		}
 		return result;
+	}
+	
+	public String toString() {
+		return this.key;
 	}
 }
