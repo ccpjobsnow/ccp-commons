@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
-import com.ccp.decorators.CcpTimeDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpEntityOperationType;
@@ -103,25 +102,25 @@ final class BaseEntity implements CcpEntity{
 	}
 	
 	public boolean create(CcpJsonRepresentation json) {
-		CcpJsonRepresentation addTimeFields = this.addTimeFields(json);
+		CcpJsonRepresentation addTimeFields = json.getTransformedJson(CcpAddTimeFields.INSTANCE);
 		boolean create = CcpEntity.super.create(addTimeFields);
 		return create;
 	}
 	
 	public CcpJsonRepresentation createOrUpdate(CcpJsonRepresentation json) {
-		CcpJsonRepresentation addTimeFields = this.addTimeFields(json);
+		CcpJsonRepresentation addTimeFields = json.getTransformedJson(CcpAddTimeFields.INSTANCE);
 		CcpJsonRepresentation createOrUpdate = CcpEntity.super.createOrUpdate(addTimeFields);
 		return createOrUpdate;
 	}
 	
 	public CcpJsonRepresentation createOrUpdate(CcpJsonRepresentation json, String id) {
-		CcpJsonRepresentation addTimeFields = this.addTimeFields(json);
+		CcpJsonRepresentation addTimeFields = json.getTransformedJson(CcpAddTimeFields.INSTANCE);
 		CcpJsonRepresentation createOrUpdate = CcpEntity.super.createOrUpdate(addTimeFields, id);
 		return createOrUpdate;
 	}
 	
 	public CcpBulkItem toBulkItem(CcpJsonRepresentation json, CcpEntityOperationType operation) {
-		CcpJsonRepresentation addTimeFields = this.addTimeFields(json);
+		CcpJsonRepresentation addTimeFields = json.getTransformedJson(CcpAddTimeFields.INSTANCE);
 		CcpBulkItem bulkItem = CcpEntity.super.toBulkItem(addTimeFields, operation);
 		return bulkItem;
 	}
@@ -130,18 +129,5 @@ final class BaseEntity implements CcpEntity{
 		throw new UnsupportedOperationException();
 	}
 	
-	private CcpJsonRepresentation addTimeFields(CcpJsonRepresentation json) {
-		CcpTimeDecorator ctd = new CcpTimeDecorator();
-		String formattedDateTime = ctd.getFormattedDateTime(CcpEntityExpurgableOptions.millisecond.format);
-		boolean containsAllFields = json.containsAllFields(CcpEntityField.TIMESTAMP.name());
-		
-		if(containsAllFields) {
-			return json;
-		}
-		
-		CcpJsonRepresentation put = json.put(CcpEntityField.TIMESTAMP.name(), ctd.time).put(CcpEntityField.DATE.name(), formattedDateTime);
-		
-		return put;
-	}
 
 }

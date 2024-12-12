@@ -11,23 +11,52 @@ public class CcpEntityFactory {
 
 	public final CcpEntityField[] entityFields;
 
+	public final Class<?> configurationClass;
+
 	public final CcpEntity entityInstance;
 
 	public final boolean hasTwinEntity;
+	
 	
 	public CcpEntityFactory(Class<?> configurationClass) {
 		
 		this.hasTwinEntity = configurationClass.isAnnotationPresent(CcpEntityTwin.class);
 		this.entityFields = this.getFields(configurationClass);
-		this.entityInstance = this.getEntityInstance(configurationClass);
+		this.entityInstance = this.getTwinEntity(configurationClass);
+		this.configurationClass = configurationClass;
+	}
+	
+	private CcpEntity getTwinEntity(Class<?> configurationClass) {
+		boolean isNotTwinEntity = configurationClass.isAnnotationPresent(CcpEntityTwin.class) == false;
+		
+		if(isNotTwinEntity) {
+			CcpEntity entity = this.getEntityInstance(configurationClass);
+			return entity;
+		}
+		CcpEntityTwin annotation = configurationClass.getAnnotation(CcpEntityTwin.class);
+		String twinEntityName = annotation.twinEntityName();
+		
+		CcpEntity original = this.getEntityInstance(configurationClass);
+		CcpEntity twin = this.getEntityInstance(configurationClass, twinEntityName);
+		
+		TwinEntity entity = new TwinEntity(original, twin);
+		return entity;
 	}
 	
 	private CcpEntity getEntityInstance(Class<?> configurationClass) {
+		
 		String simpleName = configurationClass.getSimpleName();
 		String snackCase = new CcpStringDecorator(simpleName).text().toSnakeCase().content;
-		String substring = snackCase.substring(snackCase.indexOf("entity") + 7);
+		int indexOf = snackCase.indexOf("entity");
+		String entityName = snackCase.substring(indexOf + 7);
 	
-		CcpEntity entity = new BaseEntity(substring,  this.entityFields);
+		CcpEntity entity = this.getEntityInstance(configurationClass, entityName);
+		return entity;
+	}
+
+	private CcpEntity getEntityInstance(Class<?> configurationClass, String entityName) {
+		
+		CcpEntity entity = new BaseEntity(entityName,  this.entityFields);
 		
 		boolean isAuditableEntity = configurationClass.isAnnotationPresent(CcpEntityVersionable.class);
 		if(isAuditableEntity) {
@@ -61,13 +90,6 @@ public class CcpEntityFactory {
 			entity = new CacheEntity(entity, cacheExpires);
 		}
 		
-		boolean isReplicableEntity = configurationClass.isAnnotationPresent(CcpEntityTwin.class);
-		
-		if(isReplicableEntity) {
-			CcpEntityTwin annotation = configurationClass.getAnnotation(CcpEntityTwin.class);
-			String twinEntityName = annotation.twinEntityName();
-			entity = new ReplicableEntity(twinEntityName, entity);
-		}
 		return entity;
 	}
 

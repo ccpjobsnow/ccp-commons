@@ -142,10 +142,10 @@ class CacheEntity extends CcpEntityDelegator{
 			return true;
 		}
 
-		boolean presentInThisUnionAll = super.isPresentInThisUnionAll(unionAll, json);
+		boolean presentInThisUnionAll = this.entity.isPresentInThisUnionAll(unionAll, json);
 		
 		if(presentInThisUnionAll) {
-			CcpJsonRepresentation requiredEntityRow = this.getRequiredEntityRow(unionAll, json);
+			CcpJsonRepresentation requiredEntityRow = this.entity.getRequiredEntityRow(unionAll, json);
 			cache.put(requiredEntityRow, this.cacheExpires);
 			return true;
 		}

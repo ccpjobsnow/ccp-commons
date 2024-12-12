@@ -120,6 +120,9 @@ public final class CcpJsonRepresentation {
 			int lineNumber = ste.getLineNumber();
 			String methodName = ste.getMethodName();
 			String fileName = ste.getFileName();
+			if(fileName == null) {
+				continue;
+			}
 			String key = fileName.replace(".java", "") + "." + methodName + ":" + lineNumber+ "\n";
 			stackTrace.add(key);
 		}
@@ -253,19 +256,8 @@ public final class CcpJsonRepresentation {
 	
 	
 	public String toString() {
-		//TODO REFLECTION AQUI
 		CcpJsonHandler json = CcpDependencyInjection.getDependency(CcpJsonHandler.class);
-		Set<String> keySet = this.content.keySet();
-		Map<String, Object> map = new TreeMap<>();
-		for (String key : keySet) {
-			Object value = this.content.get(key);
-			if(value == null) {
-				continue;
-			}
-			map.put(key, value);
-		}
-		
-		String _json = json.asPrettyJson(map);
+		String _json = json.asPrettyJson(new TreeMap<>(this.content));
 		return _json;
 	}
 	
@@ -294,14 +286,31 @@ public final class CcpJsonRepresentation {
 	@SafeVarargs
 	public final CcpJsonRepresentation getTransformedJson(Function<CcpJsonRepresentation, CcpJsonRepresentation>... transformers) {
 	
-		CcpJsonRepresentation response = this;
+		CcpJsonRepresentation transformedJson = this;
 		
 		for (Function<CcpJsonRepresentation, CcpJsonRepresentation> transformer : transformers) {
-			response = transformer.apply(response);
+			transformedJson = transformer.apply(transformedJson);
+		}
+		return transformedJson;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public CcpJsonRepresentation getTransformedJsonIfFoundTheField(String field, Function<CcpJsonRepresentation, CcpJsonRepresentation>... transformers) {
+
+		if(containsAllFields(field) == false) {
+			return this;
 		}
 		
-		return response;
+		CcpJsonRepresentation transformedJson = this;
+		
+		for (Function<CcpJsonRepresentation, CcpJsonRepresentation> transformer : transformers) {
+			transformedJson = transformer.apply(transformedJson);
+		}
+		
+		return transformedJson;
 	}
+	
+	
 	public CcpJsonRepresentation addJsonTransformer(String field, Function<CcpJsonRepresentation, CcpJsonRepresentation> process) {
 		CcpJsonRepresentation put = this.put(field, process);
 		return put;

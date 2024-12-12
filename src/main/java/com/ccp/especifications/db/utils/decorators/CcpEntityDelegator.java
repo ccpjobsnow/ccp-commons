@@ -137,7 +137,7 @@ public abstract class CcpEntityDelegator implements CcpEntity{
 	}
 
 	public CcpJsonRepresentation getRequiredEntityRow(CcpSelectUnionAll unionAll, CcpJsonRepresentation json) {
-		CcpJsonRepresentation requiredEntityRow = this.entity.getRequiredEntityRow(unionAll, json);
+  		CcpJsonRepresentation requiredEntityRow = this.entity.getRequiredEntityRow(unionAll, json);
 		return requiredEntityRow;
 	}
 
@@ -185,5 +185,4 @@ public abstract class CcpEntityDelegator implements CcpEntity{
 		String entityName = this.getEntityName();
 		return entityName;
 	}
-	
 }

@@ -38,9 +38,10 @@ public class CcpSelectFinally {
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	private CcpJsonRepresentation findById(CcpJsonRepresentation json, Function<CcpJsonRepresentation, CcpJsonRepresentation> whenFlowError, CcpJsonRepresentation... specifications) {
 		List<CcpEntity> keySet = Arrays.asList(specifications).stream()
-				.filter(x -> x.getAsObject("entity") != null)
+				.filter(x -> x.containsAllFields("entity"))
 				.map(x -> (CcpEntity) x.get("entity") )
 				.collect(Collectors.toList());
 		
@@ -66,7 +67,14 @@ public class CcpSelectFinally {
 			
 			CcpEntity entity = specification.getAsObject("entity");
 			
-			boolean wasActuallyFound = entity.isPresentInThisUnionAll(unionAll, json);
+			boolean wasActuallyFound;
+			
+			try {
+				wasActuallyFound = entity.isPresentInThisUnionAll(unionAll, json);
+			} catch (Exception e) {
+				entity.isPresentInThisUnionAll(unionAll, json);
+				throw new RuntimeException(e);
+			}
 			
 			boolean itWasNotForeseen = wasActuallyFound != shouldHaveBeenFound;
 			
@@ -76,9 +84,14 @@ public class CcpSelectFinally {
 					continue;
 				}
 				String entityName = entity.getEntityName();
-				CcpJsonRepresentation dataBaseRow = entity.getRequiredEntityRow(unionAll, json);
-				json = json.addToItem("_entities", entityName, dataBaseRow);
-				continue;
+				try {
+					CcpJsonRepresentation dataBaseRow = entity.getRequiredEntityRow(unionAll, json);
+					json = json.addToItem("_entities", entityName, dataBaseRow);
+					continue;
+				} catch (Exception e) {
+					entity.isPresentInThisUnionAll(unionAll, json);
+					throw new RuntimeException(e);
+				}
 			}
 			
 			
@@ -91,13 +104,13 @@ public class CcpSelectFinally {
 				if(willNotThrowException) {
 					continue;
 				}
-				
 				CcpProcessStatus status = specification.getAsObject("status");
 				String message = specification.getOrDefault("message", status.name());
 				CcpJsonRepresentation put = json.addToItem("errorDetails", "message", message).addToItem("errorDetails", "status", status);
 				CcpJsonRepresentation apply = whenFlowError.apply(put);
 				List<CcpJsonRepresentation> asList = Arrays.asList(specifications).stream()
-						.map(FlowFormater.INSTANCE)
+						.map(j -> j.getTransformedJsonIfFoundTheField("entity", PutEntity.INSTANCE))
+						.map(j -> j.getTransformedJsonIfFoundTheField("status", PutStatus.INSTANCE))
 						.collect(Collectors.toList());
 				CcpJsonRepresentation result = apply.put("flow", asList);
 				throw new CcpFlow(result, status , message, this.fields);
