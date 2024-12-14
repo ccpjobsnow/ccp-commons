@@ -2,6 +2,7 @@ package com.ccp.especifications.db.utils.decorators;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpJsonRepresentation;
@@ -150,8 +151,8 @@ public abstract class CcpEntityDelegator implements CcpEntity{
 		return innerJsonFromMainAndTwinEntities;
 	}
 
-	public CcpJsonRepresentation getData(CcpJsonRepresentation json) {
-		CcpJsonRepresentation data = this.entity.getData(json);
+	public CcpJsonRepresentation getData(CcpJsonRepresentation json, Consumer<String[]> functionToDeleteKeysInTheCache) {
+		CcpJsonRepresentation data = this.entity.getData(json, functionToDeleteKeysInTheCache);
 		return data;
 	}
 

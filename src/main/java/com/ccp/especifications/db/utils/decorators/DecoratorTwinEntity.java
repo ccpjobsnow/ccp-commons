@@ -1,5 +1,6 @@
 package com.ccp.especifications.db.utils.decorators;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpJsonRepresentation;
@@ -10,17 +11,17 @@ import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.exceptions.process.CcpFlow;
 import com.ccp.process.CcpProcessStatus;
 
-class TwinEntity extends CcpEntityDelegator {
+class DecoratorTwinEntity extends CcpEntityDelegator {
 
 	private final CcpEntity twin;
 	
-	public TwinEntity(CcpEntity entity, CcpEntity twin) {
+	public DecoratorTwinEntity(CcpEntity entity, CcpEntity twin) {
 		super(entity);
 		this.twin = twin;
 	}
 
 	public CcpEntity getTwinEntity() {
-		TwinEntity twin = new TwinEntity(this.twin, this);
+		DecoratorTwinEntity twin = new DecoratorTwinEntity(this.twin, this);
 		return twin;
 	}
 	
@@ -47,11 +48,11 @@ class TwinEntity extends CcpEntityDelegator {
 		return putAll;
 	}
 	
-	public CcpJsonRepresentation getData(CcpJsonRepresentation json) {
+	public CcpJsonRepresentation getData(CcpJsonRepresentation json, Consumer<String[]> functionToDeleteKeysInTheCache) {
 		
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
 		
-		CcpSelectUnionAll searchResults = crud.unionBetweenMainAndTwinEntities(json, this);
+		CcpSelectUnionAll searchResults = crud.unionBetweenMainAndTwinEntities(json, functionToDeleteKeysInTheCache, this);
 		
 		CcpEntity twinEntity = this.getTwinEntity();
 

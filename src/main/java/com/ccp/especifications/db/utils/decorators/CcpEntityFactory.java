@@ -39,7 +39,7 @@ public class CcpEntityFactory {
 		CcpEntity original = this.getEntityInstance(configurationClass);
 		CcpEntity twin = this.getEntityInstance(configurationClass, twinEntityName);
 		
-		TwinEntity entity = new TwinEntity(original, twin);
+		DecoratorTwinEntity entity = new DecoratorTwinEntity(original, twin);
 		return entity;
 	}
 	
@@ -56,7 +56,7 @@ public class CcpEntityFactory {
 
 	private CcpEntity getEntityInstance(Class<?> configurationClass, String entityName) {
 		
-		CcpEntity entity = new BaseEntity(entityName,  this.entityFields);
+		CcpEntity entity = new DefaultImplementationEntity(entityName, configurationClass,  this.entityFields);
 		
 		boolean hasDecorators = configurationClass.isAnnotationPresent(CcpEntityDecorators.class);
 		if(hasDecorators) {
@@ -87,7 +87,7 @@ public class CcpEntityFactory {
 		boolean isCacheableEntity = configuration.cacheableEntity();
 		
 		if(isCacheableEntity) {
-			entity = new CacheEntity(entity, cacheExpires);
+			entity = new DecoratorCacheEntity(entity, cacheExpires);
 		}
 		
 		return entity;
@@ -97,6 +97,7 @@ public class CcpEntityFactory {
 		try {
 			for (Class<?> decorator : decorators) {
 				Constructor<?> declaredConstructor = decorator.getDeclaredConstructor();
+				declaredConstructor.setAccessible(true);
 				CcpEntityDecoratorFactory newInstance = (CcpEntityDecoratorFactory) declaredConstructor.newInstance();
 				entity = newInstance.getEntity(entity);
 			}
@@ -110,6 +111,7 @@ public class CcpEntityFactory {
 	private static CcpEntity getExpurgableEntity(Class<?> decorator, CcpEntityExpurgableOptions longevity, CcpEntity entity) {
 		try {
 			Constructor<?> declaredConstructor = decorator.getDeclaredConstructor();
+			declaredConstructor.setAccessible(true);
 			CcpEntityExpurgableFactory newInstance = (CcpEntityExpurgableFactory) declaredConstructor.newInstance();
 			CcpEntity expurgableEntity = newInstance.getEntity(entity, longevity);
 			return expurgableEntity;

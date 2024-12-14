@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -26,11 +27,35 @@ import com.ccp.process.CcpProcessStatus;
 
 public interface CcpEntity{
 
-	List<CcpJsonRepresentation> getParametersToSearch(CcpJsonRepresentation json);
+	default List<CcpJsonRepresentation> getParametersToSearch(CcpJsonRepresentation json) {
+		
+		String id = this.calculateId(json);
+
+		CcpDbRequester dependency = CcpDependencyInjection.getDependency(CcpDbRequester.class);
+		
+		String fieldNameToEntity = dependency.getFieldNameToEntity();
+		String fieldNameToId = dependency.getFieldNameToId();
+		
+		String entityName = this.getEntityName();
+		
+		CcpJsonRepresentation mainRecord = CcpConstants.EMPTY_JSON
+		.put(fieldNameToEntity, entityName)
+		.put(fieldNameToId, id)
+		;
+		List<CcpJsonRepresentation> asList = Arrays.asList(mainRecord);
+		return asList;
+	}
+
+	default boolean isPresentInThisUnionAll(CcpSelectUnionAll unionAll, CcpJsonRepresentation json) {
+		
+		String index = this.getEntityName();
+		String id = this.calculateId(json);
+
+		boolean present = unionAll.isPresent(index, id);
+		
+		return present;
+	}
 	
-	boolean isPresentInThisUnionAll(CcpSelectUnionAll unionAll, CcpJsonRepresentation json);
-	
-	CcpJsonRepresentation getRecordFromUnionAll(CcpSelectUnionAll unionAll, CcpJsonRepresentation json);
 
 	String getEntityName();
 
@@ -60,7 +85,9 @@ public interface CcpEntity{
 		return jsonPiece;
 	}
 	
-	CcpBulkItem getRecordCopyToBulkOperation(CcpJsonRepresentation json, CcpEntityOperationType operation);
+	default CcpBulkItem getRecordCopyToBulkOperation(CcpJsonRepresentation json, CcpEntityOperationType operation) {
+		throw new UnsupportedOperationException();
+	}
 	
 	CcpEntityField[] getFields();
 	
@@ -85,7 +112,9 @@ public interface CcpEntity{
 	default CcpJsonRepresentation getOneById(CcpJsonRepresentation json, Function<CcpJsonRepresentation, CcpJsonRepresentation> ifNotFound) {
 		try {
 			CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
-			CcpJsonRepresentation oneById = crud.getOneById(this, json);
+			String calculateId = this.calculateId(json);
+			String entityName = this.getEntityName();
+			CcpJsonRepresentation oneById = crud.getOneById(entityName, calculateId);
 			return oneById;
 			
 		} catch (CcpEntityRecordNotFound e) {
@@ -104,7 +133,8 @@ public interface CcpEntity{
 	default CcpJsonRepresentation getOneById(String id) {
 		try {
 			CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
-			CcpJsonRepresentation md = crud.getOneById(this, id);
+			String entityName = this.getEntityName();
+			CcpJsonRepresentation md = crud.getOneById(entityName, id);
 			return md;
 			
 		} catch (CcpEntityRecordNotFound e) {
@@ -116,14 +146,17 @@ public interface CcpEntity{
 	
 	default boolean exists(String id) {
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
-		boolean exists = crud.exists(this, id);
+		String entityName = this.getEntityName();
+		boolean exists = crud.exists(entityName, id);
 		return exists;
 		
 	}
 	
 	default boolean exists(CcpJsonRepresentation json) {
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
-		boolean exists = crud.exists(this, json);
+		String id = this.calculateId(json);
+		String entityName = this.getEntityName();
+		boolean exists = crud.exists(entityName, id);
 		return exists;
 	}
 	
@@ -136,9 +169,11 @@ public interface CcpEntity{
 
 	default boolean create(CcpJsonRepresentation json) {
 		CcpJsonRepresentation onlyExistingFields = this.getOnlyExistingFields(json);
+		this.validateJson(onlyExistingFields);
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
-		
-		CcpJsonRepresentation createOrUpdate = crud.createOrUpdate(this, onlyExistingFields);
+		String calculateId = this.calculateId(json);
+		String entityName = this.getEntityName();
+		CcpJsonRepresentation createOrUpdate = crud.createOrUpdate(entityName, onlyExistingFields, calculateId);
 		String result = createOrUpdate.getAsString("result");
 		boolean created = "created".equals(result);
 		
@@ -148,20 +183,26 @@ public interface CcpEntity{
 
 	default boolean delete(CcpJsonRepresentation json) {
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
-		boolean remove = crud.delete(this, json);
+		String calculateId = this.calculateId(json);
+		String entityName = this.getEntityName();
+		boolean remove = crud.delete(entityName, calculateId);
 		return remove;
 	}
 	
 	default boolean delete(String id) {
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
-		boolean remove = crud.delete(this, id);
+		String entityName = this.getEntityName();
+		boolean remove = crud.delete(entityName, id);
 		return remove;
 	}
 
-	
+	//TODO REPLICAR VALIDACAO DE CAMPOS PARA OPERACOES CREATE OU UPDATE DO BULK
 	default CcpJsonRepresentation createOrUpdate(CcpJsonRepresentation json, String id) {
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
-		CcpJsonRepresentation createOrUpdate = crud.createOrUpdate(this, json, id);
+		String entityName = this.getEntityName();
+		CcpJsonRepresentation onlyExistingFields = this.getOnlyExistingFields(json);
+		this.validateJson(onlyExistingFields);
+		CcpJsonRepresentation createOrUpdate = crud.createOrUpdate(entityName, onlyExistingFields, id);
 		return createOrUpdate;
 	}
 	
@@ -191,6 +232,15 @@ public interface CcpEntity{
 		
 		return entityRow;
 	}
+	default CcpJsonRepresentation getRecordFromUnionAll(CcpSelectUnionAll unionAll, CcpJsonRepresentation json) {
+
+		String id = this.calculateId(json);
+		String index = this.getEntityName();
+		
+		CcpJsonRepresentation jsonValue = unionAll.getEntityRow(index, id);
+		
+		return jsonValue;
+	}
 
 	default boolean isPresentInThisJsonInMainEntity(CcpJsonRepresentation json) {
 		CcpJsonRepresentation innerJsonFromPath = json.getInnerJsonFromPath("_entities", this.getEntityName());
@@ -203,11 +253,11 @@ public interface CcpEntity{
 		return j1;
 	}
 	
-	default CcpJsonRepresentation getData(CcpJsonRepresentation json) {
+	default CcpJsonRepresentation getData(CcpJsonRepresentation json, Consumer<String[]> functionToDeleteKeysInTheCache) {
 		
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
 		
-		CcpSelectUnionAll searchResults = crud.unionBetweenMainAndTwinEntities(json, this);
+		CcpSelectUnionAll searchResults = crud.unionBetweenMainAndTwinEntities(json, functionToDeleteKeysInTheCache, this);
 		
 		CcpJsonRepresentation requiredEntityRow = this.getRequiredEntityRow(searchResults, json);
 
@@ -243,4 +293,8 @@ public interface CcpEntity{
 		return new CcpEntity[] {this};
 	}
 
+	
+	default void validateJson(CcpJsonRepresentation json) {
+
+	}
 }
