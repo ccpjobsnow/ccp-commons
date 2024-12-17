@@ -38,9 +38,22 @@ public enum CcpEntityExpurgableOptions{
 		long timeInMillis = cal.getTimeInMillis();
 		return timeInMillis;
 	}
+
+	public Long getNextTimeStamp(Long timestamp) {
+		Calendar cal = new CcpTimeDecorator(timestamp).getBrazilianCalendar();
+		cal.add(this.calendarField, 1);
+		long timeInMillis = cal.getTimeInMillis();
+		return timeInMillis;
+	}
 	
 	public String getNextDate() {
 		Long nextTimeStamp = this.getNextTimeStamp();
+		CcpTimeDecorator ctd = new CcpTimeDecorator(nextTimeStamp);
+		String formattedDateTime = ctd.getFormattedDateTime("dd/MM/yyyy HH:mm:ss.SSS");
+		return formattedDateTime;
+	}
+	public String getNextDate(Long timestamp) {
+		Long nextTimeStamp = this.getNextTimeStamp(timestamp);
 		CcpTimeDecorator ctd = new CcpTimeDecorator(nextTimeStamp);
 		String formattedDateTime = ctd.getFormattedDateTime("dd/MM/yyyy HH:mm:ss.SSS");
 		return formattedDateTime;

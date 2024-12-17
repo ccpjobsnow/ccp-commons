@@ -821,4 +821,10 @@ public final class CcpJsonRepresentation {
 		
 		return put;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public <T> T removeFieldReturningValue(String field) {
+		Object remove = this.content.remove(field);
+		return (T)remove;
+	}
 }

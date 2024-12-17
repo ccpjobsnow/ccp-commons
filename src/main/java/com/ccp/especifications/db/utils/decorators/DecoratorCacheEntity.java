@@ -80,11 +80,23 @@ class DecoratorCacheEntity extends CcpEntityDelegator{
 
 	public boolean exists(CcpJsonRepresentation json) {
 		
-		String id = this.calculateId(json);
+		CcpCacheDecorator cache = this.getCache(json);
+
+		boolean presentInTheCache = cache.isPresentInTheCache();
 		
-		boolean exists = this.exists(id);
+		if(presentInTheCache) {
+			return true;
+		}
 		
-		return exists;
+		boolean exists = this.entity.exists(json);
+
+		if(exists == false) {
+			cache.delete();
+			return false;
+		}
+		CcpJsonRepresentation oneById = this.getOneById(json);
+		cache.put(oneById, this.cacheExpires);
+		return true;
 	}
 
 	public CcpJsonRepresentation createOrUpdate(CcpJsonRepresentation json) {
