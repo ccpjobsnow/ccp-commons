@@ -15,6 +15,25 @@ public interface CcpProcessStatus {
 			return "NOT_FOUND";
 		}
 	};
+	
+	CcpProcessStatus CREATED = new CcpProcessStatus() {
+		public int status() {
+			return 201;
+		}
+		public String name() {
+			return "CREATED";
+		}
+	};
+	
+	CcpProcessStatus UPDATED = new CcpProcessStatus() {
+		public int status() {
+			return 204;
+		}
+		public String name() {
+			return "UPDATED";
+		}
+	};
+	
 	CcpProcessStatus REDIRECT = new CcpProcessStatus() {
 		
 		@Override
