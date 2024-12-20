@@ -22,7 +22,7 @@ import com.ccp.especifications.db.crud.CcpCrud;
 import com.ccp.especifications.db.crud.CcpSelectUnionAll;
 import com.ccp.exceptions.db.CcpEntityRecordNotFound;
 import com.ccp.exceptions.process.CcpFlow;
-import com.ccp.process.CcpProcessStatus;
+import com.ccp.process.CcpDefaultProcessStatus;
 
 
 public interface CcpEntity{
@@ -125,7 +125,7 @@ public interface CcpEntity{
 
 	default CcpJsonRepresentation getOneById(CcpJsonRepresentation json) {
 		String entityName = this.getEntityName();
-		CcpJsonRepresentation md = this.getOneById(json, x -> {throw new CcpFlow(x.put("entity", entityName), CcpProcessStatus.NOT_FOUND);});
+		CcpJsonRepresentation md = this.getOneById(json, x -> {throw new CcpFlow(x.put("entity", entityName), CcpDefaultProcessStatus.NOT_FOUND);});
 		return md;
 	}
 	
@@ -140,7 +140,7 @@ public interface CcpEntity{
 		} catch (CcpEntityRecordNotFound e) {
 			String entityName = this.getEntityName();
 			CcpJsonRepresentation put = CcpConstants.EMPTY_JSON.put("id", id).put("entity", entityName);
-			throw new CcpFlow(put, CcpProcessStatus.NOT_FOUND);
+			throw new CcpFlow(put, CcpDefaultProcessStatus.NOT_FOUND);
 		}
 	}
 	

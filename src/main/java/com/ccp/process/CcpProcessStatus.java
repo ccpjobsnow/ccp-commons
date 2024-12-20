@@ -3,64 +3,6 @@ package com.ccp.process;
 public interface CcpProcessStatus {
 	int status();
 	String name();
-	CcpProcessStatus NOT_FOUND = new CcpProcessStatus() {
-		
-		@Override
-		public int status() {
-			return 404;
-		}
-		
-		@Override
-		public String name() {
-			return "NOT_FOUND";
-		}
-	};
-	
-	CcpProcessStatus CREATED = new CcpProcessStatus() {
-		public int status() {
-			return 201;
-		}
-		public String name() {
-			return "CREATED";
-		}
-	};
-	
-	CcpProcessStatus UPDATED = new CcpProcessStatus() {
-		public int status() {
-			return 204;
-		}
-		public String name() {
-			return "UPDATED";
-		}
-	};
-	
-	CcpProcessStatus REDIRECT = new CcpProcessStatus() {
-		
-		@Override
-		public int status() {
-			return 301;
-		}
-		
-		@Override
-		public String name() {
-			return "REDIRECT";
-		}
-	};
-	
-	CcpProcessStatus INACTIVE_RECORD = new CcpProcessStatus() {
-		
-		@Override
-		public int status() {
-			return 302;
-		}
-		
-		@Override
-		public String name() {
-			return "INACTIVE_RECORD";
-		}
-	};
-
-	
 	default void verifyStatus(int actualStatus) {
 		int expectedStatus = this.status();
 		

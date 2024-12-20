@@ -9,6 +9,7 @@ import com.ccp.especifications.db.crud.CcpCrud;
 import com.ccp.especifications.db.crud.CcpSelectUnionAll;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.exceptions.process.CcpFlow;
+import com.ccp.process.CcpDefaultProcessStatus;
 import com.ccp.process.CcpProcessStatus;
 
 class DecoratorTwinEntity extends CcpEntityDelegator {
@@ -60,7 +61,7 @@ class DecoratorTwinEntity extends CcpEntityDelegator {
 		
 		if(inactive) {
 			CcpJsonRepresentation requiredEntityRow = twinEntity.getRequiredEntityRow(searchResults, json);
-			throw new CcpFlow(requiredEntityRow, CcpProcessStatus.INACTIVE_RECORD);
+			throw new CcpFlow(requiredEntityRow, CcpDefaultProcessStatus.INACTIVE_RECORD);
 		}
 		
 		CcpJsonRepresentation requiredEntityRow = this.getRequiredEntityRow(searchResults, json);
@@ -76,7 +77,7 @@ class DecoratorTwinEntity extends CcpEntityDelegator {
 		}
 		String id = twinEntity.calculateId(json);
 		String errorMessage = String.format("The id '%s' has been moved from '%s' to '%s' ", id, this, twinEntity);
-		throw new CcpFlow(json, CcpProcessStatus.REDIRECT, errorMessage, new String[0]);
+		throw new CcpFlow(json, CcpDefaultProcessStatus.REDIRECT, errorMessage, new String[0]);
 	}
 	
 	public final CcpJsonRepresentation getOneById(CcpJsonRepresentation json) {
