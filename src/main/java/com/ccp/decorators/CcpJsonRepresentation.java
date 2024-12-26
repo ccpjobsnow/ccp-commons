@@ -139,7 +139,6 @@ public final class CcpJsonRepresentation {
 		try {
 			return Double.valueOf("" + object).longValue();
 		} catch (Exception e) {
-			
 			throw new RuntimeException("The value '" + object + "' from the field '" + field + " is not a long");
 		}
 	}
