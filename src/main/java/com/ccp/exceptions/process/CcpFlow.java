@@ -13,7 +13,7 @@ public class CcpFlow extends RuntimeException{
 	public final String[] fields;
 
 	public CcpFlow(CcpJsonRepresentation json, CcpProcessStatus status, String... fields) {
-		super(json.put("statusNumber", status.status()).put("statusName", status.name()).asPrettyJson());
+		super(json.put("statusNumber", status.asNumber()).put("statusName", status.name()).asPrettyJson());
 		this.json = json;
 		this.status = status;
 		this.fields = fields;

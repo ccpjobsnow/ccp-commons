@@ -1,10 +1,10 @@
 package com.ccp.process;
 
 public interface CcpProcessStatus {
-	int status();
+	int asNumber();
 	String name();
 	default void verifyStatus(int actualStatus) {
-		int expectedStatus = this.status();
+		int expectedStatus = this.asNumber();
 		
 		boolean correctStatus = expectedStatus == actualStatus;
 		

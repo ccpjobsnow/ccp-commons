@@ -3,7 +3,7 @@ package com.ccp.especifications.cache;
 import java.util.Set;
 import java.util.function.Function;
 
-import com.ccp.constantes.CcpConstants;
+import com.ccp.constantes.CcpOtherConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
@@ -27,12 +27,12 @@ public final class CcpCacheDecorator {
 	
 	public CcpCacheDecorator(CcpEntity entity, String id) {
 		String entityName = entity.getEntityName();
-		this.cacheParameters = CcpConstants.EMPTY_JSON;
+		this.cacheParameters = CcpOtherConstants.EMPTY_JSON;
 		this.key = "records.entity." + entityName + ".id." + id ;
 	}
 	
 	public CcpCacheDecorator(String key) {
-		this.cacheParameters = CcpConstants.EMPTY_JSON;
+		this.cacheParameters = CcpOtherConstants.EMPTY_JSON;
 		this.key = key;
 	}
 	

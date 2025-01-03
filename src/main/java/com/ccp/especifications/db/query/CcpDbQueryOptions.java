@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import com.ccp.constantes.CcpConstants;
+import com.ccp.constantes.CcpOtherConstants;
 
 
 public class CcpDbQueryOptions extends CcpDbQueryComponent{
@@ -51,7 +51,7 @@ public class CcpDbQueryOptions extends CcpDbQueryComponent{
 
 	private CcpDbQueryOptions sort(String fieldName, String sortType) {
 		CcpDbQueryOptions copy = this.copy();
-		Map<String, Object> content = CcpConstants.EMPTY_JSON.put(fieldName, sortType).getContent();
+		Map<String, Object> content = CcpOtherConstants.EMPTY_JSON.put(fieldName, sortType).getContent();
 		
 		List<Object> asList = Arrays.asList(content);
 
@@ -105,7 +105,7 @@ public class CcpDbQueryOptions extends CcpDbQueryComponent{
 	}
 	
 	public CcpDbQueryOptions matchAll() {
-		CcpDbQueryOptions clone = super.putProperty("query", CcpConstants.EMPTY_JSON.put("match_all", CcpConstants.EMPTY_JSON.content).content);
+		CcpDbQueryOptions clone = super.putProperty("query", CcpOtherConstants.EMPTY_JSON.put("match_all", CcpOtherConstants.EMPTY_JSON.content).content);
 		return clone;
 	}
 

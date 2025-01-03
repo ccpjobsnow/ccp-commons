@@ -2,7 +2,7 @@ package com.ccp.especifications.db.query;
 
 import java.util.Map;
 
-import com.ccp.constantes.CcpConstants;
+import com.ccp.constantes.CcpOtherConstants;
 import com.ccp.especifications.db.utils.CcpEntityField;
 
 
@@ -27,8 +27,8 @@ public final class CcpDbQueryAggregations extends CcpDbQueryComponent{
 
 	private CcpDbQueryAggregations createAggregation(String aggregationName, CcpEntityField fieldName, String key) {
 		CcpDbQueryAggregations copy = this.copy();
-		Map<String, Object> c1 = CcpConstants.EMPTY_JSON.put("field", fieldName).getContent();
-		Map<String, Object> c2 = CcpConstants.EMPTY_JSON.put(key, c1).getContent();
+		Map<String, Object> c1 = CcpOtherConstants.EMPTY_JSON.put("field", fieldName).getContent();
+		Map<String, Object> c2 = CcpOtherConstants.EMPTY_JSON.put(key, c1).getContent();
 		copy.json = copy.json.put(aggregationName, c2);
 		return copy;
 	}

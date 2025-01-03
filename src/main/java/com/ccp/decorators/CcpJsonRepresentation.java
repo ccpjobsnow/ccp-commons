@@ -20,7 +20,8 @@ import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.ccp.constantes.CcpConstants;
+import com.ccp.constantes.CcpOtherConstants;
+import com.ccp.constantes.CcpStringConstants;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.json.CcpJsonHandler;
 import com.ccp.especifications.password.CcpPasswordHandler;
@@ -106,7 +107,7 @@ public final class CcpJsonRepresentation {
 
 	private static CcpJsonRepresentation getErrorDetails(Throwable e) {
 
-		CcpJsonRepresentation jr = CcpConstants.EMPTY_JSON;
+		CcpJsonRepresentation jr = CcpOtherConstants.EMPTY_JSON;
 		
 		if(e == null) {
 			return jr; 
@@ -323,14 +324,20 @@ public final class CcpJsonRepresentation {
 		return new CcpJsonRepresentation(content);
 	}  
 
-	public CcpJsonRepresentation duplicateValueFromField(String fieldToCopy, String fieldToPaste) {
+	public CcpJsonRepresentation duplicateValueFromField(String fieldToCopy, String... fieldsToPaste) {
 		boolean inexistentField = this.containsAllFields(fieldToCopy) == false;
 
 		if (inexistentField) {
 			return this;
 		}
-		Object value = this.get(fieldToCopy);
-		CcpJsonRepresentation newMap = this.put(fieldToPaste, value);
+		
+		CcpJsonRepresentation newMap = this;
+		
+		for (String fieldToPaste : fieldsToPaste) {
+			Object value = this.get(fieldToCopy);
+			newMap = newMap.put(fieldToPaste, value);
+		}
+		
 		return newMap;
 	}
 	
@@ -391,7 +398,7 @@ public final class CcpJsonRepresentation {
 			CcpJsonRepresentation map =  this.getValueFromPath(paths);
 			return map;
 		}catch (JsonFieldNotFound e) {
-			return CcpConstants.EMPTY_JSON;
+			return CcpOtherConstants.EMPTY_JSON;
 		}
 	}
 	
@@ -444,7 +451,7 @@ public final class CcpJsonRepresentation {
 		
 
 		if((object instanceof Map) == false) {
-			return CcpConstants.EMPTY_JSON;
+			return CcpOtherConstants.EMPTY_JSON;
 		}
 
 		CcpJsonRepresentation mapDecorator = new CcpJsonRepresentation((Map<String, Object>) object);
@@ -723,14 +730,14 @@ public final class CcpJsonRepresentation {
 		return stream;
 	}
 	
-	public String getSha1Hash(String algorithm) {
+	public String getSha1Hash(CcpHashAlgorithm algorithm) {
 		String asUgglyJson = this.asUgglyJson();
-		String hash = new CcpStringDecorator(asUgglyJson).hash().asString("SHA1");
+		String hash = new CcpStringDecorator(asUgglyJson).hash().asString(algorithm);
 		return hash;
 	}
 
 	public int hashCode() {
-		String hash2 = this.getSha1Hash("SHA1");
+		String hash2 = this.getSha1Hash(CcpHashAlgorithm.SHA1);
 		int hashCode = hash2.hashCode();
 		return hashCode;
 	}
@@ -738,8 +745,8 @@ public final class CcpJsonRepresentation {
 	public boolean equals(Object obj) {
 		
 		if(obj instanceof CcpJsonRepresentation other) {
-			String hash = other.getSha1Hash("SHA1");
-			String hash2 = this.getSha1Hash("SHA1");
+			String hash = other.getSha1Hash(CcpHashAlgorithm.SHA1);
+			String hash2 = this.getSha1Hash(CcpHashAlgorithm.SHA1);
 			boolean equals = hash.equals(hash2);
 			return equals;
 		}
@@ -753,7 +760,7 @@ public final class CcpJsonRepresentation {
 		return collect;
 	}
 	
-	public CcpJsonRepresentation putNewFieldHash(String oldField, String newField, String hashType) {
+	public CcpJsonRepresentation putNewFieldHash(String oldField, String newField, CcpHashAlgorithm hashType) {
 		String value = this.getAsString(oldField);
 		CcpHashDecorator hash2 = new CcpStringDecorator(value).hash();
 		String hash = hash2.asString(hashType);
@@ -762,12 +769,12 @@ public final class CcpJsonRepresentation {
 		return put;
 	}
 	
-	public CcpJsonRepresentation putEmailHash(String hashType) {
-		CcpJsonRepresentation putNewFieldHash = this.putNewFieldHash("email", "originalEmail", hashType);
+	public CcpJsonRepresentation putEmailHash(CcpHashAlgorithm hashType) {
+		CcpJsonRepresentation putNewFieldHash = this.putNewFieldHash(CcpStringConstants.EMAIL.value, "originalEmail", hashType);
 		return putNewFieldHash;
 	}
 	
-	public CcpJsonRepresentation putHashPassword(String fieldName, String hashType) {
+	public CcpJsonRepresentation putHashPassword(String fieldName, CcpHashAlgorithm hashType) {
 		String value = this.getAsString(fieldName);
 		CcpHashDecorator hash2 = new CcpStringDecorator(value).hash();
 		String hash = hash2.asString(hashType);
@@ -777,7 +784,7 @@ public final class CcpJsonRepresentation {
 	
 	public CcpJsonRepresentation putRandomToken(int tokenSize, String fieldName) {
 		
-		CcpStringDecorator csd = new CcpStringDecorator(CcpConstants.CHARACTERS_TO_GENERATE_TOKEN);
+		CcpStringDecorator csd = new CcpStringDecorator(CcpStringConstants.CHARACTERS_TO_GENERATE_TOKEN.value);
 		CcpTextDecorator text = csd.text();
 		CcpTextDecorator generateToken = text.generateToken(tokenSize);
 		String token = generateToken.content;

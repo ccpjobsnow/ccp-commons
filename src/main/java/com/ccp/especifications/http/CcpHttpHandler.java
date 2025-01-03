@@ -3,7 +3,7 @@ package com.ccp.especifications.http;
 import java.util.Set;
 import java.util.function.Function;
 
-import com.ccp.constantes.CcpConstants;
+import com.ccp.constantes.CcpOtherConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.exceptions.http.CcpHttpError;
@@ -21,18 +21,18 @@ public final class CcpHttpHandler {
 	}
 
 	public CcpHttpHandler(Integer httpStatus, Function<CcpJsonRepresentation, CcpJsonRepresentation> alternativeFlow) {
-		this.flows = CcpConstants.EMPTY_JSON.addJsonTransformer(httpStatus.toString(), CcpConstants.DO_NOTHING);
+		this.flows = CcpOtherConstants.EMPTY_JSON.addJsonTransformer(httpStatus.toString(), CcpOtherConstants.DO_NOTHING);
 		this.alternativeFlow = alternativeFlow;
 	}
 	
 	public CcpHttpHandler(Integer httpStatus) {
-		this.flows = CcpConstants.EMPTY_JSON.addJsonTransformer(httpStatus.toString(), CcpConstants.DO_NOTHING);
+		this.flows = CcpOtherConstants.EMPTY_JSON.addJsonTransformer(httpStatus.toString(), CcpOtherConstants.DO_NOTHING);
 		this.alternativeFlow = null;
 	}
 	
 	
 	public <V> V executeHttpSimplifiedGet(String trace, String url, CcpHttpResponseTransform<V> transformer) {
-		V executeHttpRequest = this.executeHttpRequest(trace, url, "GET", CcpConstants.EMPTY_JSON, CcpConstants.EMPTY_JSON, transformer);
+		V executeHttpRequest = this.executeHttpRequest(trace, url, "GET", CcpOtherConstants.EMPTY_JSON, CcpOtherConstants.EMPTY_JSON, transformer);
 		return executeHttpRequest;
 	}
 	

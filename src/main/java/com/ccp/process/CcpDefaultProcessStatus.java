@@ -3,6 +3,8 @@ package com.ccp.process;
 public enum CcpDefaultProcessStatus implements CcpProcessStatus{
 
 	INACTIVE_RECORD(302),
+	UNHAUTHORIZED(401),
+	BAD_REQUEST(400),
 	NOT_FOUND(404),
 	REDIRECT(301),
 	SUCCESS(200),
@@ -10,7 +12,7 @@ public enum CcpDefaultProcessStatus implements CcpProcessStatus{
 	UPDATED(204)
 	;
 
-	public int status() {
+	public int asNumber() {
 		return this.status;
 	}
 	

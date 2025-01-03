@@ -1,13 +1,13 @@
 package com.ccp.especifications.db.query;
 
-import com.ccp.constantes.CcpConstants;
+import com.ccp.constantes.CcpOtherConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.json.CcpJsonHandler;
 
 abstract class CcpDbQueryComponent {
 
-	public CcpJsonRepresentation json = CcpConstants.EMPTY_JSON;
+	public CcpJsonRepresentation json = CcpOtherConstants.EMPTY_JSON;
 	protected CcpDbQueryComponent parent;
 	protected String name;
 	

@@ -6,7 +6,7 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.ccp.constantes.CcpConstants;
+import com.ccp.constantes.CcpStringConstants;
 
 public class CcpEmailDecorator {
 
@@ -120,7 +120,7 @@ public class CcpEmailDecorator {
 		return true;
 	}
 	private static final Pattern VALID_EMAIL_ADDRESS_REGEX = 
-		    Pattern.compile(CcpConstants.EMAIL_REGEX, Pattern.CASE_INSENSITIVE);
+		    Pattern.compile(CcpStringConstants.EMAIL_REGEX.value, Pattern.CASE_INSENSITIVE);
 
 	public CcpEmailDecorator findFirst(String delimitadores) {
 

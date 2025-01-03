@@ -3,7 +3,7 @@ package com.ccp.especifications.db.crud;
 import java.util.List;
 import java.util.function.Function;
 
-import com.ccp.constantes.CcpConstants;
+import com.ccp.constantes.CcpOtherConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.utils.CcpDbRequester;
@@ -14,7 +14,7 @@ public class CcpSelectUnionAll {
 	public final CcpJsonRepresentation  condensed;
 
 	public CcpSelectUnionAll(List<CcpJsonRepresentation> results) {
-		CcpJsonRepresentation  condensed = CcpConstants.EMPTY_JSON;
+		CcpJsonRepresentation  condensed = CcpOtherConstants.EMPTY_JSON;
 		CcpDbRequester dependency = CcpDependencyInjection.getDependency(CcpDbRequester.class);
 		
 		String fieldNameToEntity = dependency.getFieldNameToEntity();
@@ -80,7 +80,7 @@ public class CcpSelectUnionAll {
 		boolean indexNotFound = this.condensed.containsAllFields(index) == false;
 		
 		if(indexNotFound) {
-			return CcpConstants.EMPTY_JSON;
+			return CcpOtherConstants.EMPTY_JSON;
 		}
 		
 		CcpJsonRepresentation innerJson = this.condensed.getInnerJson(index);
@@ -88,7 +88,7 @@ public class CcpSelectUnionAll {
 		boolean idNotFound = innerJson.containsAllFields(id) == false;
 		
 		if(idNotFound) {
-			return CcpConstants.EMPTY_JSON;
+			return CcpOtherConstants.EMPTY_JSON;
 		}
 		
 		CcpJsonRepresentation jsonValue = innerJson.getInnerJson(id);

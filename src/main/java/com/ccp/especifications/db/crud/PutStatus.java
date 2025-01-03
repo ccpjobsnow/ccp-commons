@@ -13,7 +13,7 @@ class PutStatus implements Function<CcpJsonRepresentation, CcpJsonRepresentation
 	
 	public CcpJsonRepresentation apply(CcpJsonRepresentation j) {
 		CcpProcessStatus stats = j.getAsObject("status");
-		CcpJsonRepresentation put3 = j.put("statusName", stats.name()).put("statusNumber", stats.status());
+		CcpJsonRepresentation put3 = j.put("statusName", stats.name()).put("statusNumber", stats.asNumber());
 		CcpJsonRepresentation removeField = put3.removeField("status");
 		return removeField;
 		

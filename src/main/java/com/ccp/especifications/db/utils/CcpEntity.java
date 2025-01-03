@@ -11,7 +11,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.ccp.constantes.CcpConstants;
+import com.ccp.constantes.CcpOtherConstants;
+import com.ccp.decorators.CcpHashAlgorithm;
 import com.ccp.decorators.CcpHashDecorator;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.decorators.CcpStringDecorator;
@@ -38,7 +39,7 @@ public interface CcpEntity{
 		
 		String entityName = this.getEntityName();
 		
-		CcpJsonRepresentation mainRecord = CcpConstants.EMPTY_JSON
+		CcpJsonRepresentation mainRecord = CcpOtherConstants.EMPTY_JSON
 		.put(fieldNameToEntity, entityName)
 		.put(fieldNameToId, id)
 		;
@@ -66,7 +67,7 @@ public interface CcpEntity{
 		
 		if(hasNoPrimaryKey) {
 			String string = UUID.randomUUID().toString();
-			String hash = new CcpStringDecorator(string).hash().asString("SHA1");
+			String hash = new CcpStringDecorator(string).hash().asString(CcpHashAlgorithm.SHA1);
 			return hash;
 		}
 		
@@ -74,7 +75,7 @@ public interface CcpEntity{
 		
 		String replace = sortedPrimaryKeyValues.toString().replace("[", "").replace("]", "");
 		CcpHashDecorator hash2 = new CcpStringDecorator(replace).hash();
-		String hash = hash2.asString("SHA1");
+		String hash = hash2.asString(CcpHashAlgorithm.SHA1);
 		return hash;
 	}
 	
@@ -139,7 +140,7 @@ public interface CcpEntity{
 			
 		} catch (CcpEntityRecordNotFound e) {
 			String entityName = this.getEntityName();
-			CcpJsonRepresentation put = CcpConstants.EMPTY_JSON.put("id", id).put("entity", entityName);
+			CcpJsonRepresentation put = CcpOtherConstants.EMPTY_JSON.put("id", id).put("entity", entityName);
 			throw new CcpFlow(put, CcpDefaultProcessStatus.NOT_FOUND);
 		}
 	}

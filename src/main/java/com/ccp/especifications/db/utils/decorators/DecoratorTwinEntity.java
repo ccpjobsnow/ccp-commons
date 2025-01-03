@@ -10,7 +10,6 @@ import com.ccp.especifications.db.crud.CcpSelectUnionAll;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.exceptions.process.CcpFlow;
 import com.ccp.process.CcpDefaultProcessStatus;
-import com.ccp.process.CcpProcessStatus;
 
 class DecoratorTwinEntity extends CcpEntityDelegator {
 

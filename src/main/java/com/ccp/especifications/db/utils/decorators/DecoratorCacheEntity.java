@@ -2,7 +2,7 @@ package com.ccp.especifications.db.utils.decorators;
 
 import java.util.function.Function;
 
-import com.ccp.constantes.CcpConstants;
+import com.ccp.constantes.CcpOtherConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.cache.CcpCacheDecorator;
 import com.ccp.especifications.db.crud.CcpSelectUnionAll;
@@ -178,7 +178,7 @@ class DecoratorCacheEntity extends CcpEntityDelegator{
 		
 		if(notPresentInThisUnionAll) {
 			cache.delete();
-			return CcpConstants.EMPTY_JSON;
+			return CcpOtherConstants.EMPTY_JSON;
 		}
 		
 		CcpJsonRepresentation recordFromUnionAll = super.getRecordFromUnionAll(unionAll, json);

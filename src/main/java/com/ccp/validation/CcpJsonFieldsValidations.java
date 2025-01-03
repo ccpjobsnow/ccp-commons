@@ -2,7 +2,7 @@ package com.ccp.validation;
 
 import java.util.Map;
 
-import com.ccp.constantes.CcpConstants;
+import com.ccp.constantes.CcpOtherConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.validation.annotations.AllowedValues;
 import com.ccp.validation.annotations.ArrayNumbers;
@@ -42,7 +42,7 @@ public class CcpJsonFieldsValidations {
 		// ???
 		rules = rulesClass.isAnnotationPresent(CcpJsonFieldsValidation.class) ? rulesClass.getAnnotation(CcpJsonFieldsValidation.class) : rules;
 		// Cria variável de evidência em formato JSON vazia
-		CcpJsonRepresentation evidences = CcpConstants.EMPTY_JSON;
+		CcpJsonRepresentation evidences = CcpOtherConstants.EMPTY_JSON;
 		// Validando os limites
 		evidences = validateBounds(rules, json, evidences);
 		// Validando restrições
@@ -83,7 +83,7 @@ public class CcpJsonFieldsValidations {
 
 	private static CcpJsonRepresentation getSpecification(String featureName, CcpJsonFieldsValidation rules) {
 
-		CcpJsonRepresentation specification = CcpConstants.EMPTY_JSON;
+		CcpJsonRepresentation specification = CcpOtherConstants.EMPTY_JSON;
 		
 		AllowedValues[] allowedValues = rules.allowedValues();
 		
@@ -172,7 +172,7 @@ public class CcpJsonFieldsValidations {
 		Regex[] regex = rules.regex();
 		
 		for (Regex dumb : regex) {
-			String value = dumb.value();
+			String value = dumb.value().value;
 			String[] fields = dumb.fields();
 			
 			String completeRuleName = Regex.class.getSimpleName();
@@ -222,7 +222,7 @@ public class CcpJsonFieldsValidations {
 			
 			String completeRuleName = getCompleteRuleName(AllowedValues.class, rule);
 			
-			CcpJsonRepresentation errors = CcpConstants.EMPTY_JSON;
+			CcpJsonRepresentation errors = CcpOtherConstants.EMPTY_JSON;
 			
 			for (String field : fields) {
 				
@@ -239,7 +239,7 @@ public class CcpJsonFieldsValidations {
 				}
 				
 				Object value = json.get(field);
-				CcpJsonRepresentation fieldDetails = CcpConstants.EMPTY_JSON
+				CcpJsonRepresentation fieldDetails = CcpOtherConstants.EMPTY_JSON
 						.put("name", field)
 						.put("value", value)
 						;
@@ -260,7 +260,7 @@ public class CcpJsonFieldsValidations {
 		
 		String completeRuleName = getCompleteRuleName(ruleClass, (Enum<?>)rule);
 		
-		CcpJsonRepresentation errors = CcpConstants.EMPTY_JSON;
+		CcpJsonRepresentation errors = CcpOtherConstants.EMPTY_JSON;
 		
 		for (String field : fields) {
 			
@@ -274,7 +274,7 @@ public class CcpJsonFieldsValidations {
 			errors = errors.put("bound", bound);
 			boolean fieldIsNotPresent = json.containsAllFields(field) == false;
 			if(fieldIsNotPresent) {
-				CcpJsonRepresentation fieldDetails = CcpConstants.EMPTY_JSON
+				CcpJsonRepresentation fieldDetails = CcpOtherConstants.EMPTY_JSON
 						.put("name", field)
 						;
 				errors = errors.addToList("wrongFields", fieldDetails);
@@ -282,7 +282,7 @@ public class CcpJsonFieldsValidations {
 				continue;
 			}
 			Object value = json.get(field);
-			CcpJsonRepresentation fieldDetails = CcpConstants.EMPTY_JSON
+			CcpJsonRepresentation fieldDetails = CcpOtherConstants.EMPTY_JSON
 					.put("name", field)
 					.put("value", value)
 					;
@@ -398,10 +398,10 @@ public class CcpJsonFieldsValidations {
 		
 		{
 			Regex[] x1 = rules.regex();
-			CcpJsonRepresentation errors = CcpConstants.EMPTY_JSON;
+			CcpJsonRepresentation errors = CcpOtherConstants.EMPTY_JSON;
 			for (Regex validation : x1) {
 				String[] fields = validation.fields();
-				String regex = validation.value();
+				String regex = validation.value().value;
 				for (String field : fields) {
 					boolean validJson = json.itIsTrueThatTheFollowingFields(field).ifTheyAreAll()
 							.textsThenEachOneMatchesWithTheFollowingRegex(regex);
@@ -411,7 +411,7 @@ public class CcpJsonFieldsValidations {
 					}
 					errors = errors.put("regex", regex);
 					Object value = json.get(field);
-					CcpJsonRepresentation fieldDetails = CcpConstants.EMPTY_JSON
+					CcpJsonRepresentation fieldDetails = CcpOtherConstants.EMPTY_JSON
 							.put("name", field)
 							.put("value", value)
 							;

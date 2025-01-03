@@ -17,7 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import com.ccp.constantes.CcpConstants;
+import com.ccp.constantes.CcpOtherConstants;
 
 public class CcpTextDecorator {
 	public final String content;
@@ -271,7 +271,7 @@ public class CcpTextDecorator {
 	}
 	
 	public boolean contains(String phrase) {
-		boolean contains = this.contains(CcpConstants.DELIMITERS, phrase);
+		boolean contains = this.contains(CcpOtherConstants.DELIMITERS, phrase);
 		return contains;
 	}
 	
@@ -299,7 +299,7 @@ public class CcpTextDecorator {
 	}
 	
 	public CcpTextDecorator sanitize() {
-		return this.sanitize(CcpConstants.DELIMITERS);
+		return this.sanitize(CcpOtherConstants.DELIMITERS);
 	}
 	
 	public CcpTextDecorator sanitize(String[] delimiters) {

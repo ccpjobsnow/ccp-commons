@@ -2,7 +2,7 @@ package com.ccp.exceptions.http;
 
 import java.util.Set;
 
-import com.ccp.constantes.CcpConstants;
+import com.ccp.constantes.CcpOtherConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 
 @SuppressWarnings("serial")
@@ -20,7 +20,7 @@ public class CcpHttpError extends RuntimeException {
 	
 	}
 	private static CcpJsonRepresentation getEntity(String url, String method, CcpJsonRepresentation headers, String request, Integer status, String response) {
-		return CcpConstants.EMPTY_JSON.put("url", url).put("method", method).put("headers", headers).put("request", request).put("status", status).put("response", response);
+		return CcpOtherConstants.EMPTY_JSON.put("url", url).put("method", method).put("headers", headers).put("request", request).put("status", status).put("response", response);
 	}
 	
 	

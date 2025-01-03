@@ -2,7 +2,7 @@ package com.ccp.especifications.http;
 
 import java.util.List;
 
-import com.ccp.constantes.CcpConstants;
+import com.ccp.constantes.CcpOtherConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.decorators.CcpTextDecorator;
@@ -34,7 +34,7 @@ public class CcpHttpResponse {
 		try {
 			return new CcpStringDecorator(this.httpResponse).map();
 		} catch (Exception e) {
-			return CcpConstants.EMPTY_JSON;
+			return CcpOtherConstants.EMPTY_JSON;
 		}
 	}
 	
@@ -66,7 +66,7 @@ public class CcpHttpResponse {
 	
 	
 	public String toString() {
-		return CcpConstants.EMPTY_JSON
+		return CcpOtherConstants.EMPTY_JSON
 				.put("httpStatus", this.httpStatus)
 				.put("httpResponse", this.httpResponse)
 				.toString();

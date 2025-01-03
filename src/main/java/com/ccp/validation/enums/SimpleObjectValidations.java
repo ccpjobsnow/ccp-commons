@@ -1,6 +1,6 @@
 package com.ccp.validation.enums;
 
-import com.ccp.constantes.CcpConstants;
+import com.ccp.constantes.CcpOtherConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.validation.CcpJsonFieldsValidations;
 import com.ccp.validation.annotations.SimpleObject;
@@ -29,7 +29,7 @@ public enum SimpleObjectValidations {
 			}
 			
 			String completeRuleName = CcpJsonFieldsValidations.getCompleteRuleName(SimpleObject.class, this);
-			CcpJsonRepresentation errors = CcpConstants.EMPTY_JSON.addToList("wrongFields", (Object[])fields);
+			CcpJsonRepresentation errors = CcpOtherConstants.EMPTY_JSON.addToList("wrongFields", (Object[])fields);
 			result = result.addToItem("errors", completeRuleName, errors);
 			return result;
 
@@ -81,7 +81,7 @@ public enum SimpleObjectValidations {
 		
 		String completeRuleName = CcpJsonFieldsValidations.getCompleteRuleName(SimpleObject.class, this);
 		
-		CcpJsonRepresentation errors = CcpConstants.EMPTY_JSON;
+		CcpJsonRepresentation errors = CcpOtherConstants.EMPTY_JSON;
 		
 		for (String field : fields) {
 			
@@ -92,7 +92,7 @@ public enum SimpleObjectValidations {
 			}
 			
 			Object value = json.content.get(field);
-			CcpJsonRepresentation fieldDetails = CcpConstants.EMPTY_JSON
+			CcpJsonRepresentation fieldDetails = CcpOtherConstants.EMPTY_JSON
 					.put("name", field)
 					.put("value", value)
 					;

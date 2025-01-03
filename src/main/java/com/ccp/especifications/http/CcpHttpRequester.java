@@ -3,7 +3,7 @@ package com.ccp.especifications.http;
 import java.util.Arrays;
 import java.util.List;
 
-import com.ccp.constantes.CcpConstants;
+import com.ccp.constantes.CcpOtherConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 
 public interface CcpHttpRequester {
@@ -19,7 +19,7 @@ public interface CcpHttpRequester {
 		}
 		List<Integer> asList = Arrays.asList(numbers);
 		throw new RuntimeException(
-				CcpConstants.EMPTY_JSON
+				CcpOtherConstants.EMPTY_JSON
 				.put("url", url)
 				.put("method", method)
 				.put("headers", headers)

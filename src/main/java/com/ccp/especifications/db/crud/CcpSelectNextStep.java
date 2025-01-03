@@ -12,7 +12,7 @@ public class CcpSelectNextStep {
 
 	}
 	
-	public CcpSelectFinally andFinallyReturningThisFields(String... fields) {
+	public CcpSelectFinally andFinallyReturningTheseFields(String... fields) {
 		return new CcpSelectFinally(this.id, this.statements, fields);
 	}
 	

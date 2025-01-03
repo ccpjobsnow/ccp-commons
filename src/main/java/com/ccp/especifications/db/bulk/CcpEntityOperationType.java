@@ -3,16 +3,16 @@ package com.ccp.especifications.db.bulk;
 
 import java.util.function.Function;
 
-import com.ccp.constantes.CcpConstants;
+import com.ccp.constantes.CcpOtherConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.exceptions.db.CcpEntityRecordNotFound;
 
 public enum CcpEntityOperationType {
 
-	create(CcpConstants.EMPTY_JSON.put("409", (Function<CcpBulkItem,CcpBulkItem>) x -> getUpdateOperationType(x))), 
-	update(CcpConstants.EMPTY_JSON.put("404", (Function<CcpBulkItem,CcpBulkItem>) x -> getCreateOperationType(x))), 
-	delete(CcpConstants.EMPTY_JSON.put("404", (Function<CcpBulkItem,CcpBulkItem>) x -> 
+	create(CcpOtherConstants.EMPTY_JSON.put("409", (Function<CcpBulkItem,CcpBulkItem>) x -> getUpdateOperationType(x))), 
+	update(CcpOtherConstants.EMPTY_JSON.put("404", (Function<CcpBulkItem,CcpBulkItem>) x -> getCreateOperationType(x))), 
+	delete(CcpOtherConstants.EMPTY_JSON.put("404", (Function<CcpBulkItem,CcpBulkItem>) x -> 
 	{
 		throw new CcpEntityRecordNotFound(x.entity, x.json);
 	}))
