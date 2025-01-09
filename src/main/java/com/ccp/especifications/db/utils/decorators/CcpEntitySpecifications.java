@@ -10,4 +10,6 @@ import java.lang.annotation.Target;
 public @interface CcpEntitySpecifications {
 
 	boolean cacheableEntity();
+	
+	Class<?>[] jsonTransformations();
 }

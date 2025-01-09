@@ -5,7 +5,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-public class CcpUrlDecorator {
+public class CcpUrlDecorator implements CcpDecorator<String> {
 	public final String content;
 
 	protected CcpUrlDecorator(String content) {
@@ -36,6 +36,10 @@ public class CcpUrlDecorator {
 		}
 		return encode;
 
+	}
+
+	public String getContent() {
+		return this.content;
 	}
 
 	

@@ -21,14 +21,13 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.ccp.constantes.CcpOtherConstants;
-import com.ccp.constantes.CcpStringConstants;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.json.CcpJsonHandler;
-import com.ccp.especifications.password.CcpPasswordHandler;
 import com.ccp.exceptions.json.JsonFieldNotFound;
+import com.ccp.utils.CcpHashAlgorithm;
 import com.ccp.validation.ItIsTrueThatTheFollowingFields;
  
-public final class CcpJsonRepresentation {
+public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Object>>  {
 
 	public final Map<String, Object> content;
 	
@@ -267,8 +266,9 @@ public final class CcpJsonRepresentation {
 		return keySet;
 	}
 
-	public CcpJsonRepresentation put(String field, CcpJsonRepresentation map) {
-		CcpJsonRepresentation put = this.put(field, map.content);
+	public CcpJsonRepresentation put(String field, CcpDecorator<?> map) {
+		Object internalContent = map.getContent();
+		CcpJsonRepresentation put = this.put(field, internalContent);
 		return put;
 	}
 
@@ -760,77 +760,18 @@ public final class CcpJsonRepresentation {
 		return collect;
 	}
 	
-	public CcpJsonRepresentation putNewFieldHash(String oldField, String newField, CcpHashAlgorithm hashType) {
-		String value = this.getAsString(oldField);
-		CcpHashDecorator hash2 = new CcpStringDecorator(value).hash();
-		String hash = hash2.asString(hashType);
-		CcpJsonRepresentation put2 = this.put(oldField, hash);
-		CcpJsonRepresentation put = put2.put(newField, value);
-		return put;
-	}
-	
-	public CcpJsonRepresentation putEmailHash(CcpHashAlgorithm hashType) {
-		CcpJsonRepresentation putNewFieldHash = this.putNewFieldHash(CcpStringConstants.EMAIL.value, "originalEmail", hashType);
-		return putNewFieldHash;
-	}
-	
-	public CcpJsonRepresentation putHashPassword(String fieldName, CcpHashAlgorithm hashType) {
-		String value = this.getAsString(fieldName);
-		CcpHashDecorator hash2 = new CcpStringDecorator(value).hash();
-		String hash = hash2.asString(hashType);
-		CcpJsonRepresentation put2 = this.put(fieldName, hash);
-		return put2;
-	}
-	
-	public CcpJsonRepresentation putRandomToken(int tokenSize, String fieldName) {
-		
-		CcpStringDecorator csd = new CcpStringDecorator(CcpStringConstants.CHARACTERS_TO_GENERATE_TOKEN.value);
-		CcpTextDecorator text = csd.text();
-		CcpTextDecorator generateToken = text.generateToken(tokenSize);
-		String token = generateToken.content;
-		
-		CcpJsonRepresentation put = this.put(fieldName, token);
-		
-		return put;
-	}
-
-	public CcpJsonRepresentation putRandomPassword(int tokenSize, String fieldName, String fieldHashName) {
-		
-		CcpJsonRepresentation transformed = this.putRandomToken(tokenSize, fieldName);
-		
-		String token = transformed.getAsString(fieldName);
-		
-		CcpPasswordHandler dependency = CcpDependencyInjection.getDependency(CcpPasswordHandler.class);
-		
-		String tokenHash = dependency.getHash(token);
-		
-		CcpJsonRepresentation put = transformed.put(fieldHashName, tokenHash);
-		
-		return put;
-
-	}
-
-	public CcpJsonRepresentation putPasswordHash(String fieldName) {
-		CcpJsonRepresentation putPasswordHash = this.putPasswordHash(fieldName, fieldName);
-		return putPasswordHash;
-	}
-	
-	public CcpJsonRepresentation putPasswordHash(String fieldName, String fieldHashName) {
-		
-		String password = this.getAsString(fieldName);
-		
-		CcpPasswordHandler dependency = CcpDependencyInjection.getDependency(CcpPasswordHandler.class);
-		
-		String passwordHash = dependency.getHash(password);
-		
-		CcpJsonRepresentation put = this.put(fieldHashName, passwordHash);
-		
-		return put;
-	}
-	
 	@SuppressWarnings("unchecked")
 	public <T> T removeFieldReturningValue(String field) {
 		Object remove = this.content.remove(field);
 		return (T)remove;
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public CcpJsonRepresentation getTransformedJson(
+			List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> jsonTransformers) {
+		
+		Function[] array = jsonTransformers.toArray(new Function[jsonTransformers.size()]);
+		CcpJsonRepresentation transformedJson = this.getTransformedJson(array);
+		return transformedJson;
 	}
 }

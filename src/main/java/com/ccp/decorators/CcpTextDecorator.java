@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 import com.ccp.constantes.CcpOtherConstants;
 
-public class CcpTextDecorator {
+public class CcpTextDecorator implements CcpDecorator<String> {
 	public final String content;
 
 	protected CcpTextDecorator(String content) {
@@ -310,6 +310,10 @@ public class CcpTextDecorator {
 		String upperCase = text.toUpperCase();
 		CcpTextDecorator ctd = new CcpStringDecorator(upperCase).text().stripAccents();
 		return ctd;
+	}
+
+	public String getContent() {
+		return this.content;
 	}
 
 }

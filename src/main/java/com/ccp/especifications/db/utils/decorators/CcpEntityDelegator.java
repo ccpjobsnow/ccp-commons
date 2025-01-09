@@ -175,4 +175,26 @@ public abstract class CcpEntityDelegator implements CcpEntity{
 		String entityName = this.getEntityName();
 		return entityName;
 	}
+
+	public void validateJson(CcpJsonRepresentation json) {
+		this.entity.validateJson(json);
+	}
+
+	public List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getJsonTransformers() {
+		List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> jsonTransformers = this.entity.getJsonTransformers();
+		return jsonTransformers;
+	}
+
+	public CcpJsonRepresentation getHandledJson(CcpJsonRepresentation json) {
+		CcpJsonRepresentation handledJson = this.entity.getHandledJson(json);
+		return handledJson;
+	}
+
+	public boolean create(CcpJsonRepresentation json, String calculateId) {
+		boolean create = this.entity.create(json, calculateId);
+		return create;
+	}
+	
+	
+	
 }

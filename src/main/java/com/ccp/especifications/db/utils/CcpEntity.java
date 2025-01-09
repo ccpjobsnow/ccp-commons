@@ -12,7 +12,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.ccp.constantes.CcpOtherConstants;
-import com.ccp.decorators.CcpHashAlgorithm;
 import com.ccp.decorators.CcpHashDecorator;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.decorators.CcpStringDecorator;
@@ -24,6 +23,7 @@ import com.ccp.especifications.db.crud.CcpSelectUnionAll;
 import com.ccp.exceptions.db.CcpEntityRecordNotFound;
 import com.ccp.exceptions.process.CcpFlow;
 import com.ccp.process.CcpDefaultProcessStatus;
+import com.ccp.utils.CcpHashAlgorithm;
 
 
 public interface CcpEntity{
@@ -82,7 +82,9 @@ public interface CcpEntity{
 	default CcpJsonRepresentation getPrimaryKeyValues(CcpJsonRepresentation json) {
 		
 		List<String> onlyPrimaryKey = this.getPrimaryKeyNames();
-		CcpJsonRepresentation jsonPiece = json.getJsonPiece(onlyPrimaryKey);
+		List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> jsonTransformers = this.getJsonTransformers();
+		CcpJsonRepresentation transformedJson = json.getTransformedJson(jsonTransformers);
+		CcpJsonRepresentation jsonPiece = transformedJson.getJsonPiece(onlyPrimaryKey);
 		return jsonPiece;
 	}
 	
@@ -161,18 +163,40 @@ public interface CcpEntity{
 		return exists;
 	}
 	
-	
 	default CcpJsonRepresentation createOrUpdate(CcpJsonRepresentation json) {
-		CcpJsonRepresentation onlyExistingFields = this.getOnlyExistingFields(json);
 		this.create(json);
-		return onlyExistingFields;
+		List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> jsonTransformers = this.getJsonTransformers();
+		CcpJsonRepresentation handledJson = json.getTransformedJson(jsonTransformers);
+		return handledJson;
+	}
+
+	//TODO REPLICAR VALIDACAO DE CAMPOS PARA OPERACOES CREATE OU UPDATE DO BULK
+	default CcpJsonRepresentation createOrUpdate(CcpJsonRepresentation json, String id) {
+		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
+		String entityName = this.getEntityName();
+		CcpJsonRepresentation handledJson = this.getHandledJson(json);
+		CcpJsonRepresentation onlyExistingFields = this.getOnlyExistingFields(handledJson);
+		crud.createOrUpdate(entityName, onlyExistingFields, id);
+		return handledJson;
 	}
 
 	default boolean create(CcpJsonRepresentation json) {
-		CcpJsonRepresentation onlyExistingFields = this.getOnlyExistingFields(json);
-		this.validateJson(onlyExistingFields);
+		CcpJsonRepresentation handledJson = this.getHandledJson(json);
+		CcpJsonRepresentation onlyExistingFields = this.getOnlyExistingFields(handledJson);
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
 		String calculateId = this.calculateId(json);
+		String entityName = this.getEntityName();
+		CcpJsonRepresentation createOrUpdate = crud.createOrUpdate(entityName, onlyExistingFields, calculateId);
+		String result = createOrUpdate.getAsString("result");
+		boolean created = "created".equals(result);
+		
+		return created;
+	}
+	
+	default boolean create(CcpJsonRepresentation json, String calculateId) {
+		CcpJsonRepresentation handledJson = this.getHandledJson(json);
+		CcpJsonRepresentation onlyExistingFields = this.getOnlyExistingFields(handledJson);
+		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
 		String entityName = this.getEntityName();
 		CcpJsonRepresentation createOrUpdate = crud.createOrUpdate(entityName, onlyExistingFields, calculateId);
 		String result = createOrUpdate.getAsString("result");
@@ -197,14 +221,10 @@ public interface CcpEntity{
 		return remove;
 	}
 
-	//TODO REPLICAR VALIDACAO DE CAMPOS PARA OPERACOES CREATE OU UPDATE DO BULK
-	default CcpJsonRepresentation createOrUpdate(CcpJsonRepresentation json, String id) {
-		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
-		String entityName = this.getEntityName();
-		CcpJsonRepresentation onlyExistingFields = this.getOnlyExistingFields(json);
-		this.validateJson(onlyExistingFields);
-		CcpJsonRepresentation createOrUpdate = crud.createOrUpdate(entityName, onlyExistingFields, id);
-		return createOrUpdate;
+	default CcpJsonRepresentation getHandledJson(CcpJsonRepresentation json) {
+		List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> jsonTransformers = this.getJsonTransformers();
+		CcpJsonRepresentation transformedJson = json.getTransformedJson(jsonTransformers);
+		return transformedJson;
 	}
 	
 
@@ -298,4 +318,6 @@ public interface CcpEntity{
 	default void validateJson(CcpJsonRepresentation json) {
 
 	}
+	
+	List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getJsonTransformers();
 }

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class CcpCollectionDecorator implements Iterable<Object>{
+public class CcpCollectionDecorator implements Iterable<Object>, CcpDecorator<Collection<Object>>{
 
 	public final Collection<Object> content;
 	
@@ -113,6 +113,10 @@ public class CcpCollectionDecorator implements Iterable<Object>{
 		List<Object> subList = arrayList.subList(start, end);
 		CcpCollectionDecorator ccpCollectionDecorator = new CcpCollectionDecorator(subList);
 		return ccpCollectionDecorator;
+	}
+
+	public Collection<Object> getContent() {
+		return this.content;
 	}
 	
 	

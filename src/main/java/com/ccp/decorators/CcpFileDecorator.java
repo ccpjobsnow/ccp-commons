@@ -21,7 +21,7 @@ import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.json.CcpJsonHandler;
 
 
-public class CcpFileDecorator {
+public class CcpFileDecorator implements CcpDecorator<String> {
 	public final String content;
 	public final CcpFileDecorator parent;
 	protected CcpFileDecorator(String content) {
@@ -234,5 +234,9 @@ public class CcpFileDecorator {
 		File file = tryToCreateFolder();
 		file.delete();
 		return this;
+	}
+
+	public String getContent() {
+		return this.content;
 	}
 }

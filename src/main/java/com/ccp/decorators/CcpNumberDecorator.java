@@ -2,7 +2,7 @@ package com.ccp.decorators;
 
 import java.util.Collection;
 
-public class CcpNumberDecorator {
+public class CcpNumberDecorator implements CcpDecorator<Double> {
 	public final double content;
 
 	public CcpNumberDecorator(String content) {
@@ -46,5 +46,9 @@ public class CcpNumberDecorator {
 		Double[] a = new Double[size];
 		Double[] array = restrictedValues.toArray(a);
 		return this.belongsToRestrictedValues(array);
+	}
+
+	public Double getContent() {
+		return this.content;
 	}	
 }

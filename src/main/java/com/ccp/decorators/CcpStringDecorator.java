@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.json.CcpJsonHandler;
 
-public class CcpStringDecorator {
+public class CcpStringDecorator implements CcpDecorator<String> {
 
 	public final String content;
 
@@ -120,6 +120,11 @@ public class CcpStringDecorator {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+
+
+	public String getContent() {
+		return this.content;
 	}
 	
 }

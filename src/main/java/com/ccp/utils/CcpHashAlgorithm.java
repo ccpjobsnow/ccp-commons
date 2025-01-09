@@ -1,4 +1,4 @@
-package com.ccp.decorators;
+package com.ccp.utils;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

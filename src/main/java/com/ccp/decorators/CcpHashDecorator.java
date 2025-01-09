@@ -4,7 +4,9 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 
-public class CcpHashDecorator {
+import com.ccp.utils.CcpHashAlgorithm;
+
+public class CcpHashDecorator implements CcpDecorator<String> {
 	public final String content;
 
 	protected CcpHashDecorator(String content) {
@@ -31,6 +33,10 @@ public class CcpHashDecorator {
 		byte[] hash = digest.digest(bytes);
 		BigInteger bi = new BigInteger(hash);
 		return bi;
+	}
+
+	public String getContent() {
+		return this.content;
 	}
 
 	

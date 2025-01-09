@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 import com.ccp.constantes.CcpStringConstants;
 
-public class CcpEmailDecorator {
+public class CcpEmailDecorator implements  CcpDecorator<String>{
 
 //	private static Set<String> nonProfessionalDomains = new HashSet<>();
 //	
@@ -177,6 +177,10 @@ public class CcpEmailDecorator {
 
 		String domain = split[1];
 		return domain;
+	}
+
+	public String getContent() {
+		return this.content;
 	}
 
 }

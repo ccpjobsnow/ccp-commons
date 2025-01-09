@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class CcpFolderDecorator {
+public class CcpFolderDecorator implements CcpDecorator<String> {
 	public final String content;
 	public final CcpFolderDecorator parent;
 	protected CcpFolderDecorator(String content) {
@@ -147,5 +147,9 @@ public class CcpFolderDecorator {
 		index.delete();
 		
 		return this;
+	}
+
+	public String getContent() {
+		return this.content;
 	}
 }

@@ -5,12 +5,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class CcpTimeDecorator {
+public class CcpTimeDecorator implements CcpDecorator<Long> {
 	
-	public final Long time;
+	public final Long content;
 	
 	public CcpTimeDecorator(Long time) {
-		this.time = time;
+		this.content = time;
 	}
 	public CcpTimeDecorator() {
 		this(System.currentTimeMillis());
@@ -18,13 +18,13 @@ public class CcpTimeDecorator {
 
 	public long getSecondsEnlapsedSinceMidnight() {
 		Long meiaNoite = this.getMidnight();
-		long tempo = (this.time - meiaNoite) / 1000L;
+		long tempo = (this.content - meiaNoite) / 1000L;
 		return tempo;
 	}
 	
 	public int getYear() {
 		Calendar instance = Calendar.getInstance();
-		instance.setTimeInMillis(this.time);
+		instance.setTimeInMillis(this.content);
 		int year = instance.get(Calendar.YEAR);
 		return year;
 	}
@@ -43,7 +43,7 @@ public class CcpTimeDecorator {
 
 	public String getFormattedDateTime(String pattern) {
 		Date d = new Date();
-		d.setTime(this.time);
+		d.setTime(this.content);
 		SimpleDateFormat sdf = new SimpleDateFormat(pattern);
 		String format = sdf.format(d);
 		return format;
@@ -76,5 +76,9 @@ public class CcpTimeDecorator {
 		
 		new CcpStringDecorator("c:\\logs\\caca_erro_union_all.txt").file().append(ccpTimeDecorator.getFormattedDateTime("dd/MM/yyyy HH:mm:ss.SSS") + ": " + message);
 		
+	}
+
+	public Long getContent() {
+		return this.content;
 	}
 }

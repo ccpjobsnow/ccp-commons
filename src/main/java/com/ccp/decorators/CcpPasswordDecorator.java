@@ -1,6 +1,6 @@
 package com.ccp.decorators;
 
-public class CcpPasswordDecorator {
+public class CcpPasswordDecorator implements CcpDecorator<String> {
 
 	public final String content;
 
@@ -17,6 +17,10 @@ public class CcpPasswordDecorator {
 		   return true;
 		} 
 		return false;
+	}
+
+	public String getContent() {
+		return this.content;
 	}
 	
 }

@@ -7,7 +7,7 @@ import java.net.URL;
 
 import com.ccp.exceptions.process.CcpMissingInputStream;
 
-public class CcpInputStreamDecorator {
+public class CcpInputStreamDecorator implements CcpDecorator<String> {
 	
 	private final String content;
 
@@ -95,5 +95,9 @@ public class CcpInputStreamDecorator {
 		}
 		InputStream is = this.file();
 		return is;
+	}
+
+	public String getContent() {
+		return this.content;
 	}
 }
