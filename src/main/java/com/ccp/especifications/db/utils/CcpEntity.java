@@ -170,7 +170,7 @@ public interface CcpEntity{
 		return handledJson;
 	}
 
-	//TODO REPLICAR VALIDACAO DE CAMPOS PARA OPERACOES CREATE OU UPDATE DO BULK
+	//FIXME REPLICAR VALIDACAO DE CAMPOS PARA OPERACOES CREATE OU UPDATE DO BULK
 	default CcpJsonRepresentation createOrUpdate(CcpJsonRepresentation json, String id) {
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
 		String entityName = this.getEntityName();
@@ -233,6 +233,12 @@ public interface CcpEntity{
 		String[] array = Arrays.asList(fields).stream().map(x -> x.name()).collect(Collectors.toList()).toArray(new String[fields.length]);
 		CcpJsonRepresentation subMap = json.getJsonPiece(array);
 		return subMap;
+	}
+	
+	default CcpJsonRepresentation getOnlyExistingFieldsAndHandledJson(CcpJsonRepresentation json) {
+		CcpJsonRepresentation onlyExistingFields = this.getOnlyExistingFields(json);
+		CcpJsonRepresentation handledJson = this.getHandledJson(onlyExistingFields);
+		return handledJson;
 	}
 
 	default List<String> getPrimaryKeyNames() {

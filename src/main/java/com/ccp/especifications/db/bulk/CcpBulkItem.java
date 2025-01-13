@@ -12,7 +12,7 @@ public class CcpBulkItem {
 	public final CcpEntity entity;
 	public final String id;
 
-	public CcpBulkItem (CcpJsonRepresentation json, CcpSelectUnionAll unionAll, CcpEntity entity) {
+	public CcpBulkItem(CcpJsonRepresentation json, CcpSelectUnionAll unionAll, CcpEntity entity) {
 
 		boolean presentInThisUnionAll = entity.isPresentInThisUnionAll(unionAll, json);
 		
@@ -31,9 +31,9 @@ public class CcpBulkItem {
 	}
 
 	public CcpBulkItem(CcpJsonRepresentation json, CcpEntityOperationType operation, CcpEntity entity, String id) {
+		this.json = entity.getOnlyExistingFields(json);
 		this.operation = operation;
 		this.entity = entity;
-		this.json = json;
 		this.id = id;
 	}
 
@@ -76,6 +76,7 @@ public class CcpBulkItem {
 			if(differentId) {
 				return false;
 			}
+			
 			boolean differentOperation = other.operation.equals(this.operation) == false;
 			
 			if(differentOperation) {

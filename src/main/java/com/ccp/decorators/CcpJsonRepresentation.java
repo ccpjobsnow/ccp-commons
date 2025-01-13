@@ -117,20 +117,42 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 		StackTraceElement[] st = e.getStackTrace();
 		List<String> stackTrace = new ArrayList<>();
 		for (StackTraceElement ste : st) {
-			int lineNumber = ste.getLineNumber();
-			String methodName = ste.getMethodName();
-			String fileName = ste.getFileName();
-			if(fileName == null) {
-				continue;
-			}
-			String key = fileName.replace(".java", "") + "." + methodName + ":" + lineNumber+ "\n";
-			stackTrace.add(key);
+			String stackTraceLine = getStackTraceLine(ste);
+			stackTrace.add(stackTraceLine);
+		}
+		Object causeDetails = getCauseDetails(cause, st);
+		jr = jr.put("type", e.getClass().getName()).put("stackTrace", stackTrace).put("message", message).put("cause", causeDetails);
+		return jr;
+	}
+
+	private static Object getCauseDetails(Throwable cause, StackTraceElement[] st) {
+		boolean hasCause = cause != null;
+		
+		if(hasCause) {
+			CcpJsonRepresentation errorDetails = getErrorDetails(cause);
+			return errorDetails;
 		}
 		
-		CcpJsonRepresentation causeDetails = getErrorDetails(cause);
+		boolean emptyStackTrace = st.length == 0;
+		
+		if(emptyStackTrace) {
+			return "";
+		}
+		
+		StackTraceElement firstStackLine = st[0];
+		String firstLine = getStackTraceLine(firstStackLine);
+		return firstLine;
+	}
 
-		jr = jr.put("type", e.getClass().getName()).put("stackTrace", stackTrace.toString()).put("msg", message).put("cause", causeDetails);
-		return jr;
+	private static String getStackTraceLine(StackTraceElement ste) {
+		int lineNumber = ste.getLineNumber();
+		String methodName = ste.getMethodName();
+		String fileName = ste.getFileName();
+		if(fileName == null) {
+			//return jr;
+		}
+		String key = fileName.replace(".java", "") + "." + methodName + ":" + lineNumber+ "<BR>";
+		return key;
 	}
 	
 	public Long getAsLongNumber(String field) {
