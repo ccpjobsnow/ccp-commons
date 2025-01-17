@@ -28,6 +28,13 @@ import com.ccp.utils.CcpHashAlgorithm;
 
 public interface CcpEntity{
 
+	default CcpBulkItem toBulkItemToCreateOrDelete(CcpSelectUnionAll unionAll, CcpJsonRepresentation json) {
+		boolean presentInThisUnionAll = this.isPresentInThisUnionAll(unionAll, json);
+		CcpEntityOperationType operation = presentInThisUnionAll ? CcpEntityOperationType.delete : CcpEntityOperationType.create;
+		CcpBulkItem bulkItem = this.toBulkItem(json, operation);
+		return bulkItem;
+	}
+	
 	default List<CcpJsonRepresentation> getParametersToSearch(CcpJsonRepresentation json) {
 		
 		String id = this.calculateId(json);
@@ -104,7 +111,8 @@ public interface CcpEntity{
 	}
 	
 	default CcpBulkItem toBulkItem(CcpJsonRepresentation json, CcpEntityOperationType operation) {
-		CcpBulkItem ccpBulkItem = new CcpBulkItem(json, operation, this);
+		String calculateId = this.calculateId(json);
+		CcpBulkItem ccpBulkItem = new CcpBulkItem(json, operation, this, calculateId);
 		return ccpBulkItem;
 	}
 	
@@ -236,9 +244,9 @@ public interface CcpEntity{
 	}
 	
 	default CcpJsonRepresentation getOnlyExistingFieldsAndHandledJson(CcpJsonRepresentation json) {
-		CcpJsonRepresentation onlyExistingFields = this.getOnlyExistingFields(json);
-		CcpJsonRepresentation handledJson = this.getHandledJson(onlyExistingFields);
-		return handledJson;
+		CcpJsonRepresentation handledJson = this.getHandledJson(json);
+		CcpJsonRepresentation onlyExistingFields = this.getOnlyExistingFields(handledJson);
+		return onlyExistingFields;
 	}
 
 	default List<String> getPrimaryKeyNames() {

@@ -19,7 +19,7 @@ public interface CcpEntityConfigurator {
 	default List<CcpBulkItem> toCreateBulkItems(CcpEntity entity, String... jsons){
 		List<CcpBulkItem> collect = Arrays.asList(jsons).stream()
 		.map(json -> new CcpJsonRepresentation(json))
-		.map(json -> new CcpBulkItem(json, CcpEntityOperationType.create, entity))
+		.map(json -> entity.toBulkItem(json, CcpEntityOperationType.create))
 		.collect(Collectors.toList());
 		return collect;
 	}

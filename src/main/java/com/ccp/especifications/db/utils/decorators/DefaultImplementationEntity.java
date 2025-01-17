@@ -44,7 +44,7 @@ final class DefaultImplementationEntity implements CcpEntity{
 	protected List<CcpBulkItem> toCreateBulkItems(String... jsons){
 		List<CcpBulkItem> collect = Arrays.asList(jsons)
 		.stream().map(x -> new CcpJsonRepresentation(x))
-		.map(x -> new CcpBulkItem(x, CcpEntityOperationType.create, this))
+		.map(x -> this.toBulkItem(x, CcpEntityOperationType.create))
 		.collect(Collectors.toList());
 		return collect;
 	}

@@ -2,7 +2,6 @@ package com.ccp.especifications.db.bulk;
 
 import com.ccp.constantes.CcpOtherConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
-import com.ccp.especifications.db.crud.CcpSelectUnionAll;
 import com.ccp.especifications.db.utils.CcpEntity;
 
 public class CcpBulkItem {
@@ -11,27 +10,12 @@ public class CcpBulkItem {
 	public final CcpJsonRepresentation json;
 	public final CcpEntity entity;
 	public final String id;
-
-	public CcpBulkItem(CcpJsonRepresentation json, CcpSelectUnionAll unionAll, CcpEntity entity) {
-
-		boolean presentInThisUnionAll = entity.isPresentInThisUnionAll(unionAll, json);
-		
-		this.operation = presentInThisUnionAll ? CcpEntityOperationType.delete : CcpEntityOperationType.create;
-		this.json = entity.getRequiredEntityRow(unionAll, json);
-		this.id = entity.calculateId(json);
-		this.entity = entity;
-		
-	}
-	
-	public CcpBulkItem(CcpJsonRepresentation json, CcpEntityOperationType operation, CcpEntity entity) {
-		this.json = entity.getOnlyExistingFields(json);
-		this.id = entity.calculateId(json);
-		this.operation = operation;
-		this.entity = entity;
+	void lancarErro() {
+		throw new RuntimeException("erro lançado só por zoeira");
 	}
 
 	public CcpBulkItem(CcpJsonRepresentation json, CcpEntityOperationType operation, CcpEntity entity, String id) {
-		this.json = entity.getOnlyExistingFields(json);
+		this.json = entity.getOnlyExistingFieldsAndHandledJson(json);
 		this.operation = operation;
 		this.entity = entity;
 		this.id = id;

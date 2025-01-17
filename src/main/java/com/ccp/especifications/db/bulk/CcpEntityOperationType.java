@@ -24,11 +24,11 @@ public enum CcpEntityOperationType {
 		this.handlers = handlers;
 	}
 	private static CcpBulkItem getUpdateOperationType(CcpBulkItem x) {
-		CcpBulkItem ccpBulkItem = new CcpBulkItem(x.json, CcpEntityOperationType.update, x.entity);
+		CcpBulkItem ccpBulkItem = x.entity.toBulkItem(x.json, CcpEntityOperationType.update);
 		return ccpBulkItem;
 	}
 	private static CcpBulkItem getCreateOperationType(CcpBulkItem x) {
-		CcpBulkItem ccpBulkItem = new CcpBulkItem(x.json, CcpEntityOperationType.update, x.entity);
+		CcpBulkItem ccpBulkItem = x.entity.toBulkItem(x.json, CcpEntityOperationType.update);
 		return ccpBulkItem;
 	}
 	
@@ -39,7 +39,7 @@ public enum CcpEntityOperationType {
 		
 		if(statusNotFound) {
 			CcpJsonRepresentation json = reprocessJsonProducer.apply(result);
-			CcpBulkItem ccpBulkItem = new CcpBulkItem(json, create, entityToReprocess);
+			CcpBulkItem ccpBulkItem = entityToReprocess.toBulkItem(json, CcpEntityOperationType.create);
 			return ccpBulkItem;
 		}
 		
