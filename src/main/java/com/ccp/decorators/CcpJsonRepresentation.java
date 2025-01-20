@@ -118,7 +118,7 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 		List<String> stackTrace = new ArrayList<>();
 		for (StackTraceElement ste : st) {
 			String stackTraceLine = getStackTraceLine(ste);
-			stackTrace.add(stackTraceLine);
+			stackTrace.add(stackTraceLine); 
 		}
 		Object causeDetails = getCauseDetails(cause, st);
 		jr = jr.put("type", e.getClass().getName()).put("stackTrace", stackTrace).put("message", message).put("cause", causeDetails);
@@ -126,6 +126,7 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 	}
 
 	private static Object getCauseDetails(Throwable cause, StackTraceElement[] st) {
+		
 		boolean hasCause = cause != null;
 		
 		if(hasCause) {
@@ -133,15 +134,16 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 			return errorDetails;
 		}
 		
-		boolean emptyStackTrace = st.length == 0;
-		
-		if(emptyStackTrace) {
-			return "";
+		int k = 0;
+		List<String> stack = new ArrayList<>();
+		for (StackTraceElement stackTraceElement : st) {
+			String line = getStackTraceLine(stackTraceElement);
+			stack.add(line);
+			if(k++ >= 100) {
+				break;
+			}
 		}
-		
-		StackTraceElement firstStackLine = st[0];
-		String firstLine = getStackTraceLine(firstStackLine);
-		return firstLine;
+		return stack; 
 	}
 
 	private static String getStackTraceLine(StackTraceElement ste) {
@@ -149,7 +151,7 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 		String methodName = ste.getMethodName();
 		String fileName = ste.getFileName();
 		if(fileName == null) {
-			//return jr;
+			return "";
 		}
 		String key = fileName.replace(".java", "") + "." + methodName + ":" + lineNumber+ "<BR>";
 		return key;

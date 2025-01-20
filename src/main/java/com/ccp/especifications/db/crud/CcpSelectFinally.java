@@ -48,7 +48,7 @@ public class CcpSelectFinally {
 			CcpJsonRepresentation... specifications) {
 		List<CcpEntity> keySet = Arrays.asList(specifications).stream()
 				.filter(x -> x.containsAllFields("entity"))
-				.map(x -> (CcpEntity) x.get("entity") )
+				.map(x -> (CcpEntity) x.get("entity") ) 
 				.collect(Collectors.toList());
 		
 		LinkedHashSet<CcpEntity> set = new LinkedHashSet<>(keySet);

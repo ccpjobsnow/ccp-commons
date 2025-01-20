@@ -17,7 +17,7 @@ public interface CcpBulkOperationResult {
 	int status();
 	
 	default CcpBulkItem getReprocess(Function<CcpBulkOperationResult, CcpJsonRepresentation> reprocessJsonMapper, CcpEntity reprocessEntity) {
-		CcpBulkItem bulkItem = this.getBulkItem();
+		CcpBulkItem bulkItem = this.getBulkItem(); 
 		CcpBulkItem reprocess = bulkItem.operation.getReprocess(reprocessJsonMapper, this, reprocessEntity);
 		return reprocess;
 	}

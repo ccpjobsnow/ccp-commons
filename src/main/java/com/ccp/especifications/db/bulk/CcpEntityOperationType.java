@@ -10,8 +10,8 @@ import com.ccp.exceptions.db.CcpEntityRecordNotFound;
 
 public enum CcpEntityOperationType {
 
-	create(CcpOtherConstants.EMPTY_JSON.put("409", (Function<CcpBulkItem,CcpBulkItem>) x -> getUpdateOperationType(x))), 
-	update(CcpOtherConstants.EMPTY_JSON.put("404", (Function<CcpBulkItem,CcpBulkItem>) x -> getCreateOperationType(x))), 
+	create(CcpOtherConstants.EMPTY_JSON.put("409", (Function<CcpBulkItem,CcpBulkItem>) x -> replaceCreateToUpdate(x))), 
+	update(CcpOtherConstants.EMPTY_JSON.put("404", (Function<CcpBulkItem,CcpBulkItem>) x -> replaceUpdateToCreate(x))), 
 	delete(CcpOtherConstants.EMPTY_JSON.put("404", (Function<CcpBulkItem,CcpBulkItem>) x -> 
 	{
 		throw new CcpEntityRecordNotFound(x.entity, x.json);
@@ -23,12 +23,14 @@ public enum CcpEntityOperationType {
 	private CcpEntityOperationType(CcpJsonRepresentation handlers) {
 		this.handlers = handlers;
 	}
-	private static CcpBulkItem getUpdateOperationType(CcpBulkItem x) {
-		CcpBulkItem ccpBulkItem = x.entity.toBulkItem(x.json, CcpEntityOperationType.update);
+	private static CcpBulkItem replaceCreateToUpdate(CcpBulkItem x) {
+		CcpBulkItem ccpBulkItem = new CcpBulkItem(x.json, CcpEntityOperationType.update, x.entity, x.id
+				, json -> x.entity.getOnlyExistingFields(json)
+				);
 		return ccpBulkItem;
 	}
-	private static CcpBulkItem getCreateOperationType(CcpBulkItem x) {
-		CcpBulkItem ccpBulkItem = x.entity.toBulkItem(x.json, CcpEntityOperationType.update);
+	private static CcpBulkItem replaceUpdateToCreate(CcpBulkItem x) {
+		CcpBulkItem ccpBulkItem = new CcpBulkItem(x.json, CcpEntityOperationType.create, x.entity, x.id);
 		return ccpBulkItem;
 	}
 	

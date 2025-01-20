@@ -1,5 +1,7 @@
 package com.ccp.especifications.db.bulk;
 
+import java.util.function.Function;
+
 import com.ccp.constantes.CcpOtherConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.utils.CcpEntity;
@@ -14,8 +16,14 @@ public class CcpBulkItem {
 		throw new RuntimeException("erro lançado só por zoeira");
 	}
 
-	public CcpBulkItem(CcpJsonRepresentation json, CcpEntityOperationType operation, CcpEntity entity, String id) {
-		this.json = entity.getOnlyExistingFieldsAndHandledJson(json);
+	public CcpBulkItem(CcpJsonRepresentation json, CcpEntityOperationType operation, CcpEntity entity, 
+			String id) {
+		this(json, operation, entity, id, x -> entity.getOnlyExistingFieldsAndHandledJson(x));
+	}
+	
+	public CcpBulkItem(CcpJsonRepresentation json, CcpEntityOperationType operation, CcpEntity entity, 
+			String id, Function<CcpJsonRepresentation, CcpJsonRepresentation> transformer) {
+		this.json = transformer.apply(json);
 		this.operation = operation;
 		this.entity = entity;
 		this.id = id;

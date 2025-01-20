@@ -178,7 +178,6 @@ public interface CcpEntity{
 		return handledJson;
 	}
 
-	//FIXME REPLICAR VALIDACAO DE CAMPOS PARA OPERACOES CREATE OU UPDATE DO BULK
 	default CcpJsonRepresentation createOrUpdate(CcpJsonRepresentation json, String id) {
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
 		String entityName = this.getEntityName();

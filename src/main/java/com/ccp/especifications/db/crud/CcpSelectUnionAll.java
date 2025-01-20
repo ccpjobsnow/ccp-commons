@@ -61,7 +61,7 @@ public class CcpSelectUnionAll {
 			Function<CcpJsonRepresentation, CcpJsonRepresentation> doBeforeSavingIfRecordIsNotFound = handler.doBeforeSavingIfRecordIsNotFound();
 			CcpJsonRepresentation apply = doBeforeSavingIfRecordIsNotFound.apply(searchParameter);
 			T whenRecordWasNotFoundInTheEntitySearch = handler.whenRecordWasNotFoundInTheEntitySearch(apply);
-			return whenRecordWasNotFoundInTheEntitySearch;
+			return whenRecordWasNotFoundInTheEntitySearch; 
 		}
 		
 		CcpJsonRepresentation requiredEntityRow = entity.getRequiredEntityRow(this, searchParameter);
