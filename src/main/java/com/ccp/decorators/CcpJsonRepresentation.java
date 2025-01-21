@@ -798,4 +798,11 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 		CcpJsonRepresentation transformedJson = this.getTransformedJson(array);
 		return transformedJson;
 	}
+	
+	public boolean isInnerJson(String fieldName) {
+		CcpJsonHandler handler = CcpDependencyInjection.getDependency(CcpJsonHandler.class);
+		String asString = this.getAsString(fieldName);
+		boolean validJson = handler.isValidJson(asString);
+		return validJson;
+	}
 }
