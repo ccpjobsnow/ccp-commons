@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.ccp.decorators.CcpJsonRepresentation;
+import com.ccp.decorators.CcpNumberDecorator;
+import com.ccp.decorators.CcpStringDecorator;
 
 public class IfTheyAreArrayValuesSoEachOne {
 	public final CcpJsonRepresentation content;
@@ -74,7 +77,17 @@ public class IfTheyAreArrayValuesSoEachOne {
 		List<Double> asList = Arrays.asList(args);
 
 		for (String field : this.fields) {
-			List<Double> collect = this.content.getAsStringList(field).stream().map(x -> Double.valueOf(x)).collect(Collectors.toList());
+			Optional<String> findFirst = this.content.getAsStringList(field)
+			.stream().filter(x -> new CcpStringDecorator(x).isDoubleNumber()==false).findFirst();
+			boolean sameNumberIsNotDouble = findFirst.isPresent();
+			if (sameNumberIsNotDouble) {
+				return false;
+			}
+			List<Double> collect = this.content.getAsStringList(field)
+			.stream()
+			.map(x -> Double.valueOf(x))
+			.collect(Collectors.toList());
+			
 			for (Double number : collect) {
 				boolean notAllowedValue = asList.contains(number) == false;
 				if(notAllowedValue) {
