@@ -23,20 +23,29 @@ public final class AndIfThisExecutionReturns {
 	public IfThisExecutionReturns ifThisExecutionReturns(CcpProcessStatus processStatus) {
 		return new IfThisExecutionReturns(this.givenFinalTargetProcess, this.givenJson, processStatus, this.flow);
 	}
+	
 	public CcpJsonRepresentation endThisStatement() {
 		try {
-			CcpJsonRepresentation responseWhenTheFlowWasFixed = this.givenFinalTargetProcess.apply(this.givenJson);
-			return responseWhenTheFlowWasFixed;
+			CcpJsonRepresentation responseWhenTheFlowPerformsNormally = this.givenFinalTargetProcess.apply(this.givenJson);
+			return responseWhenTheFlowPerformsNormally;
 		} catch (CcpFlow e) {
 			this.tryToFixTheFlow(e);
-			CcpJsonRepresentation endThisStatement = this.endThisStatement();
-			return endThisStatement;
+			CcpJsonRepresentation responseWhenTheFlowWasFixed = this.givenFinalTargetProcess.apply(this.givenJson);
+			return responseWhenTheFlowWasFixed;
 		}
 	}
 
 	private void tryToFixTheFlow(CcpFlow e) {
-		Function<CcpJsonRepresentation, CcpJsonRepresentation> nextFlow = this.flow.getAsObject(e.status.name());
-		nextFlow.apply(this.givenJson);
+		
+		Function<CcpJsonRepresentation, CcpJsonRepresentation>[] nextFlows = this.flow.getAsObject(e.status.name());
+		CcpJsonRepresentation json = this.givenJson;
+		
+		CcpJsonRepresentation flowWithoutCurrentProcessStatus = this.flow.removeField(e.status.name());
+
+		for (Function<CcpJsonRepresentation, CcpJsonRepresentation> nextFlow : nextFlows) {
+			AndIfThisExecutionReturns andIfThisExecutionReturns = new AndIfThisExecutionReturns(nextFlow, json, flowWithoutCurrentProcessStatus);
+			json = andIfThisExecutionReturns.endThisStatement();
+		}
 	}
 
 }

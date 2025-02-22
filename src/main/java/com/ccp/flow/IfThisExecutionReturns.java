@@ -20,7 +20,8 @@ public final class IfThisExecutionReturns {
 		this.flow = flow;
 	}
 	
-	public ExecuteTheGivenProcess executeTheGivenProcess(Function<CcpJsonRepresentation, CcpJsonRepresentation> givenProcess) {
+	@SuppressWarnings("unchecked")
+	public ExecuteTheGivenProcess executeTheGivenProcesses(Function<CcpJsonRepresentation, CcpJsonRepresentation>... givenProcess) {
 		CcpJsonRepresentation nextFlow = this.flow.put(processStatus.name(), givenProcess);
 		return new ExecuteTheGivenProcess(this.givenFinalTargetProcess, this.givenJson, nextFlow);
 	}
