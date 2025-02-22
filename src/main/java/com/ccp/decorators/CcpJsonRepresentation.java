@@ -340,6 +340,16 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 		return put;
 	}
 	
+	public CcpJsonRepresentation putSameValueInManyFields(Object value, String... fields) {
+		CcpJsonRepresentation json = this;
+		
+		for (String field : fields) {
+			json = json.put(field, value);
+		}
+		
+		return json;
+	}
+	
 	public CcpJsonRepresentation put(String field, Object value) {
 		
 		Map<String, Object> content = new LinkedHashMap<>();
