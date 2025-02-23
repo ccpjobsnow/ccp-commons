@@ -21,7 +21,7 @@ import com.ccp.especifications.db.bulk.CcpEntityOperationType;
 import com.ccp.especifications.db.crud.CcpCrud;
 import com.ccp.especifications.db.crud.CcpSelectUnionAll;
 import com.ccp.exceptions.db.CcpEntityRecordNotFound;
-import com.ccp.exceptions.process.CcpFlow;
+import com.ccp.exceptions.process.CcpFlowDiversion;
 import com.ccp.process.CcpDefaultProcessStatus;
 import com.ccp.utils.CcpHashAlgorithm;
 
@@ -136,7 +136,7 @@ public interface CcpEntity{
 
 	default CcpJsonRepresentation getOneById(CcpJsonRepresentation json) {
 		String entityName = this.getEntityName();
-		CcpJsonRepresentation md = this.getOneById(json, x -> {throw new CcpFlow(x.put("entity", entityName), CcpDefaultProcessStatus.NOT_FOUND);});
+		CcpJsonRepresentation md = this.getOneById(json, x -> {throw new CcpFlowDiversion(x.put("entity", entityName), CcpDefaultProcessStatus.NOT_FOUND);});
 		return md;
 	}
 	
@@ -151,7 +151,7 @@ public interface CcpEntity{
 		} catch (CcpEntityRecordNotFound e) {
 			String entityName = this.getEntityName();
 			CcpJsonRepresentation put = CcpOtherConstants.EMPTY_JSON.put("id", id).put("entity", entityName);
-			throw new CcpFlow(put, CcpDefaultProcessStatus.NOT_FOUND);
+			throw new CcpFlowDiversion(put, CcpDefaultProcessStatus.NOT_FOUND);
 		}
 	}
 	
@@ -213,12 +213,12 @@ public interface CcpEntity{
 	}
 	
 
-	default boolean delete(CcpJsonRepresentation json) {
+	default CcpJsonRepresentation delete(CcpJsonRepresentation json) {
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
 		String calculateId = this.calculateId(json);
 		String entityName = this.getEntityName();
-		boolean remove = crud.delete(entityName, calculateId);
-		return remove;
+		crud.delete(entityName, calculateId);
+		return json;
 	}
 	
 	default boolean delete(String id) {

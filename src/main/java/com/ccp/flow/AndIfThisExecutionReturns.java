@@ -3,7 +3,7 @@ package com.ccp.flow;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpJsonRepresentation;
-import com.ccp.exceptions.process.CcpFlow;
+import com.ccp.exceptions.process.CcpFlowDiversion;
 import com.ccp.process.CcpProcessStatus;
 
 public final class AndIfThisExecutionReturns {
@@ -24,18 +24,30 @@ public final class AndIfThisExecutionReturns {
 		return new IfThisExecutionReturns(this.givenFinalTargetProcess, this.givenJson, processStatus, this.flow);
 	}
 	
-	public CcpJsonRepresentation endThisStatement() {
+	@SuppressWarnings("unchecked")
+	public CcpJsonRepresentation endThisStatement(Function<CcpJsonRepresentation, CcpJsonRepresentation>... whatToNext) {
 		try {
-			CcpJsonRepresentation responseWhenTheFlowPerformsNormally = this.givenFinalTargetProcess.apply(this.givenJson);
+			CcpJsonRepresentation responseWhenTheFlowPerformsNormally = this.tryToPerformNormally(whatToNext);
 			return responseWhenTheFlowPerformsNormally;
-		} catch (CcpFlow e) {
-			this.tryToFixTheFlow(e);
-			CcpJsonRepresentation responseWhenTheFlowWasFixed = this.givenFinalTargetProcess.apply(this.givenJson);
+		} catch (CcpFlowDiversion e) {
+			CcpJsonRepresentation responseWhenTheFlowWasFixed = this.tryToFixTheFlow(e);
 			return responseWhenTheFlowWasFixed;
 		}
 	}
 
-	private void tryToFixTheFlow(CcpFlow e) {
+
+	@SuppressWarnings("unchecked")
+	private CcpJsonRepresentation tryToPerformNormally(
+			Function<CcpJsonRepresentation, CcpJsonRepresentation>... whatToNext) {
+		CcpJsonRepresentation responseWhenTheFlowPerformsNormally = this.givenFinalTargetProcess.apply(this.givenJson);
+		for (Function<CcpJsonRepresentation, CcpJsonRepresentation> function : whatToNext) {
+			function.apply(this.givenJson);
+		}
+		return responseWhenTheFlowPerformsNormally;
+	}
+
+	@SuppressWarnings("unchecked")
+	private CcpJsonRepresentation tryToFixTheFlow(CcpFlowDiversion e) {
 		
 		Function<CcpJsonRepresentation, CcpJsonRepresentation>[] nextFlows = this.flow.getAsObject(e.status.name());
 		CcpJsonRepresentation json = this.givenJson;
@@ -46,6 +58,9 @@ public final class AndIfThisExecutionReturns {
 			AndIfThisExecutionReturns andIfThisExecutionReturns = new AndIfThisExecutionReturns(nextFlow, json, flowWithoutCurrentProcessStatus);
 			json = andIfThisExecutionReturns.endThisStatement();
 		}
+		
+		CcpJsonRepresentation responseWhenTheFlowWasFixed = this.givenFinalTargetProcess.apply(this.givenJson);
+		return responseWhenTheFlowWasFixed;
 	}
 
 }
