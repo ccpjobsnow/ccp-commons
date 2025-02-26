@@ -439,7 +439,7 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 	@SuppressWarnings("unchecked")
 	public <T>T getValueFromPath(T defaultValue, String... paths){
 		CcpJsonRepresentation initial = this;
-		for(int k = 0; k < paths.length -1 ; k++) {
+		for(int k = 0; k < paths.length - 1 ; k++) {
 			String path = paths[k];
 			initial = initial.getInnerJson(path);
 		}
@@ -455,6 +455,26 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 		Object object = initial.get(lastPath);
 		return (T) object;
 	}
+
+	public List<CcpJsonRepresentation> getInnerJsonListFromPath(String...paths) {
+		ArrayList<Map<String, Object>> valueFromPath = this.getValueFromPath(new ArrayList<Map<String, Object>>(), paths);
+		
+		boolean empty = valueFromPath.isEmpty();
+		
+		if(empty) {
+			return new ArrayList<>();
+		}
+		
+		for (Object map : valueFromPath) {
+			boolean wrongType = map instanceof Map == false;
+			if(wrongType) {
+				throw new RuntimeException(" The keys " + Arrays.asList(paths) + " do not return the type " + Map.class.getName() + ", instead they return " + map.getClass().getName());
+			}
+		}
+		
+		List<CcpJsonRepresentation> collect = valueFromPath.stream().map(json -> new CcpJsonRepresentation(json)).collect(Collectors.toList());
+		return collect;
+	}	
 	
 	@SuppressWarnings("unchecked")
 	private <T>T getValueFromPath(String... paths){

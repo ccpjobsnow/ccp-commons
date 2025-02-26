@@ -121,9 +121,9 @@ class DecoratorCacheEntity extends CcpEntityDelegator{
 		return create;
 	}
 
-	public boolean delete(CcpJsonRepresentation json) {
+	public CcpJsonRepresentation delete(CcpJsonRepresentation json) {
 		
-		boolean delete = this.entity.delete(json);
+		CcpJsonRepresentation delete = this.entity.delete(json);
 		
 		CcpCacheDecorator cache = this.getCache(json);
 		

@@ -111,8 +111,8 @@ public abstract class CcpEntityDelegator implements CcpEntity{
 		return create;
 	}
 
-	public boolean delete(CcpJsonRepresentation json) {
-		boolean delete = this.entity.delete(json);
+	public CcpJsonRepresentation delete(CcpJsonRepresentation json) {
+		CcpJsonRepresentation delete = this.entity.delete(json);
 		return delete;
 	}
 
