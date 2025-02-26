@@ -1,6 +1,7 @@
 package com.ccp.validation.enums;
 
 import com.ccp.decorators.CcpJsonRepresentation;
+import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.decorators.CcpTimeDecorator;
 
 public interface TimeEnlapsedValidations extends BoundValidations {
@@ -19,6 +20,11 @@ public interface TimeEnlapsedValidations extends BoundValidations {
 			return true;
 		}
 		for (String field : fields) {
+			String asString = json.getAsString(field);
+			boolean isNotDoubleNumber = new CcpStringDecorator(asString).isDoubleNumber() == false;
+			if(isNotDoubleNumber) {
+				return false;
+			}
 			Double difference = this.getDifference(json, field);
 			boolean true1 = this.isTrue(bound, difference);
 			if(true1) {
