@@ -578,6 +578,9 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 		CcpJsonHandler jsonHandler = CcpDependencyInjection.getDependency(CcpJsonHandler.class);
 		try {
 			List<Object> fromJson = jsonHandler.fromJson(object.toString());
+			if(fromJson == null) {
+				return new ArrayList<>();
+			}
 			return fromJson;
 		} catch (Exception e) {
 			return Arrays.asList(object.toString());
