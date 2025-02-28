@@ -399,13 +399,6 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 		return json;
 	}
 	
-	public CcpJsonRepresentation removeFields(Collection<String> fields) {
-		String[] array = fields.toArray(new String[fields.size()]);
-		CcpJsonRepresentation removeFields = this.removeFields(array);
-		return removeFields;
-	}
-	
-	
 	public CcpJsonRepresentation removeFields(String... fields) {
 		CcpJsonRepresentation json = this;
 		for (String field : fields) {
@@ -630,11 +623,6 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 		return containsFields;
 	}
 	
-	public boolean containsAnyFields(Collection<String> fields) {
-		String[] array = this.toArray(fields);
-		boolean containsAnyFields = this.containsAnyFields(array);
-		return containsAnyFields;
-	}
 
 	public boolean containsAnyFields(String... fields) {
 		boolean containsFields = this.containsFields(true, fields);
@@ -719,33 +707,6 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 		return put;
 	}
 
-	public CcpJsonRepresentation whenHasField(String field, Function<CcpJsonRepresentation, CcpJsonRepresentation> process) {
-		
-		boolean hasNot = this.containsAllFields(field) == false;
-		
-		if(hasNot) {
-			CcpJsonRepresentation response = new CcpJsonRepresentation(this.content);
-			return response;
-		}
-		
-		CcpJsonRepresentation execute = process.apply(this);
-		
-		return execute;
-	}
-
-	public CcpJsonRepresentation whenHasNotField(String field, Function<CcpJsonRepresentation, CcpJsonRepresentation> process) {
-		
-		boolean has = this.containsAllFields(field);
-		
-		if(has) {
-			CcpJsonRepresentation response = new CcpJsonRepresentation(this.content);
-			return response;
-		}
-		
-		CcpJsonRepresentation execute = process.apply(this);
-		
-		return execute;
-	}
 
 	public CcpJsonRepresentation copyIfNotContains(String fieldToCopy, String fieldToPaste) {
 
@@ -817,17 +778,6 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 		return false;
 	}
 	
-	public List<CcpTextDecorator> getAsTextDecoratorList(String field){
-		List<String> asStringList = this.getAsStringList(field);
-		List<CcpTextDecorator> collect = asStringList.stream().map(x -> new CcpTextDecorator(x)).collect(Collectors.toList());
-		return collect;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public <T> T removeFieldReturningValue(String field) {
-		Object remove = this.content.remove(field);
-		return (T)remove;
-	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public CcpJsonRepresentation getTransformedJson(
