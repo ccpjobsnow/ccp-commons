@@ -571,6 +571,12 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 			return new ArrayList<>();
 		}
 		
+		if(object instanceof Object[]) {
+			Object[] array = this.getAsObject(field);
+			List<Object> asList = Arrays.asList(array);
+			return asList;
+		}
+		
 		if(object instanceof Collection<?> list) {
 			return new ArrayList<Object>(list);
 		}

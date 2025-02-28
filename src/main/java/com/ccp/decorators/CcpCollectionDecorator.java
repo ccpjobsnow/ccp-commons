@@ -27,9 +27,6 @@ public class CcpCollectionDecorator implements Iterable<Object>, CcpDecorator<Co
 		this.content = asObjectList;
 	}
 
-
-	
-	
 	public boolean isLongNumberList() {
 		
 		boolean validList = this.isValidList(x -> x.isLongNumber());
