@@ -9,7 +9,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.ccp.decorators.CcpJsonRepresentation;
-import com.ccp.decorators.CcpNumberDecorator;
 import com.ccp.decorators.CcpStringDecorator;
 
 public class IfTheyAreArrayValuesSoEachOne {
@@ -78,7 +77,7 @@ public class IfTheyAreArrayValuesSoEachOne {
 
 		for (String field : this.fields) {
 			Optional<String> findFirst = this.content.getAsStringList(field)
-			.stream().filter(x -> new CcpStringDecorator(x).isDoubleNumber()==false).findFirst();
+			.stream().filter(x -> new CcpStringDecorator(x).isDoubleNumber() == false).findFirst();
 			boolean sameNumberIsNotDouble = findFirst.isPresent();
 			if (sameNumberIsNotDouble) {
 				return false;

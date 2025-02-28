@@ -23,7 +23,7 @@ public interface TimeEnlapsedValidations extends BoundValidations {
 			String asString = json.getAsString(field);
 			boolean isNotDoubleNumber = new CcpStringDecorator(asString).isDoubleNumber() == false;
 			if(isNotDoubleNumber) {
-				return false;
+				continue;
 			}
 			Double difference = this.getDifference(json, field);
 			boolean true1 = this.isTrue(bound, difference);
