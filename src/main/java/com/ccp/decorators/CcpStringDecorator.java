@@ -78,7 +78,6 @@ public class CcpStringDecorator implements CcpDecorator<String> {
 		return this.content;
 	}
 	
-	@SuppressWarnings("unused")
 	public boolean isList() {
 		boolean valid = this.isValid(x ->  {
 			Collection<?> fromJson = CcpDependencyInjection.getDependency(CcpJsonHandler.class).fromJson(x);
