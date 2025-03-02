@@ -66,16 +66,17 @@ final class DefaultImplementationEntity implements CcpEntity{
 	}
 
 	
-	public void validateJson(CcpJsonRepresentation json) {
+	public CcpEntity validateJson(CcpJsonRepresentation json) {
 		boolean hasNotAnnotation = this.entityClass.isAnnotationPresent(CcpJsonFieldsValidation.class) == false;
 		
 		if(hasNotAnnotation) {
-			return;
+			return this;
 		}
 		
 		CcpJsonFieldsValidation annotation = this.entityClass.getAnnotation(CcpJsonFieldsValidation.class);
 		String actionName = "save(" +this.entityClass.getSimpleName();
 		CcpJsonFieldsValidations.validate(annotation, json.content, actionName);
+		return this;
 	}
 
 	public List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getJsonTransformers() {

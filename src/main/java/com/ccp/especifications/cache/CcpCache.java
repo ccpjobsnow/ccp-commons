@@ -49,6 +49,6 @@ public interface CcpCache {
 		return isPresent;
 	}
 
-	void put(String key, Object value, int secondsDelay);
+	CcpCache put(String key, Object value, int secondsDelay);
 	<V> V delete(String key);
 }

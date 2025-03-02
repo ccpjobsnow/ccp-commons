@@ -328,8 +328,8 @@ public interface CcpEntity{
 	}
 
 	
-	default void validateJson(CcpJsonRepresentation json) {
-
+	default CcpEntity validateJson(CcpJsonRepresentation json) {
+		return this;
 	}
 	
 	List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getJsonTransformers();

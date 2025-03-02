@@ -57,8 +57,9 @@ public final class CcpCacheDecorator {
 		return this.cache.isPresent(this.key);
 	}
 
-	public void put(Object value, int secondsDelay) {
+	public CcpCacheDecorator put(Object value, int secondsDelay) {
 		this.cache.put(this.key, value, secondsDelay);
+		return this;
 	}
 
 	public <V> V delete() {

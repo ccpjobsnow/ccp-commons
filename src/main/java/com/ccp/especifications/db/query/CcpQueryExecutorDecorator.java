@@ -35,9 +35,10 @@ public class CcpQueryExecutorDecorator {
 		return this.requestExecutor.update(this.elasticQuery, this.resourcesNames, newValues);
 	}
 
-	public void consumeQueryResult(String scrollTime, int size,
+	public CcpQueryExecutorDecorator consumeQueryResult(String scrollTime, int size,
 			Consumer<CcpJsonRepresentation> consumer, String... fields) {
 		this.requestExecutor.consumeQueryResult(this.elasticQuery, this.resourcesNames, scrollTime, size, consumer, fields);
+		return this;
 	}
 
 	public long total() {

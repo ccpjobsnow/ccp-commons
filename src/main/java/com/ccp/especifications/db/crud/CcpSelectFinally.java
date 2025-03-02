@@ -25,10 +25,11 @@ public class CcpSelectFinally {
 
 	}
 
-	public void endThisProcedure(Function<CcpJsonRepresentation, CcpJsonRepresentation> whenFlowError, Consumer<String[]> functionToDeleteKeysInTheCache) {
+	public CcpSelectFinally endThisProcedure(Function<CcpJsonRepresentation, CcpJsonRepresentation> whenFlowError, Consumer<String[]> functionToDeleteKeysInTheCache) {
 		List<CcpJsonRepresentation> statements = this.statements.getAsJsonList("statements");
 		CcpJsonRepresentation[] array = statements.toArray(new CcpJsonRepresentation[statements.size()]);
 		this.findById(this.id, whenFlowError, functionToDeleteKeysInTheCache, array);
+		return this;
 	}
 
 	public CcpJsonRepresentation endThisProcedureRetrievingTheResultingData(Function<CcpJsonRepresentation, CcpJsonRepresentation> whenFlowError, Consumer<String[]> functionToDeleteKeysInTheCache

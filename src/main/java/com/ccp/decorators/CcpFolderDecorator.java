@@ -32,14 +32,15 @@ public class CcpFolderDecorator implements CcpDecorator<String> {
 		return ccpFileDecorator;
 	}
 
-	public void zip() {
+	public CcpFolderDecorator zip() {
 		
 		File fileToZip = new File(this.content);
 		
 		String fileName = fileToZip.getName();
 		
 		try(FileOutputStream fos = new FileOutputStream(fileName + ".zip");ZipOutputStream zipOut = new ZipOutputStream(fos);) {
-			this.zip(fileToZip, zipOut);
+			CcpFolderDecorator zip = this.zip(fileToZip, zipOut);
+			return zip;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -51,9 +52,9 @@ public class CcpFolderDecorator implements CcpDecorator<String> {
 		return name;
 	}
 
-	private void zip(File fileToZip, ZipOutputStream zipOut) throws IOException {
+	private CcpFolderDecorator zip(File fileToZip, ZipOutputStream zipOut) throws IOException {
         if (fileToZip.isHidden()) {
-            return;
+            return this;
         }
         if (fileToZip.isDirectory()) {
             String terminacao = "/";
@@ -67,7 +68,7 @@ public class CcpFolderDecorator implements CcpDecorator<String> {
             for (File childFile : children) {
                 new CcpFolderDecorator(this.content + "/" + childFile.getName()).zip(childFile, zipOut);
             }
-            return;
+            return this;
         }
         try(FileInputStream fis = new FileInputStream(fileToZip)) {
             ZipEntry zipEntry = new ZipEntry(this.content);
@@ -77,13 +78,13 @@ public class CcpFolderDecorator implements CcpDecorator<String> {
             while ((length = fis.read(bytes)) >= 0) {
                 zipOut.write(bytes, 0, length);
             }
-			
+            return this;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
     }
 	
-	public void readFolders(Consumer<CcpFolderDecorator> consumer){
+	public CcpFolderDecorator readFolders(Consumer<CcpFolderDecorator> consumer){
 		File[] files = new File(this.content).listFiles();
 		if(files == null) {
 			throw new RuntimeException("The folder '" + this.content + "' does not exist");
@@ -93,9 +94,10 @@ public class CcpFolderDecorator implements CcpDecorator<String> {
 			CcpFolderDecorator f = new CcpFolderDecorator(absolutePath);
 			consumer.accept(f);
 		}
+        return this;
 	}
 	
-	public void readFiles(Consumer<CcpFileDecorator> consumer){
+	public CcpFolderDecorator readFiles(Consumer<CcpFileDecorator> consumer){
 		File[] files = new File(this.content).listFiles();
 		if(files == null) {
 			throw new RuntimeException("The folder '" + this.content + "' does not exist");
@@ -105,6 +107,7 @@ public class CcpFolderDecorator implements CcpDecorator<String> {
 			CcpFileDecorator f = new CcpFileDecorator(absolutePath);
 			consumer.accept(f);
 		}
+        return this;
 	}
 
 	

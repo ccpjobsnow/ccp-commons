@@ -8,20 +8,22 @@ import com.ccp.decorators.CcpJsonRepresentation;
 
 public interface CcpMensageriaSender {
 
-	default void send (String topic, List<CcpJsonRepresentation> msgs) {
+	default CcpMensageriaSender send (String topic, List<CcpJsonRepresentation> msgs) {
 		int size = msgs.size();
 		CcpJsonRepresentation[] a = new CcpJsonRepresentation[size];
 		CcpJsonRepresentation[] array = msgs.toArray(a);
-		this.send(topic, array);
+		CcpMensageriaSender send = this.send(topic, array);
+		return send;
 	}
 	
-	default void send(String topic, CcpJsonRepresentation... msgs) {
+	default CcpMensageriaSender send(String topic, CcpJsonRepresentation... msgs) {
 		String[] array = Arrays.asList(msgs).stream().map(x -> x.asUgglyJson()).collect(Collectors.toList())
 		.toArray(new String[msgs.length]);
-		this.send(topic, array);
+		CcpMensageriaSender send = this.send(topic, array);
+		return send;
 	}
 	
-	void send(String topic, String... msgs);
+	CcpMensageriaSender send(String topic, String... msgs);
 
 	
 	

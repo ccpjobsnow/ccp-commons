@@ -26,6 +26,6 @@ public interface CcpDbRequester {
 
 	String getFieldNameToId();
 
-	void createTables(String pathToCreateEntityScript, String pathToJavaClasses, String mappingJnEntitiesErrors,
+	CcpDbRequester createTables(String pathToCreateEntityScript, String pathToJavaClasses, String mappingJnEntitiesErrors,
 			String insertErrors);
 }

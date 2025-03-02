@@ -176,8 +176,9 @@ public abstract class CcpEntityDelegator implements CcpEntity{
 		return entityName;
 	}
 
-	public void validateJson(CcpJsonRepresentation json) {
-		this.entity.validateJson(json);
+	public CcpEntity validateJson(CcpJsonRepresentation json) {
+		CcpEntity validateJson = this.entity.validateJson(json);
+		return validateJson;
 	}
 
 	public List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getJsonTransformers() {

@@ -67,12 +67,12 @@ class DecoratorTwinEntity extends CcpEntityDelegator {
 
 		return requiredEntityRow;
 	}
-	private void validateTwinEntity(CcpJsonRepresentation json) {
+	private CcpEntity validateTwinEntity(CcpJsonRepresentation json) {
 		CcpEntity twinEntity = this.getTwinEntity();
 		boolean doesNotExist = twinEntity.exists(json) == false;
 		
 		if(doesNotExist) {
-			return;
+			return this;
 		}
 		String id = twinEntity.calculateId(json);
 		String errorMessage = String.format("The id '%s' has been moved from '%s' to '%s' ", id, this, twinEntity);

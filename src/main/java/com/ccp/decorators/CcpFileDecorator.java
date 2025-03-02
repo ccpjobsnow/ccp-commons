@@ -44,14 +44,15 @@ public class CcpFileDecorator implements CcpDecorator<String> {
 		return ccpFileDecorator;
 	}
 
-	public void zip() {
+	public CcpFileDecorator zip() {
 		
 		File fileToZip = tryToCreateFolder();
 		
 		String fileName = fileToZip.getName();
 		
 		try(FileOutputStream fos = new FileOutputStream(fileName + ".zip");ZipOutputStream zipOut = new ZipOutputStream(fos);) {
-			this.zip(fileToZip, zipOut);
+			CcpFileDecorator zip = this.zip(fileToZip, zipOut);
+			return zip;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -68,9 +69,9 @@ public class CcpFileDecorator implements CcpDecorator<String> {
 		return absolutePath;
 	}
 
-	private void zip(File fileToZip, ZipOutputStream zipOut) throws IOException {
+	private CcpFileDecorator zip(File fileToZip, ZipOutputStream zipOut) throws IOException {
         if (fileToZip.isHidden()) {
-            return;
+            return this;
         }
         if (fileToZip.isDirectory()) {
             String terminacao = "/";
@@ -84,7 +85,7 @@ public class CcpFileDecorator implements CcpDecorator<String> {
             for (File childFile : children) {
                 new CcpFileDecorator(this.content + "/" + childFile.getName()).zip(childFile, zipOut);
             }
-            return;
+            return this;
         }
         try(FileInputStream fis = new FileInputStream(fileToZip)) {
             ZipEntry zipEntry = new ZipEntry(this.content);
@@ -94,7 +95,7 @@ public class CcpFileDecorator implements CcpDecorator<String> {
             while ((length = fis.read(bytes)) >= 0) {
                 zipOut.write(bytes, 0, length);
             }
-			
+			return this;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -178,14 +179,14 @@ public class CcpFileDecorator implements CcpDecorator<String> {
 		void onRead(String fileLine, int lineNumber);
 	}
 
-	//FileDecorator readLinesFromFile()
-	public  void readLines( FileLineReader reader){
+	public  CcpFileDecorator readLines(FileLineReader reader){
 		String line;
 		try (FileReader fr = new FileReader(this.content); BufferedReader br = new BufferedReader(fr)) {
 			int k = 0;
 			while ((line = br.readLine()) != null) {
 				reader.onRead(line, k++);
 			}
+			return this;
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}

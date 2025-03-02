@@ -19,11 +19,12 @@ public enum CcpFileBucketOperation {
 	;
 	abstract String execute(CcpFileBucket bucket, String tenant, String folderName, String fileName);
 	
-	public final void execute(String tenant, String folderName, String... files) {
+	public final CcpFileBucketOperation execute(String tenant, String folderName, String... files) {
 		CcpFileBucket bucket = CcpDependencyInjection.getDependency(CcpFileBucket.class);
 		for (String file : files) {
 			this.execute(bucket, tenant, folderName, file);
 		}
+		return this;
 	}
 	public final String execute(String tenant, String folderName, String file) {
 	

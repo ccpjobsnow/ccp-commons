@@ -45,7 +45,7 @@ public interface CcpCrud {
 
 	boolean delete(String entityName, String id); 
 	
-	default void deleteKeysInCache(CcpJsonRepresentation[] jsons, Consumer<String[]> functionToDeleteKeysInTheCache, CcpEntity... entities) {
+	default CcpCrud deleteKeysInCache(CcpJsonRepresentation[] jsons, Consumer<String[]> functionToDeleteKeysInTheCache, CcpEntity... entities) {
 		Set<String> keysToDeleteInCache = new HashSet<>();
 		for (CcpEntity entity : entities) {
 			for (CcpJsonRepresentation json : jsons) {
@@ -56,6 +56,7 @@ public interface CcpCrud {
 		
 		String[] array = keysToDeleteInCache.toArray(new String[keysToDeleteInCache.size()]);
 		functionToDeleteKeysInTheCache.accept(array);
+		return this;
 	}
 	
 

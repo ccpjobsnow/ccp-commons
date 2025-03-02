@@ -70,14 +70,6 @@ public class CcpTimeDecorator implements CcpDecorator<Long> {
 		}
 	}
 
-	public static void log(Object message) {
-		
-		CcpTimeDecorator ccpTimeDecorator = new CcpTimeDecorator();
-		
-		new CcpStringDecorator("c:\\logs\\caca_erro_union_all.txt").file().append(ccpTimeDecorator.getFormattedDateTime("dd/MM/yyyy HH:mm:ss.SSS") + ": " + message);
-		
-	}
-
 	public Long getContent() {
 		return this.content;
 	}

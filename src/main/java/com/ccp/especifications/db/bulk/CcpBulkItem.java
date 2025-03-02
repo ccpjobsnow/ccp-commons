@@ -12,7 +12,8 @@ public class CcpBulkItem {
 	public final CcpJsonRepresentation json;
 	public final CcpEntity entity;
 	public final String id;
-	void lancarErro() {
+	
+	CcpBulkItem lancarErro() {
 		throw new RuntimeException("erro lançado só por zoeira");
 	}
 

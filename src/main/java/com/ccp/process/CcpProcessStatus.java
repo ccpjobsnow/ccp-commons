@@ -18,17 +18,17 @@ public interface CcpProcessStatus {
 		throw new RuntimeException(msg);
 	}
 	
-	default void verifyStatus(int actualStatus, String actualStatusName) {
+	default CcpProcessStatus verifyStatus(int actualStatus, String actualStatusName) {
 		String expectedStatusName = this.verifyStatus(actualStatus);
 		
 		if(actualStatusName.trim().isEmpty()) {
-			return;
+			return this;
 		}
 		
 		boolean correctStatusNumberAndCorrectStatusName = actualStatusName.equals(expectedStatusName);
 		
 		if(correctStatusNumberAndCorrectStatusName) {
-			return;
+			return this;
 		}
 		String msg = String.format("It was expected the status name '%s' but status name '%s' was received insted", expectedStatusName, actualStatusName);
 		throw new RuntimeException(msg);
