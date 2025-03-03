@@ -61,7 +61,7 @@ public final class CcpHttpHandler {
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> flow = this.flows.getOrDefault("" + status, this.alternativeFlow);
 	
 		if(flow == null) {
-			Set<String> fieldSet = this.flows.fieldSet();
+			Set<String> fieldSet = this.flows.fieldSet(); 
 			throw new CcpHttpError(trace, url, method, headers, request, status, response.httpResponse, fieldSet);
 		}
 	
