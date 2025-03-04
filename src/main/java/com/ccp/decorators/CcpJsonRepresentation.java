@@ -218,6 +218,7 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 		return text;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public String getAsString(String field) {
 
 		Object object = this.content.get(field);
@@ -229,6 +230,15 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 
 		if(object == null) {
 			return "";
+		}
+		
+		if(object instanceof Map map) {
+			CcpJsonRepresentation json = new CcpJsonRepresentation(map);
+			return json.toString();
+		}
+
+		if(object instanceof CcpJsonRepresentation json) {
+			return json.toString();
 		}
 		
 		return ("" + object);
@@ -359,7 +369,8 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 		Map<String, Object> content = new LinkedHashMap<>();
 		content.putAll(this.content);
 		content.put(field, value);
-		return new CcpJsonRepresentation(content);
+		CcpJsonRepresentation json = new CcpJsonRepresentation(content);
+		return json;
 	}  
 
 	public CcpJsonRepresentation duplicateValueFromField(String fieldToCopy, String... fieldsToPaste) {
@@ -619,9 +630,6 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 		CcpJsonHandler jsonHandler = CcpDependencyInjection.getDependency(CcpJsonHandler.class);
 		try {
 			List<Object> fromJson = jsonHandler.fromJson(object.toString());
-			if(fromJson == null) {
-				return new ArrayList<>();
-			}
 			return fromJson;
 		} catch (Exception e) {
 			return Arrays.asList(object.toString());
@@ -643,8 +651,8 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 	}
 	
 	public boolean containsField(String field) {
-		Object object = this.content.get(field);
-		return object != null;
+		boolean containsKey = this.content.containsKey(field);
+		return containsKey;
 	}
 
 	public boolean containsAllFields(Collection<String> fields) {
@@ -678,7 +686,10 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 				return assertion;
 			}
 		}
-		return assertion == false;
+		if(assertion == false) {
+			return true;
+		}
+		return false;
 	}
 	
 	public Object get(String field) {
