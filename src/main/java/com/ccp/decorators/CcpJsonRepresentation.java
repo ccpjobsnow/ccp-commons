@@ -670,7 +670,7 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 	
 	public boolean containsAllFields(String... fields) {
 		boolean containsFields = this.containsFields(false, fields);
-		return containsFields;
+		return containsFields; 
 	}
 	
 
