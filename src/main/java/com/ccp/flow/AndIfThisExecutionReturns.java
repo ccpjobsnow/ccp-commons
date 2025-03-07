@@ -3,7 +3,7 @@ package com.ccp.flow;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpJsonRepresentation;
-import com.ccp.exceptions.process.CcpFlowDiversion;
+import com.ccp.exceptions.process.CcpFlowDisturb;
 import com.ccp.process.CcpProcessStatus;
 
 public final class AndIfThisExecutionReturns {
@@ -29,7 +29,7 @@ public final class AndIfThisExecutionReturns {
 		try {
 			CcpJsonRepresentation responseWhenTheFlowPerformsNormally = this.tryToPerformNormally(whatToNext);
 			return responseWhenTheFlowPerformsNormally;
-		} catch (CcpFlowDiversion e) {
+		} catch (CcpFlowDisturb e) {
 			CcpJsonRepresentation responseWhenTheFlowWasFixed = this.tryToFixTheFlow(e);
 			return responseWhenTheFlowWasFixed;
 		}
@@ -47,7 +47,7 @@ public final class AndIfThisExecutionReturns {
 	}
 
 	@SuppressWarnings("unchecked")
-	private CcpJsonRepresentation tryToFixTheFlow(CcpFlowDiversion e) {
+	private CcpJsonRepresentation tryToFixTheFlow(CcpFlowDisturb e) {
 		
 		Function<CcpJsonRepresentation, CcpJsonRepresentation>[] nextFlows = this.flow.getAsObject(e.status.name());
 		CcpJsonRepresentation json = this.givenJson;

@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.utils.CcpEntity;
-import com.ccp.exceptions.process.CcpFlowDiversion;
+import com.ccp.exceptions.process.CcpFlowDisturb;
 import com.ccp.process.CcpProcessStatus;
 
 
@@ -119,7 +119,7 @@ public class CcpSelectFinally {
 						.map(j -> j.getTransformedJsonIfFoundTheField("status", PutStatus.INSTANCE))
 						.collect(Collectors.toList());
 				CcpJsonRepresentation result = apply.put("flow", asList);
-				throw new CcpFlowDiversion(result, status , message, this.fields);
+				throw new CcpFlowDisturb(result, status , message, this.fields);
 			}
 			
 			Function<CcpJsonRepresentation, CcpJsonRepresentation> action = specification.getAsObject("action");
