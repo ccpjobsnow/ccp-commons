@@ -3,6 +3,7 @@ package com.ccp.flow;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpJsonRepresentation;
+import com.ccp.exceptions.json.JsonFieldNotFound;
 import com.ccp.exceptions.process.CcpFlowDisturb;
 import com.ccp.process.CcpProcessStatus;
 
@@ -48,19 +49,23 @@ public final class AndIfThisExecutionReturns {
 
 	@SuppressWarnings("unchecked")
 	private CcpJsonRepresentation tryToFixTheFlow(CcpFlowDisturb e) {
-		
-		Function<CcpJsonRepresentation, CcpJsonRepresentation>[] nextFlows = this.flow.getAsObject(e.status.name());
-		CcpJsonRepresentation json = this.givenJson;
-		
-		CcpJsonRepresentation flowWithoutCurrentProcessStatus = this.flow.removeField(e.status.name());
-
-		for (Function<CcpJsonRepresentation, CcpJsonRepresentation> nextFlow : nextFlows) {
-			AndIfThisExecutionReturns andIfThisExecutionReturns = new AndIfThisExecutionReturns(nextFlow, json, flowWithoutCurrentProcessStatus);
-			json = andIfThisExecutionReturns.endThisStatement();
+		try {
+			Function<CcpJsonRepresentation, CcpJsonRepresentation>[] nextFlows = this.flow.getAsObject(e.status.name());
+			CcpJsonRepresentation json = this.givenJson;
+			
+			CcpJsonRepresentation flowWithoutCurrentProcessStatus = this.flow.removeField(e.status.name());
+			
+			for (Function<CcpJsonRepresentation, CcpJsonRepresentation> nextFlow : nextFlows) {
+				AndIfThisExecutionReturns andIfThisExecutionReturns = new AndIfThisExecutionReturns(nextFlow, json, flowWithoutCurrentProcessStatus);
+				json = andIfThisExecutionReturns.endThisStatement();
+			}
+			
+			CcpJsonRepresentation responseWhenTheFlowWasFixed = this.givenFinalTargetProcess.apply(this.givenJson);
+			return responseWhenTheFlowWasFixed;
+			
+		} catch (JsonFieldNotFound ex) {
+			throw ex;
 		}
-		
-		CcpJsonRepresentation responseWhenTheFlowWasFixed = this.givenFinalTargetProcess.apply(this.givenJson);
-		return responseWhenTheFlowWasFixed;
 	}
 
 }
