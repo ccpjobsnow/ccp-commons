@@ -9,7 +9,8 @@ public enum CcpDefaultProcessStatus implements CcpProcessStatus{
 	REDIRECT(301),
 	SUCCESS(200),
 	CREATED(201),
-	UPDATED(204)
+	UPDATED(204),
+	UNPROCESSABLE_ENTITY(422)
 	;
 
 	public int asNumber() {
