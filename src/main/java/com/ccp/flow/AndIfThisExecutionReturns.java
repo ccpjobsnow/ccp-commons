@@ -24,15 +24,17 @@ public final class AndIfThisExecutionReturns {
 	public IfThisExecutionReturns ifThisExecutionReturns(CcpProcessStatus processStatus) {
 		return new IfThisExecutionReturns(this.givenFinalTargetProcess, this.givenJson, processStatus, this.flow);
 	}
-	
 	@SuppressWarnings("unchecked")
 	public CcpJsonRepresentation endThisStatement(Function<CcpJsonRepresentation, CcpJsonRepresentation>... whatToNext) {
 		try {
 			CcpJsonRepresentation responseWhenTheFlowPerformsNormally = this.tryToPerformNormally(whatToNext);
 			return responseWhenTheFlowPerformsNormally;
 		} catch (CcpFlowDisturb e) {
-			CcpJsonRepresentation responseWhenTheFlowWasFixed = this.tryToFixTheFlow(e);
-			return responseWhenTheFlowWasFixed;
+			CcpJsonRepresentation json = this.tryToFixTheFlow(e);
+			CcpJsonRepresentation remainingFlow = this.flow.removeField(e.status.name());
+			AndIfThisExecutionReturns andIfThisExecutionReturns = new AndIfThisExecutionReturns(this.givenFinalTargetProcess, json, remainingFlow);
+			CcpJsonRepresentation endThisStatement = andIfThisExecutionReturns.endThisStatement(whatToNext);
+			return endThisStatement;
 		}
 	}
 
@@ -47,22 +49,20 @@ public final class AndIfThisExecutionReturns {
 		return responseWhenTheFlowPerformsNormally;
 	}
 
-	@SuppressWarnings("unchecked")
 	private CcpJsonRepresentation tryToFixTheFlow(CcpFlowDisturb e) {
 		try {
 			Function<CcpJsonRepresentation, CcpJsonRepresentation>[] nextFlows = this.flow.getAsObject(e.status.name());
 			CcpJsonRepresentation json = this.givenJson;
 			
-			CcpJsonRepresentation flowWithoutCurrentProcessStatus = this.flow.removeField(e.status.name());
-			
 			for (Function<CcpJsonRepresentation, CcpJsonRepresentation> nextFlow : nextFlows) {
-				AndIfThisExecutionReturns andIfThisExecutionReturns = new AndIfThisExecutionReturns(nextFlow, json, flowWithoutCurrentProcessStatus);
-				json = andIfThisExecutionReturns.endThisStatement();
+				try {
+					json = nextFlow.apply(json);
+				} catch (CcpFlowDisturb flowDisturb) {
+					json = flowDisturb.json.putAll(json);
+				}
 			}
 			
-			CcpJsonRepresentation responseWhenTheFlowWasFixed = this.givenFinalTargetProcess.apply(this.givenJson);
-			return responseWhenTheFlowWasFixed;
-			
+			return json;
 		} catch (JsonFieldNotFound ex) {
 			throw ex;
 		}
