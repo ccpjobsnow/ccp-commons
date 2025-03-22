@@ -8,7 +8,7 @@ import com.ccp.especifications.db.utils.CcpEntity;
 
 public class CcpBulkItem {
 
-	public final CcpEntityOperationType operation;
+	public final CcpEntityBulkOperationType operation;
 	public final CcpJsonRepresentation json;
 	public final CcpEntity entity;
 	public final String id;
@@ -17,12 +17,12 @@ public class CcpBulkItem {
 		throw new RuntimeException("erro lançado só por zoeira");
 	}
 
-	public CcpBulkItem(CcpJsonRepresentation json, CcpEntityOperationType operation, CcpEntity entity, 
+	public CcpBulkItem(CcpJsonRepresentation json, CcpEntityBulkOperationType operation, CcpEntity entity, 
 			String id) {
 		this(json, operation, entity, id, x -> entity.getOnlyExistingFieldsAndHandledJson(x));
 	}
 	
-	public CcpBulkItem(CcpJsonRepresentation json, CcpEntityOperationType operation, CcpEntity entity, 
+	public CcpBulkItem(CcpJsonRepresentation json, CcpEntityBulkOperationType operation, CcpEntity entity, 
 			String id, Function<CcpJsonRepresentation, CcpJsonRepresentation> transformer) {
 		this.json = transformer.apply(json);
 		this.operation = operation;

@@ -17,7 +17,7 @@ import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
-import com.ccp.especifications.db.bulk.CcpEntityOperationType;
+import com.ccp.especifications.db.bulk.CcpEntityBulkOperationType;
 import com.ccp.especifications.db.crud.CcpCrud;
 import com.ccp.especifications.db.crud.CcpSelectUnionAll;
 import com.ccp.exceptions.db.CcpEntityRecordNotFound;
@@ -30,7 +30,7 @@ public interface CcpEntity{
 
 	default CcpBulkItem toBulkItemToCreateOrDelete(CcpSelectUnionAll unionAll, CcpJsonRepresentation json) {
 		boolean presentInThisUnionAll = this.isPresentInThisUnionAll(unionAll, json);
-		CcpEntityOperationType operation = presentInThisUnionAll ? CcpEntityOperationType.delete : CcpEntityOperationType.create;
+		CcpEntityBulkOperationType operation = presentInThisUnionAll ? CcpEntityBulkOperationType.delete : CcpEntityBulkOperationType.create;
 		CcpBulkItem bulkItem = this.toBulkItem(json, operation);
 		return bulkItem;
 	}
@@ -95,7 +95,7 @@ public interface CcpEntity{
 		return jsonPiece;
 	}
 	
-	default CcpBulkItem getRecordCopyToBulkOperation(CcpJsonRepresentation json, CcpEntityOperationType operation) {
+	default CcpBulkItem getRecordCopyToBulkOperation(CcpJsonRepresentation json, CcpEntityBulkOperationType operation) {
 		throw new UnsupportedOperationException();
 	}
 	
@@ -110,7 +110,7 @@ public interface CcpEntity{
 		return thisEntityHasMoreFieldsBesidesPrimaryKeys;
 	}
 	
-	default CcpBulkItem toBulkItem(CcpJsonRepresentation json, CcpEntityOperationType operation) {
+	default CcpBulkItem toBulkItem(CcpJsonRepresentation json, CcpEntityBulkOperationType operation) {
 		String calculateId = this.calculateId(json);
 		CcpBulkItem ccpBulkItem = new CcpBulkItem(json, operation, this, calculateId);
 		return ccpBulkItem;
@@ -172,10 +172,9 @@ public interface CcpEntity{
 	}
 	
 	default CcpJsonRepresentation createOrUpdate(CcpJsonRepresentation json) {
-		this.create(json);
-		List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> jsonTransformers = this.getJsonTransformers();
-		CcpJsonRepresentation handledJson = json.getTransformedJson(jsonTransformers);
-		return handledJson;
+		String id = this.calculateId(json);
+		CcpJsonRepresentation createOrUpdate = this.createOrUpdate(json, id);
+		return createOrUpdate;
 	}
 
 	default CcpJsonRepresentation createOrUpdate(CcpJsonRepresentation json, String id) {
@@ -186,32 +185,6 @@ public interface CcpEntity{
 		crud.createOrUpdate(entityName, onlyExistingFields, id);
 		return handledJson;
 	}
-
-	default boolean create(CcpJsonRepresentation json) {
-		CcpJsonRepresentation handledJson = this.getHandledJson(json);
-		CcpJsonRepresentation onlyExistingFields = this.getOnlyExistingFields(handledJson);
-		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
-		String calculateId = this.calculateId(json);
-		String entityName = this.getEntityName();
-		CcpJsonRepresentation createOrUpdate = crud.createOrUpdate(entityName, onlyExistingFields, calculateId);
-		String result = createOrUpdate.getAsString("result");
-		boolean created = "created".equals(result);
-		
-		return created;
-	}
-	
-	default boolean create(CcpJsonRepresentation json, String calculateId) {
-		CcpJsonRepresentation handledJson = this.getHandledJson(json);
-		CcpJsonRepresentation onlyExistingFields = this.getOnlyExistingFields(handledJson);
-		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
-		String entityName = this.getEntityName();
-		CcpJsonRepresentation createOrUpdate = crud.createOrUpdate(entityName, onlyExistingFields, calculateId);
-		String result = createOrUpdate.getAsString("result");
-		boolean created = "created".equals(result);
-		
-		return created;
-	}
-	
 
 	default CcpJsonRepresentation delete(CcpJsonRepresentation json) {
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
@@ -333,4 +306,8 @@ public interface CcpEntity{
 	}
 	
 	List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getJsonTransformers();
+	
+	default Function<CcpJsonRepresentation, CcpJsonRepresentation> getOperationCallback(CcpEntityCrudOperationType operation){
+		return json -> operation.execute(this, json);
+	}
 }

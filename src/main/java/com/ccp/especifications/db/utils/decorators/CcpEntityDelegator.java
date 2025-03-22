@@ -7,9 +7,10 @@ import java.util.function.Function;
 
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
-import com.ccp.especifications.db.bulk.CcpEntityOperationType;
+import com.ccp.especifications.db.bulk.CcpEntityBulkOperationType;
 import com.ccp.especifications.db.crud.CcpSelectUnionAll;
 import com.ccp.especifications.db.utils.CcpEntity;
+import com.ccp.especifications.db.utils.CcpEntityCrudOperationType;
 import com.ccp.especifications.db.utils.CcpEntityField;
 
 public abstract class CcpEntityDelegator implements CcpEntity{
@@ -50,7 +51,7 @@ public abstract class CcpEntityDelegator implements CcpEntity{
 		return primaryKeyValues;
 	}
 
-	public CcpBulkItem getRecordCopyToBulkOperation(CcpJsonRepresentation json, CcpEntityOperationType operation) {
+	public CcpBulkItem getRecordCopyToBulkOperation(CcpJsonRepresentation json, CcpEntityBulkOperationType operation) {
 		CcpBulkItem recordCopyToBulkOperation = this.entity.getRecordCopyToBulkOperation(json, operation);
 		return recordCopyToBulkOperation;
 	}
@@ -65,7 +66,7 @@ public abstract class CcpEntityDelegator implements CcpEntity{
 		return copyableEntity;
 	}
 
-	public CcpBulkItem toBulkItem(CcpJsonRepresentation json, CcpEntityOperationType operation) {
+	public CcpBulkItem toBulkItem(CcpJsonRepresentation json, CcpEntityBulkOperationType operation) {
 		CcpBulkItem bulkItem = this.entity.toBulkItem(json, operation);
 		return bulkItem;
 	}
@@ -104,11 +105,6 @@ public abstract class CcpEntityDelegator implements CcpEntity{
 	public CcpJsonRepresentation createOrUpdate(CcpJsonRepresentation json) {
 		CcpJsonRepresentation createOrUpdate = this.entity.createOrUpdate(json);
 		return createOrUpdate;
-	}
-
-	public boolean create(CcpJsonRepresentation json) {
-		boolean create = this.entity.create(json);
-		return create;
 	}
 
 	public CcpJsonRepresentation delete(CcpJsonRepresentation json) {
@@ -191,11 +187,21 @@ public abstract class CcpEntityDelegator implements CcpEntity{
 		return handledJson;
 	}
 
-	public boolean create(CcpJsonRepresentation json, String calculateId) {
-		boolean create = this.entity.create(json, calculateId);
-		return create;
+	public CcpBulkItem toBulkItemToCreateOrDelete(CcpSelectUnionAll unionAll, CcpJsonRepresentation json) {
+		CcpBulkItem bulkItemToCreateOrDelete = this.entity.toBulkItemToCreateOrDelete(unionAll, json);
+		return bulkItemToCreateOrDelete;
 	}
-	
+
+	public CcpJsonRepresentation getOnlyExistingFieldsAndHandledJson(CcpJsonRepresentation json) {
+		CcpJsonRepresentation onlyExistingFieldsAndHandledJson = this.entity.getOnlyExistingFieldsAndHandledJson(json);
+		return onlyExistingFieldsAndHandledJson;
+	}
+
+	public Function<CcpJsonRepresentation, CcpJsonRepresentation> getOperationCallback(
+			CcpEntityCrudOperationType operation) {
+		Function<CcpJsonRepresentation, CcpJsonRepresentation> operationCallback = this.entity.getOperationCallback(operation);
+		return operationCallback;
+	}
 	
 	
 }

@@ -9,7 +9,7 @@ public interface CcpDbBulkExecutor {
 	
 	CcpDbBulkExecutor clearRecords();
 	
-	default CcpDbBulkExecutor addRecord(CcpJsonRepresentation json, CcpEntityOperationType operation, CcpEntity entity) {
+	default CcpDbBulkExecutor addRecord(CcpJsonRepresentation json, CcpEntityBulkOperationType operation, CcpEntity entity) {
 		
 		CcpBulkItem bulkItem =  entity.toBulkItem(json, operation);
 		CcpDbBulkExecutor addRecord = this.addRecord(bulkItem);
@@ -26,7 +26,7 @@ public interface CcpDbBulkExecutor {
 		return bulk;
 	}
 	
-	default CcpDbBulkExecutor addRecords(List<CcpJsonRepresentation> records, CcpEntityOperationType operation, CcpEntity entity) {
+	default CcpDbBulkExecutor addRecords(List<CcpJsonRepresentation> records, CcpEntityBulkOperationType operation, CcpEntity entity) {
 		CcpDbBulkExecutor bulk = this;
 		for (CcpJsonRepresentation _record : records) {
 			bulk = bulk.addRecord(_record, operation, entity);

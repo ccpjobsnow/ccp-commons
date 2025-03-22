@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
-import com.ccp.especifications.db.bulk.CcpEntityOperationType;
+import com.ccp.especifications.db.bulk.CcpEntityBulkOperationType;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.db.utils.CcpEntityField;
 import com.ccp.validation.CcpJsonFieldsValidations;
@@ -44,7 +44,7 @@ final class DefaultImplementationEntity implements CcpEntity{
 	protected List<CcpBulkItem> toCreateBulkItems(String... jsons){
 		List<CcpBulkItem> collect = Arrays.asList(jsons)
 		.stream().map(x -> new CcpJsonRepresentation(x))
-		.map(x -> this.toBulkItem(x, CcpEntityOperationType.create))
+		.map(x -> this.toBulkItem(x, CcpEntityBulkOperationType.create))
 		.collect(Collectors.toList());
 		return collect;
 	}

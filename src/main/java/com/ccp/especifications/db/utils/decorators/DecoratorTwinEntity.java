@@ -95,7 +95,7 @@ class DecoratorTwinEntity extends CcpEntityDelegator {
 		
 		CcpJsonRepresentation delete = this.entity.delete(json);
 		CcpEntity twinEntity = this.getTwinEntity();
-		twinEntity.create(json);
+		twinEntity.delete(json);
 		return delete;
 	}
 
@@ -103,7 +103,7 @@ class DecoratorTwinEntity extends CcpEntityDelegator {
 		CcpJsonRepresentation oneById = this.entity.getOneById(id);
 		boolean delete = this.entity.delete(id);
 		CcpEntity twinEntity = this.getTwinEntity();
-		twinEntity.create(oneById);
+		twinEntity.delete(oneById);
 		return delete;
 	}
 	

@@ -8,7 +8,7 @@ import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.exceptions.db.CcpEntityRecordNotFound;
 
-public enum CcpEntityOperationType {
+public enum CcpEntityBulkOperationType {
 
 	create(CcpOtherConstants.EMPTY_JSON.put("409", (Function<CcpBulkItem,CcpBulkItem>) x -> replaceCreateToUpdate(x))), 
 	update(CcpOtherConstants.EMPTY_JSON.put("404", (Function<CcpBulkItem,CcpBulkItem>) x -> replaceUpdateToCreate(x))), 
@@ -20,17 +20,17 @@ public enum CcpEntityOperationType {
 	
 	private final CcpJsonRepresentation handlers;
 
-	private CcpEntityOperationType(CcpJsonRepresentation handlers) {
+	private CcpEntityBulkOperationType(CcpJsonRepresentation handlers) {
 		this.handlers = handlers;
 	}
 	private static CcpBulkItem replaceCreateToUpdate(CcpBulkItem x) {
-		CcpBulkItem ccpBulkItem = new CcpBulkItem(x.json, CcpEntityOperationType.update, x.entity, x.id
+		CcpBulkItem ccpBulkItem = new CcpBulkItem(x.json, CcpEntityBulkOperationType.update, x.entity, x.id
 				, json -> x.entity.getOnlyExistingFields(json)
 				);
 		return ccpBulkItem;
 	}
 	private static CcpBulkItem replaceUpdateToCreate(CcpBulkItem x) {
-		CcpBulkItem ccpBulkItem = new CcpBulkItem(x.json, CcpEntityOperationType.create, x.entity, x.id);
+		CcpBulkItem ccpBulkItem = new CcpBulkItem(x.json, CcpEntityBulkOperationType.create, x.entity, x.id);
 		return ccpBulkItem;
 	}
 	
@@ -41,7 +41,7 @@ public enum CcpEntityOperationType {
 		
 		if(statusNotFound) {
 			CcpJsonRepresentation json = reprocessJsonProducer.apply(result);
-			CcpBulkItem ccpBulkItem = entityToReprocess.toBulkItem(json, CcpEntityOperationType.create);
+			CcpBulkItem ccpBulkItem = entityToReprocess.toBulkItem(json, CcpEntityBulkOperationType.create);
 			return ccpBulkItem;
 		}
 		
