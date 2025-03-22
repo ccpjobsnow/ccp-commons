@@ -103,7 +103,17 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 		if(content == null) {
 			throw new RuntimeException("this json is null");
 		}
-		this.content = Collections.unmodifiableMap(content);
+		LinkedHashMap<String, Object> linkedHashMap = new LinkedHashMap<String, Object>();
+		Set<String> keySet = content.keySet();
+		for (String key : keySet) {
+			Object value = content.get(key);
+			if(value instanceof Class clazz) {
+				value = clazz.toString();
+			}
+			linkedHashMap.put(key, value);
+		}
+		
+		this.content = Collections.unmodifiableMap(linkedHashMap);
 	}
 
 	private static CcpJsonRepresentation getErrorDetails(Throwable e) {
@@ -280,10 +290,16 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 
 	public String asUgglyJson() {
 		CcpJsonHandler json = CcpDependencyInjection.getDependency(CcpJsonHandler.class);
-		String json2 = json.toJson(this.content);
-		return json2;
+		
+		try {
+			String json2 = json.toJson(this.content);
+			return json2;
+			
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
-	
+
 	public String asPrettyJson() {
 		CcpJsonHandler json = CcpDependencyInjection.getDependency(CcpJsonHandler.class);
 		String asPrettyJson = json.asPrettyJson(this.content);
@@ -292,9 +308,14 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 	
 	
 	public String toString() {
-		CcpJsonHandler json = CcpDependencyInjection.getDependency(CcpJsonHandler.class);
-		String _json = json.asPrettyJson(new TreeMap<>(this.content));
-		return _json;
+		try {
+			CcpJsonHandler json = CcpDependencyInjection.getDependency(CcpJsonHandler.class);
+			String _json = json.asPrettyJson(new TreeMap<>(this.content));
+			return _json;
+			
+		} catch (Exception e) {
+			return this.content.toString();
+		}
 	}
 	
 

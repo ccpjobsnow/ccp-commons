@@ -1,27 +1,23 @@
 package com.ccp.exceptions.http;
 
-import java.util.Set;
-
-import com.ccp.constantes.CcpOtherConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
+import com.ccp.decorators.CcpStringDecorator;
 
 @SuppressWarnings("serial")
 public class CcpHttpError extends RuntimeException {
 
 	public final CcpJsonRepresentation entity;
-	public final boolean clientError;
-	public final boolean serverError;
 	
-	public CcpHttpError(String trace, String url, String method, CcpJsonRepresentation headers, String request, Integer status, String response, Set<String> expectedStatusList) {
-		super("\n\n\nTrace: " + trace + "\nDetails: " + getEntity(url, method, headers, request, status, response) + "\n. All expected status: " + expectedStatusList);
-		this.entity = getEntity(url, method, headers, request, status, response);
-		this.clientError = status >= 400 && status < 500;
-		this.serverError = status >= 500 && status < 600;
+	public CcpHttpError(CcpJsonRepresentation entity) {
+		super(getMessage(entity));
+		this.entity = entity;
+	}
+	private static String getMessage(CcpJsonRepresentation entity) {
+		String string = "\n\n\nTrace:{trace}\nDetails: {details}\n. All expected status: {expectedStatusList}";
+		String message = new CcpStringDecorator(string).text().getMessage(entity).content;
+		return message;
+	}
 	
-	}
-	private static CcpJsonRepresentation getEntity(String url, String method, CcpJsonRepresentation headers, String request, Integer status, String response) {
-		return CcpOtherConstants.EMPTY_JSON.put("url", url).put("method", method).put("headers", headers).put("request", request).put("status", status).put("response", response);
-	}
 	
 	
 }

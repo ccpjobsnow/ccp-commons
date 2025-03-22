@@ -6,7 +6,9 @@ import java.util.function.Function;
 import com.ccp.constantes.CcpOtherConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.dependency.injection.CcpDependencyInjection;
+import com.ccp.exceptions.http.CcpHttpClientError;
 import com.ccp.exceptions.http.CcpHttpError;
+import com.ccp.exceptions.http.CcpHttpServerError;
 
 
 public final class CcpHttpHandler {
@@ -52,6 +54,41 @@ public final class CcpHttpHandler {
 		return executeHttpRequest;
 		
 	}
+	
+	private CcpHttpError getHttpError(
+									  String trace,	
+									  String url, 
+			                          String method, 
+			                          CcpJsonRepresentation headers, 
+			                          String request, 
+			                          Integer status, 
+			                          String response, 
+			                          Set<String> expectedStatusList) {
+
+		CcpJsonRepresentation put = CcpOtherConstants.EMPTY_JSON.put("url", url).put("method", method).put("headers", headers).put("request", request).put("status", status).put("response", response);
+		CcpJsonRepresentation entity = put.put("trace", trace) .put("details", put.content).put("expectedStatusList", expectedStatusList);
+
+		if(status >= 600) {
+			CcpHttpError ccpHttpError = new CcpHttpError(entity);
+			return ccpHttpError;
+		}
+		
+		if(status < 400) {
+			CcpHttpError ccpHttpError = new CcpHttpError(entity);
+			return ccpHttpError;
+		}
+		
+		boolean isClientError = status < 500;
+		
+		if(isClientError) {
+			CcpHttpClientError ccpHttpClientError = new CcpHttpClientError(entity);
+			return ccpHttpClientError;
+		}
+		
+		CcpHttpServerError ccpHttpServerError = new CcpHttpServerError(entity);
+		return ccpHttpServerError;
+	}
+
 
 	@SuppressWarnings("unchecked")
 	public <V> V executeHttpRequest(String trace, String url, String method, CcpJsonRepresentation headers,
@@ -62,7 +99,8 @@ public final class CcpHttpHandler {
 	
 		if(flow == null) {
 			Set<String> fieldSet = this.flows.fieldSet(); 
-			throw new CcpHttpError(trace, url, method, headers, request, status, response.httpResponse, fieldSet);
+			CcpHttpError httpError = this.getHttpError(trace, url, method, headers, request, status, response.httpResponse, fieldSet);
+			throw httpError;
 		}
 	
 		boolean invalidSingleJson = response.isValidSingleJson() == false;

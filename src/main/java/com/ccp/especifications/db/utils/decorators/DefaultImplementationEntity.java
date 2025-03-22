@@ -16,12 +16,12 @@ import com.ccp.validation.annotations.CcpJsonFieldsValidation;
 
 final class DefaultImplementationEntity implements CcpEntity{
 
-	final String entityName;
+	final List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> jsonTransformers;
 	final Class<?> entityClass;
 	final CcpEntityField[] fields;
-	final List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> jsonTransformers;
-	public DefaultImplementationEntity(String entityName, Class<?> entityClass, List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> jsonTransformers, CcpEntityField... fields) {
+	final String entityName;
 
+	public DefaultImplementationEntity(String entityName, Class<?> entityClass, List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> jsonTransformers, CcpEntityField... fields) {
 		this.jsonTransformers = jsonTransformers;
 		this.entityClass = entityClass;
 		this.entityName = entityName;
