@@ -6,7 +6,7 @@ import java.util.function.Function;
 import com.ccp.constantes.CcpOtherConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.utils.CcpEntity;
-import com.ccp.exceptions.db.CcpEntityRecordNotFound;
+import com.ccp.exceptions.db.utils.CcpEntityRecordNotFound;
 
 public enum CcpEntityBulkOperationType {
 

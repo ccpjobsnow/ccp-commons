@@ -87,7 +87,7 @@ public class CcpFolderDecorator implements CcpDecorator<String> {
 	public CcpFolderDecorator readFolders(Consumer<CcpFolderDecorator> consumer){
 		File[] files = new File(this.content).listFiles();
 		if(files == null) {
-			throw new RuntimeException("The folder '" + this.content + "' does not exist");
+			return this;
 		}
 		for (File file : files) {
 			String absolutePath = file.getAbsolutePath();
@@ -100,7 +100,7 @@ public class CcpFolderDecorator implements CcpDecorator<String> {
 	public CcpFolderDecorator readFiles(Consumer<CcpFileDecorator> consumer){
 		File[] files = new File(this.content).listFiles();
 		if(files == null) {
-			throw new RuntimeException("The folder '" + this.content + "' does not exist");
+			return this;
 		}
 		for (File file : files) {
 			String absolutePath = file.getAbsolutePath();

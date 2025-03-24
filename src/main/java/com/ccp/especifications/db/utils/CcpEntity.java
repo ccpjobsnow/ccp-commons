@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -20,7 +19,8 @@ import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpEntityBulkOperationType;
 import com.ccp.especifications.db.crud.CcpCrud;
 import com.ccp.especifications.db.crud.CcpSelectUnionAll;
-import com.ccp.exceptions.db.CcpEntityRecordNotFound;
+import com.ccp.exceptions.db.utils.CcpEntityPrimaryKeyIsMissing;
+import com.ccp.exceptions.db.utils.CcpEntityRecordNotFound;
 import com.ccp.exceptions.process.CcpFlowDisturb;
 import com.ccp.process.CcpDefaultProcessStatus;
 import com.ccp.utils.CcpHashAlgorithm;
@@ -88,10 +88,18 @@ public interface CcpEntity{
 	
 	default CcpJsonRepresentation getPrimaryKeyValues(CcpJsonRepresentation json) {
 		
-		List<String> onlyPrimaryKey = this.getPrimaryKeyNames();
+		List<String> onlyPrimaryKeyNames = this.getPrimaryKeyNames();
+	
+		boolean primaryKeyMissing = json.containsAllFields(onlyPrimaryKeyNames) == false;
+		
+		if(primaryKeyMissing) {
+			throw new CcpEntityPrimaryKeyIsMissing(this, json);
+		}
+		
+		CcpJsonRepresentation onlyPrimaryKeyValues = json.getJsonPiece(onlyPrimaryKeyNames);
 		List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> jsonTransformers = this.getJsonTransformers();
-		CcpJsonRepresentation transformedJson = json.getTransformedJson(jsonTransformers);
-		CcpJsonRepresentation jsonPiece = transformedJson.getJsonPiece(onlyPrimaryKey);
+		CcpJsonRepresentation transformedJson = onlyPrimaryKeyValues.getTransformedJson(jsonTransformers);
+		CcpJsonRepresentation jsonPiece = transformedJson.getJsonPiece(onlyPrimaryKeyNames);
 		return jsonPiece;
 	}
 	
@@ -277,18 +285,8 @@ public interface CcpEntity{
 		return resourcesNames;
 	}
 	default ArrayList<Object> getSortedPrimaryKeyValues(CcpJsonRepresentation json) {
-		
-		CcpJsonRepresentation primaryKeyValues = this.getPrimaryKeyValues(json);
-		
-		List<String> primaryKeyNames = this.getPrimaryKeyNames();
-		
-		Set<String> missingKeys = primaryKeyValues.getMissingFields(primaryKeyNames);
 
-		boolean isMissingKeys = missingKeys.isEmpty() == false;
-		
-		if(isMissingKeys) {
-			throw new RuntimeException("It is missing the keys '" + missingKeys + "' from entity '" + this + "' in the object " + json );
-		}
+		CcpJsonRepresentation primaryKeyValues = this.getPrimaryKeyValues(json);
 		
 		TreeMap<String, Object> treeMap = new TreeMap<>(primaryKeyValues.content);
 		Collection<Object> values2 = treeMap.values();
@@ -309,5 +307,14 @@ public interface CcpEntity{
 	
 	default Function<CcpJsonRepresentation, CcpJsonRepresentation> getOperationCallback(CcpEntityCrudOperationType operation){
 		return json -> operation.execute(this, json);
+	}
+	
+	default CcpJsonRepresentation getEntityDetails() {
+		List<String> primaryKeyNames = this.getPrimaryKeyNames();
+		String entityName = this.getEntityName();
+		CcpJsonRepresentation put = CcpOtherConstants.EMPTY_JSON
+		.put("primaryKeyNames", primaryKeyNames)
+		.put("entityName", entityName);
+		return put;
 	}
 }

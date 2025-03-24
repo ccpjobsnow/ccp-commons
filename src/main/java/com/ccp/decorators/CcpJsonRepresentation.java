@@ -23,9 +23,12 @@ import java.util.stream.Collectors;
 import com.ccp.constantes.CcpOtherConstants;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.json.CcpJsonHandler;
-import com.ccp.exceptions.json.JsonFieldIsNotValidJsonList;
-import com.ccp.exceptions.json.JsonFieldNotFound;
-import com.ccp.exceptions.json.JsonPathIsMissing;
+import com.ccp.exceptions.json.CCpJsonFieldIsNotValidJsonList;
+import com.ccp.exceptions.json.CcpJsonFieldNotFound;
+import com.ccp.exceptions.json.CcpJsonInvalid;
+import com.ccp.exceptions.json.CcpJsonInvalidFieldFormat;
+import com.ccp.exceptions.json.CcpJsonNull;
+import com.ccp.exceptions.json.CcpJsonPathIsMissing;
 import com.ccp.utils.CcpHashAlgorithm;
 import com.ccp.validation.ItIsTrueThatTheFollowingFields;
  
@@ -95,13 +98,13 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 			return fromJson;
 			
 		} catch (Exception e) {
-			throw new RuntimeException("The following json is an invalid json: " + json , e);
+			throw new CcpJsonInvalid(json , e);
 		}
 	}
 	
 	public CcpJsonRepresentation(Map<String, Object> content) {
 		if(content == null) {
-			throw new RuntimeException("this json is null");
+			throw new CcpJsonNull();
 		}
 		LinkedHashMap<String, Object> linkedHashMap = new LinkedHashMap<String, Object>();
 		Set<String> keySet = content.keySet();
@@ -175,7 +178,7 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 		try {
 			return Double.valueOf("" + object).longValue();
 		} catch (Exception e) {
-			throw new RuntimeException("The value '" + object + "' from the field '" + field + " is not a long");
+			throw new CcpJsonInvalidFieldFormat(object, field, "long", this);
 		}
 	}
 
@@ -186,7 +189,7 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 		try {
 			return Double.valueOf("" + object).intValue();
 		} catch (Exception e) {
-			throw new RuntimeException("The value '" + object + "' from the field '" + field + "' is not a integer");
+			throw new CcpJsonInvalidFieldFormat(object, field, "integer", this);
 		}
 		
 	}
@@ -204,7 +207,7 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 		try {
 			return Double.valueOf("" + object);
 		} catch (Exception e) {
-			throw new RuntimeException("The value '" + object + "' from the field '" + field + "' is not a double");
+			throw new CcpJsonInvalidFieldFormat(object, field, "double", this);
 		}
 	}
 	
@@ -286,7 +289,6 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 		
 		return new CcpJsonRepresentation(subMap);
 	}
-
 
 	public String asUgglyJson() {
 		CcpJsonHandler json = CcpDependencyInjection.getDependency(CcpJsonHandler.class);
@@ -469,7 +471,7 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 		boolean pathIsMissing = paths.length == 0;
 		
 		if(pathIsMissing) {
-			throw new JsonPathIsMissing(this);
+			throw new CcpJsonPathIsMissing(this);
 		}
 		
 		CcpJsonRepresentation initial = this;
@@ -541,7 +543,7 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 			}
 			
 			Class<? extends Object> class1 = value.getClass();
-			throw new JsonFieldIsNotValidJsonList(this, class1, paths);
+			throw new CCpJsonFieldIsNotValidJsonList(this, class1, paths);
 		}
 		
 		return response;
@@ -717,7 +719,7 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 		Object object = this.content.get(field);
 		boolean valueIsAbsent = object == null;
 		if(valueIsAbsent) {
-			throw new JsonFieldNotFound(field, this);
+			throw new CcpJsonFieldNotFound(field, this);
 		}
 		return object;
 	}
@@ -731,7 +733,7 @@ public final class CcpJsonRepresentation implements CcpDecorator<Map<String, Obj
 			}
 			return (T) object;
 		}
-		throw new JsonFieldNotFound(Arrays.asList(fields).toString(), this);
+		throw new CcpJsonFieldNotFound(Arrays.asList(fields).toString(), this);
 	}
 	
 	public boolean isEmpty() {

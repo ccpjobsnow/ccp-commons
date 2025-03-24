@@ -13,11 +13,12 @@ public class CcpCollectionDecorator implements Iterable<Object>, CcpDecorator<Co
 
 	public final Collection<Object> content;
 	
-	public CcpCollectionDecorator(Collection<Object> content) {
-		this.content = content;
+	@SuppressWarnings("unchecked")
+	public CcpCollectionDecorator(Collection<?> content) {
+		this.content = (Collection<Object>)content;
 	}
 	
-	public CcpCollectionDecorator(Object...array) {
+	public CcpCollectionDecorator(Object[] array) {
 		this.content = Arrays.asList(array);
 	}
 	

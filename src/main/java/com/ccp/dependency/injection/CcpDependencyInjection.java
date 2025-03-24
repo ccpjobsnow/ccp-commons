@@ -4,6 +4,8 @@ import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ccp.exceptions.dependency.injection.CcpDependencyInjectionMissing;
+
 public class CcpDependencyInjection {
 
 	static Map<Class<?>, Object> instances = new HashMap<>();
@@ -28,7 +30,7 @@ public class CcpDependencyInjection {
 	public static <T> T getDependency(Class<T> interfaceClass) {
 		Object implementation = instances.get(interfaceClass);
 		if(implementation == null) {
-			throw new RuntimeException("It is missing an implementation of the class " + interfaceClass.getName());
+			throw new CcpDependencyInjectionMissing(interfaceClass);
 		}
 		return (T) implementation;
 	}

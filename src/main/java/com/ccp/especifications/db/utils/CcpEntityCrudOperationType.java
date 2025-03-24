@@ -7,8 +7,8 @@ public enum CcpEntityCrudOperationType
 {
 	save {
 		CcpJsonRepresentation execute(CcpEntity entity, CcpJsonRepresentation json) {
-			CcpJsonRepresentation result = entity.createOrUpdate(json);
-			return result;
+			entity.createOrUpdate(json);
+			return json;
 		}
 
 		
@@ -16,8 +16,8 @@ public enum CcpEntityCrudOperationType
 	delete {
 
 		CcpJsonRepresentation execute(CcpEntity entity, CcpJsonRepresentation json) {
-			CcpJsonRepresentation result = entity.delete(json);
-			return result;
+			entity.delete(json);
+			return json;
 		}
 
 		

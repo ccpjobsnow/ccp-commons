@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.utils.CcpEntity;
+import com.ccp.exceptions.db.crud.CcpFieldsToReturnNotMentioned;
 import com.ccp.exceptions.process.CcpFlowDisturb;
 import com.ccp.process.CcpProcessStatus;
 
@@ -137,7 +138,7 @@ public class CcpSelectFinally {
 		boolean zeroFields = this.fields.length <= 0;
 		
 		if(zeroFields) {
-			throw new RuntimeException("at least one field must be mentioned");
+			throw new CcpFieldsToReturnNotMentioned();
 		}
 		
 		CcpJsonRepresentation subMap = json.getJsonPiece(this.fields);

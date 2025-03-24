@@ -13,10 +13,6 @@ public class CcpBulkItem {
 	public final CcpEntity entity;
 	public final String id;
 	
-	CcpBulkItem lancarErro() {
-		throw new RuntimeException("erro lançado só por zoeira");
-	}
-
 	public CcpBulkItem(CcpJsonRepresentation json, CcpEntityBulkOperationType operation, CcpEntity entity, 
 			String id) {
 		this(json, operation, entity, id, x -> entity.getOnlyExistingFieldsAndHandledJson(x));

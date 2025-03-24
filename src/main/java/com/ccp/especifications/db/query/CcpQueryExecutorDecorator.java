@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.dependency.injection.CcpDependencyInjection;
+import com.ccp.http.CcpHttpMethods;
 
 public class CcpQueryExecutorDecorator {
 
@@ -19,7 +20,7 @@ public class CcpQueryExecutorDecorator {
 		this.elasticQuery = elasticQuery;
 	}
 
-	public CcpJsonRepresentation getResultAsPackage(String url, String method, int expectedStatus,  String... array) {
+	public CcpJsonRepresentation getResultAsPackage(String url, CcpHttpMethods method, int expectedStatus,  String... array) {
 		return this.requestExecutor.getResultAsPackage(url, method, expectedStatus, this.elasticQuery, this.resourcesNames, array);
 	}
 

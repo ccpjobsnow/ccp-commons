@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpJsonRepresentation;
+import com.ccp.exceptions.process.CcpProcessMissing;
 
 public interface CcpAsyncBusinessFactory {
 
@@ -13,7 +14,7 @@ public interface CcpAsyncBusinessFactory {
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> function = map.get(processName);
 		
 		if(function == null) {
-			throw new RuntimeException("The async process '" + processName + "' does not exist");
+			throw new CcpProcessMissing(processName);
 		}
 		
 		return function;

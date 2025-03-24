@@ -6,9 +6,8 @@ import java.util.function.Function;
 import com.ccp.constantes.CcpOtherConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.dependency.injection.CcpDependencyInjection;
-import com.ccp.exceptions.http.CcpHttpClientError;
 import com.ccp.exceptions.http.CcpHttpError;
-import com.ccp.exceptions.http.CcpHttpServerError;
+import com.ccp.http.CcpHttpMethods;
 
 
 public final class CcpHttpHandler {
@@ -34,18 +33,18 @@ public final class CcpHttpHandler {
 	
 	
 	public <V> V executeHttpSimplifiedGet(String trace, String url, CcpHttpResponseTransform<V> transformer) {
-		V executeHttpRequest = this.executeHttpRequest(trace, url, "GET", CcpOtherConstants.EMPTY_JSON, CcpOtherConstants.EMPTY_JSON, transformer);
+		V executeHttpRequest = this.executeHttpRequest(trace, url, CcpHttpMethods.GET, CcpOtherConstants.EMPTY_JSON, CcpOtherConstants.EMPTY_JSON, transformer);
 		return executeHttpRequest;
 	}
 	
-	public <V> V executeHttpRequest(String trace, String url, String method, CcpJsonRepresentation headers, CcpJsonRepresentation body, CcpHttpResponseTransform<V> transformer) {
+	public <V> V executeHttpRequest(String trace, String url, CcpHttpMethods method, CcpJsonRepresentation headers, CcpJsonRepresentation body, CcpHttpResponseTransform<V> transformer) {
 		
 		String asJson = body.asUgglyJson();
 		V executeHttpRequest = this.executeHttpRequest(trace,url, method, headers, asJson, transformer);
 		return executeHttpRequest;
 	}
 
-	public <V>V executeHttpRequest(String trace, String url, String method, CcpJsonRepresentation headers, String request, CcpHttpResponseTransform<V> transformer) {
+	public <V>V executeHttpRequest(String trace, String url, CcpHttpMethods method, CcpJsonRepresentation headers, String request, CcpHttpResponseTransform<V> transformer) {
 		
 		CcpHttpResponse response = this.ccpHttp.executeHttpRequest(url, method, headers, request);
 	
@@ -55,43 +54,10 @@ public final class CcpHttpHandler {
 		
 	}
 	
-	private CcpHttpError getHttpError(
-									  String trace,	
-									  String url, 
-			                          String method, 
-			                          CcpJsonRepresentation headers, 
-			                          String request, 
-			                          Integer status, 
-			                          String response, 
-			                          Set<String> expectedStatusList) {
-
-		CcpJsonRepresentation put = CcpOtherConstants.EMPTY_JSON.put("url", url).put("method", method).put("headers", headers).put("request", request).put("status", status).put("response", response);
-		CcpJsonRepresentation entity = put.put("trace", trace) .put("details", put.content).put("expectedStatusList", expectedStatusList);
-
-		if(status >= 600) {
-			CcpHttpError ccpHttpError = new CcpHttpError(entity);
-			return ccpHttpError;
-		}
-		
-		if(status < 400) {
-			CcpHttpError ccpHttpError = new CcpHttpError(entity);
-			return ccpHttpError;
-		}
-		
-		boolean isClientError = status < 500;
-		
-		if(isClientError) {
-			CcpHttpClientError ccpHttpClientError = new CcpHttpClientError(entity);
-			return ccpHttpClientError;
-		}
-		
-		CcpHttpServerError ccpHttpServerError = new CcpHttpServerError(entity);
-		return ccpHttpServerError;
-	}
 
 
 	@SuppressWarnings("unchecked")
-	public <V> V executeHttpRequest(String trace, String url, String method, CcpJsonRepresentation headers,
+	public <V> V executeHttpRequest(String trace, String url, CcpHttpMethods method, CcpJsonRepresentation headers,
 			String request, CcpHttpResponseTransform<V> transformer, CcpHttpResponse response) {
 		int status = response.httpStatus;
 		
@@ -99,7 +65,7 @@ public final class CcpHttpHandler {
 	
 		if(flow == null) {
 			Set<String> fieldSet = this.flows.fieldSet(); 
-			CcpHttpError httpError = this.getHttpError(trace, url, method, headers, request, status, response.httpResponse, fieldSet);
+			CcpHttpError httpError = this.ccpHttp.getHttpError(trace, url, method, headers, request, status, response.httpResponse, fieldSet);
 			throw httpError;
 		}
 	

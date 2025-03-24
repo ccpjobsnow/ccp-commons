@@ -3,7 +3,7 @@ package com.ccp.flow;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpJsonRepresentation;
-import com.ccp.exceptions.json.JsonFieldNotFound;
+import com.ccp.exceptions.json.CcpJsonFieldNotFound;
 import com.ccp.exceptions.process.CcpFlowDisturb;
 import com.ccp.process.CcpProcessStatus;
 
@@ -62,7 +62,7 @@ public final class AndIfThisExecutionReturns {
 				}
 			}
 			return json;
-		} catch (JsonFieldNotFound ex) {
+		} catch (CcpJsonFieldNotFound ex) {
 			throw ex;
 		}
 	}
