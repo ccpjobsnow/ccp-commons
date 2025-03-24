@@ -133,7 +133,7 @@ public class CcpSelectFinally {
 			CcpJsonRepresentation dataBaseRow = entity.getRequiredEntityRow(unionAll, json);
 			CcpJsonRepresentation context = json.addToItem("_entities", entityName, dataBaseRow);
 			json = action.apply(context);
-		}
+		} 
 		
 		boolean zeroFields = this.fields.length <= 0;
 		

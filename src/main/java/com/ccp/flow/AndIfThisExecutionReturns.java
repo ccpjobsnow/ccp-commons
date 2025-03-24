@@ -48,7 +48,7 @@ public final class AndIfThisExecutionReturns {
 		}
 		return responseWhenTheFlowPerformsNormally;
 	}
-
+ 
 	private CcpJsonRepresentation tryToFixTheFlow(CcpFlowDisturb e) {
 		try {
 			Function<CcpJsonRepresentation, CcpJsonRepresentation>[] nextFlows = this.flow.getAsObject(e.status.name());
