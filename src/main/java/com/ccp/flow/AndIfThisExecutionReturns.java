@@ -1,5 +1,6 @@
 package com.ccp.flow;
 
+import java.util.Arrays;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpJsonRepresentation;
@@ -52,6 +53,7 @@ public final class AndIfThisExecutionReturns {
 	private CcpJsonRepresentation tryToFixTheFlow(CcpFlowDisturb e) {
 		try {
 			Function<CcpJsonRepresentation, CcpJsonRepresentation>[] nextFlows = this.flow.getAsObject(e.status.name());
+			System.out.println("Fluxos a serem executados por este desvio de fluxo: " + Arrays.asList(nextFlows));
 			CcpJsonRepresentation json = this.givenJson;
 			
 			for (Function<CcpJsonRepresentation, CcpJsonRepresentation> nextFlow : nextFlows) {

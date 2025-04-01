@@ -11,8 +11,14 @@ public interface CcpDbBulkExecutor {
 	
 	default CcpDbBulkExecutor addRecord(CcpJsonRepresentation json, CcpEntityBulkOperationType operation, CcpEntity entity) {
 		
-		CcpBulkItem bulkItem =  entity.toBulkItem(json, operation);
-		CcpDbBulkExecutor addRecord = this.addRecord(bulkItem);
+		List<CcpBulkItem> bulkItems =  entity.toBulkItems(json, operation);
+		
+		CcpDbBulkExecutor addRecord = this;
+		
+		for (CcpBulkItem bulkItem : bulkItems) {
+			addRecord = this.addRecord(bulkItem);
+		}
+		
 		return addRecord;
 	}
 	

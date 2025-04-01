@@ -31,7 +31,12 @@ public interface CcpEntity{
 	default CcpBulkItem toBulkItemToCreateOrDelete(CcpSelectUnionAll unionAll, CcpJsonRepresentation json) {
 		boolean presentInThisUnionAll = this.isPresentInThisUnionAll(unionAll, json);
 		CcpEntityBulkOperationType operation = presentInThisUnionAll ? CcpEntityBulkOperationType.delete : CcpEntityBulkOperationType.create;
-		CcpBulkItem bulkItem = this.toBulkItem(json, operation);
+		CcpBulkItem mainBulkItem = this.getMainBulkItem(json, operation);
+		return mainBulkItem;
+	}
+
+	default CcpBulkItem getMainBulkItem(CcpJsonRepresentation json, CcpEntityBulkOperationType operation) {
+		CcpBulkItem bulkItem = this.toBulkItems(json, operation).stream().filter(x -> x.entity == this).findFirst().get();
 		return bulkItem;
 	}
 	
@@ -109,19 +114,10 @@ public interface CcpEntity{
 	
 	CcpEntityField[] getFields();
 	
-	default boolean isCopyableEntity() {
-		
-		List<String> primaryKeyNames = this.getPrimaryKeyNames();
-		int primaryKeyFieldsSize = primaryKeyNames.size();
-		CcpEntityField[] fields = this.getFields();
-		boolean thisEntityHasMoreFieldsBesidesPrimaryKeys = primaryKeyFieldsSize < fields.length;
-		return thisEntityHasMoreFieldsBesidesPrimaryKeys;
-	}
-	
-	default CcpBulkItem toBulkItem(CcpJsonRepresentation json, CcpEntityBulkOperationType operation) {
+	default List<CcpBulkItem> toBulkItems(CcpJsonRepresentation json, CcpEntityBulkOperationType operation) {
 		String calculateId = this.calculateId(json);
 		CcpBulkItem ccpBulkItem = new CcpBulkItem(json, operation, this, calculateId);
-		return ccpBulkItem;
+		return Arrays.asList(ccpBulkItem);
 	}
 	
 	default CcpEntity getTwinEntity() {

@@ -6,7 +6,7 @@ public enum CcpEntityCrudOperationType
 //implements CcpHandleWithSearchResultsInTheEntity<List<CcpBulkItem>>
 {
 	save {
-		CcpJsonRepresentation execute(CcpEntity entity, CcpJsonRepresentation json) {
+		public CcpJsonRepresentation execute(CcpEntity entity, CcpJsonRepresentation json) {
 			entity.createOrUpdate(json);
 			return json;
 		}
@@ -15,7 +15,7 @@ public enum CcpEntityCrudOperationType
 	},
 	delete {
 
-		CcpJsonRepresentation execute(CcpEntity entity, CcpJsonRepresentation json) {
+		public CcpJsonRepresentation execute(CcpEntity entity, CcpJsonRepresentation json) {
 			entity.delete(json);
 			return json;
 		}
@@ -23,5 +23,5 @@ public enum CcpEntityCrudOperationType
 		
 	};
 
-	abstract CcpJsonRepresentation execute(CcpEntity entity, CcpJsonRepresentation json);
+	public abstract CcpJsonRepresentation execute(CcpEntity entity, CcpJsonRepresentation json);
 }

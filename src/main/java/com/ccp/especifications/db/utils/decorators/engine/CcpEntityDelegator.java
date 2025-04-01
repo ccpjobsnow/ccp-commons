@@ -61,16 +61,6 @@ public abstract class CcpEntityDelegator implements CcpEntity{
 		return fields;
 	}
 
-	public boolean isCopyableEntity() {
-		boolean copyableEntity = this.entity.isCopyableEntity();
-		return copyableEntity;
-	}
-
-	public CcpBulkItem toBulkItem(CcpJsonRepresentation json, CcpEntityBulkOperationType operation) {
-		CcpBulkItem bulkItem = this.entity.toBulkItem(json, operation);
-		return bulkItem;
-	}
-
 	public CcpEntity getTwinEntity() {
 		CcpEntity twinEntity = this.entity.getTwinEntity();
 		return twinEntity;
@@ -201,6 +191,21 @@ public abstract class CcpEntityDelegator implements CcpEntity{
 			CcpEntityCrudOperationType operation) {
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> operationCallback = this.entity.getOperationCallback(operation);
 		return operationCallback;
+	}
+
+	public CcpJsonRepresentation getEntityDetails() {
+		CcpJsonRepresentation entityDetails = this.entity.getEntityDetails();
+		return entityDetails;
+	}
+
+	public CcpBulkItem getMainBulkItem(CcpJsonRepresentation json, CcpEntityBulkOperationType operation) {
+		CcpBulkItem mainBulkItem = this.entity.getMainBulkItem(json, operation);
+		return mainBulkItem;
+	}
+
+	public List<CcpBulkItem> toBulkItems(CcpJsonRepresentation json, CcpEntityBulkOperationType operation) {
+		List<CcpBulkItem> bulkItems = this.entity.toBulkItems(json, operation);
+		return bulkItems;
 	}
 	
 	

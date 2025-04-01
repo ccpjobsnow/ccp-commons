@@ -41,7 +41,7 @@ public enum CcpEntityBulkOperationType {
 		
 		if(statusNotFound) {
 			CcpJsonRepresentation json = reprocessJsonProducer.apply(result);
-			CcpBulkItem ccpBulkItem = entityToReprocess.toBulkItem(json, CcpEntityBulkOperationType.create);
+			CcpBulkItem ccpBulkItem = entityToReprocess.getMainBulkItem(json, CcpEntityBulkOperationType.create);
 			return ccpBulkItem;
 		}
 		

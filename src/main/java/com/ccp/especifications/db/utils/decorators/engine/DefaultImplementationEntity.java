@@ -44,7 +44,7 @@ final class DefaultImplementationEntity implements CcpEntity{
 	protected List<CcpBulkItem> toCreateBulkItems(String... jsons){
 		List<CcpBulkItem> collect = Arrays.asList(jsons)
 		.stream().map(x -> new CcpJsonRepresentation(x))
-		.map(x -> this.toBulkItem(x, CcpEntityBulkOperationType.create))
+		.map(x -> this.getMainBulkItem(x, CcpEntityBulkOperationType.create))
 		.collect(Collectors.toList());
 		return collect;
 	}
@@ -83,5 +83,7 @@ final class DefaultImplementationEntity implements CcpEntity{
 		ArrayList<Function<CcpJsonRepresentation, CcpJsonRepresentation>> arrayList = new ArrayList<>(this.jsonTransformers);
 		return arrayList;
 	}
+	
+	
 	
 }
