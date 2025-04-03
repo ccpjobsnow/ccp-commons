@@ -101,5 +101,5 @@ public class CcpSelectUnionAll {
 		return this.condensed.toString();
 	}
 	
-	
+
 }

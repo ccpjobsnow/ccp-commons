@@ -19,6 +19,7 @@ import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpEntityBulkOperationType;
 import com.ccp.especifications.db.crud.CcpCrud;
 import com.ccp.especifications.db.crud.CcpSelectUnionAll;
+import com.ccp.exceptions.db.utils.CcpEntityCalculateIdError;
 import com.ccp.exceptions.db.utils.CcpEntityPrimaryKeyIsMissing;
 import com.ccp.exceptions.db.utils.CcpEntityRecordNotFound;
 import com.ccp.exceptions.process.CcpFlowDisturb;
@@ -100,10 +101,17 @@ public interface CcpEntity{
 		if(primaryKeyMissing) {
 			throw new CcpEntityPrimaryKeyIsMissing(this, json);
 		}
-		
 		CcpJsonRepresentation onlyPrimaryKeyValues = json.getJsonPiece(onlyPrimaryKeyNames);
 		List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> jsonTransformers = this.getJsonTransformers();
-		CcpJsonRepresentation transformedJson = onlyPrimaryKeyValues.getTransformedJson(jsonTransformers);
+		CcpJsonRepresentation transformedJson = onlyPrimaryKeyValues;
+		for (Function<CcpJsonRepresentation, CcpJsonRepresentation> jsonTransformer : jsonTransformers) {
+			try {
+				transformedJson = onlyPrimaryKeyValues.getTransformedJson(jsonTransformer);
+			} catch (CcpEntityCalculateIdError e) {
+				continue;
+			}
+		}
+		
 		CcpJsonRepresentation jsonPiece = transformedJson.getJsonPiece(onlyPrimaryKeyNames);
 		return jsonPiece;
 	}

@@ -182,5 +182,8 @@ public class CcpEmailDecorator implements  CcpDecorator<String>{
 	public String getContent() {
 		return this.content;
 	}
+	public CcpHashDecorator hash() {
+		return new CcpHashDecorator(this.content);
+	}
 
 }

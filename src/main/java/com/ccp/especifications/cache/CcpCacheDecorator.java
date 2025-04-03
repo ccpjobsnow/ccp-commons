@@ -18,12 +18,13 @@ public final class CcpCacheDecorator {
 	public final String key;
 	
 	public CcpCacheDecorator(CcpBulkItem bulkItem) {
-		this(bulkItem.entity, bulkItem.json);
+		this(bulkItem.entity, bulkItem.id);
 	}
 	
 	public CcpCacheDecorator(CcpEntity entity, CcpJsonRepresentation json) {
 		this(entity, entity.calculateId(json));
 	}
+
 	
 	public CcpCacheDecorator(CcpEntity entity, String id) {
 		String entityName = entity.getEntityName();
