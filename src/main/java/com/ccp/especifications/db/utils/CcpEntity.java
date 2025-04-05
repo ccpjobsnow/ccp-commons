@@ -106,7 +106,7 @@ public interface CcpEntity{
 		CcpJsonRepresentation transformedJson = onlyPrimaryKeyValues;
 		for (Function<CcpJsonRepresentation, CcpJsonRepresentation> jsonTransformer : jsonTransformers) {
 			try {
-				transformedJson = onlyPrimaryKeyValues.getTransformedJson(jsonTransformer);
+				transformedJson = transformedJson.getTransformedJson(jsonTransformer);
 			} catch (CcpEntityCalculateIdError e) {
 				continue;
 			}
