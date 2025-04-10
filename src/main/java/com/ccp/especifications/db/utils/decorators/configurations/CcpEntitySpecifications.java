@@ -11,5 +11,7 @@ public @interface CcpEntitySpecifications {
 
 	boolean cacheableEntity();
 	
-	Class<?>[] jsonTransformations();
+	Class<?>[] stepsBeforeSaveEntity();
+	
+	Class<?>[] stepsAfterSaveEntity() default {};
 }

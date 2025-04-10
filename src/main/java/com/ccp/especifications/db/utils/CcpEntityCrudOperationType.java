@@ -21,7 +21,23 @@ public enum CcpEntityCrudOperationType
 		}
 
 		
-	};
+	}
+	,
+	changeStatus {
+		@Override
+		public CcpJsonRepresentation execute(CcpEntity entity, CcpJsonRepresentation json) {
+			// FIXME
+			return null;
+		}
+	},
+	none {
+		@Override
+		public CcpJsonRepresentation execute(CcpEntity entity, CcpJsonRepresentation json) {
+			return json;
+		}
+	}
+	
+	;
 
 	public abstract CcpJsonRepresentation execute(CcpEntity entity, CcpJsonRepresentation json);
 }

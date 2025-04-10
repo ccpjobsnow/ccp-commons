@@ -8,7 +8,7 @@ import com.ccp.decorators.CcpJsonRepresentation;
 
 public interface CcpMensageriaSender {
 
-	default CcpMensageriaSender send (String topic, List<CcpJsonRepresentation> msgs) {
+	default CcpMensageriaSender send(String topic, List<CcpJsonRepresentation> msgs) {
 		int size = msgs.size();
 		CcpJsonRepresentation[] a = new CcpJsonRepresentation[size];
 		CcpJsonRepresentation[] array = msgs.toArray(a);

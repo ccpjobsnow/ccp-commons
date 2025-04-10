@@ -67,7 +67,7 @@ public class CcpEntityFactory {
 
 	private CcpEntity getEntityInstance(Class<?> configurationClass, String entityName) {
 		CcpEntitySpecifications ann = configurationClass.getAnnotation(CcpEntitySpecifications.class);
-		Class<?>[] jsonTransformationsArray = ann.jsonTransformations();
+		Class<?>[] jsonTransformationsArray = ann.stepsBeforeSaveEntity();
 		 List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> jsonTransformationsList = Arrays.asList(jsonTransformationsArray).stream()
 				.map(x -> intanciateFunction(x))
 				.collect(Collectors.toList());
