@@ -9,9 +9,10 @@ import java.lang.annotation.Target;
 @Target({ ElementType.TYPE })
 public @interface CcpEntitySpecifications {
 
+	CcpEntityValidation changeStatus();
+	CcpEntityValidation delete();
+	CcpEntityValidation save();
+
 	boolean cacheableEntity();
 	
-	Class<?>[] stepsBeforeSaveEntity();
-	
-	Class<?>[] stepsAfterSaveEntity() default {};
 }

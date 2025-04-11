@@ -162,16 +162,6 @@ public abstract class CcpEntityDelegator implements CcpEntity{
 		return entityName;
 	}
 
-	public CcpEntity validateJson(CcpJsonRepresentation json) {
-		CcpEntity validateJson = this.entity.validateJson(json);
-		return validateJson;
-	}
-
-	public List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getJsonTransformers() {
-		List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> jsonTransformers = this.entity.getJsonTransformers();
-		return jsonTransformers;
-	}
-
 	public CcpJsonRepresentation getHandledJson(CcpJsonRepresentation json) {
 		CcpJsonRepresentation handledJson = this.entity.getHandledJson(json);
 		return handledJson;
@@ -206,6 +196,28 @@ public abstract class CcpEntityDelegator implements CcpEntity{
 	public List<CcpBulkItem> toBulkItems(CcpJsonRepresentation json, CcpEntityBulkOperationType operation) {
 		List<CcpBulkItem> bulkItems = this.entity.toBulkItems(json, operation);
 		return bulkItems;
+	}
+
+	public CcpJsonRepresentation changeStatus(CcpJsonRepresentation json) {
+		CcpJsonRepresentation changeStatus = this.entity.changeStatus(json);
+		return changeStatus;
+	}
+
+	public List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getStepsBefore(
+			CcpEntityCrudOperationType operation) {
+		List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> stepsBefore = this.entity.getStepsBefore(operation);
+		return stepsBefore;
+	}
+
+	public List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getStepsAfter(
+			CcpEntityCrudOperationType operation) {
+		List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> stepsAfter = this.entity.getStepsAfter(operation);
+		return stepsAfter;
+	}
+
+	public CcpEntity validateJson(CcpEntityCrudOperationType operation, CcpJsonRepresentation json) {
+		CcpEntity validateJson = this.entity.validateJson(operation, json);
+		return validateJson;
 	}
 	
 	

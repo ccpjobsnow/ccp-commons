@@ -2,12 +2,7 @@ package com.ccp.especifications.db.utils.decorators.engine;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
-import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.db.utils.CcpEntityField;
@@ -66,12 +61,8 @@ public class CcpEntityFactory {
 	}
 
 	private CcpEntity getEntityInstance(Class<?> configurationClass, String entityName) {
-		CcpEntitySpecifications ann = configurationClass.getAnnotation(CcpEntitySpecifications.class);
-		Class<?>[] jsonTransformationsArray = ann.stepsBeforeSaveEntity();
-		 List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> jsonTransformationsList = Arrays.asList(jsonTransformationsArray).stream()
-				.map(x -> intanciateFunction(x))
-				.collect(Collectors.toList());
-		CcpEntity entity = new DefaultImplementationEntity(entityName, configurationClass, jsonTransformationsList,  this.entityFields);
+
+		CcpEntity entity = new DefaultImplementationEntity(entityName, configurationClass, this.entityFields);
 		
 		boolean hasDecorators = configurationClass.isAnnotationPresent(CcpEntityDecorators.class);
 	
@@ -108,19 +99,6 @@ public class CcpEntityFactory {
 		}
 		
 		return entity;
-	}
-
-	@SuppressWarnings("unchecked")
-	private Function<CcpJsonRepresentation, CcpJsonRepresentation> intanciateFunction(Class<?> x) {
-		try {
-			Constructor<?> declaredConstructor = x.getDeclaredConstructor();
-			declaredConstructor.setAccessible(true);
-			Object newInstance = declaredConstructor.newInstance();
-			return (Function<CcpJsonRepresentation, CcpJsonRepresentation>) newInstance;
-			
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	private static CcpEntity getDecoratedEntity(CcpEntity entity, Class<?>... decorators) {

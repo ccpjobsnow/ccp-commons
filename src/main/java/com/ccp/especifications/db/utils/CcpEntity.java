@@ -102,7 +102,7 @@ public interface CcpEntity{
 			throw new CcpEntityPrimaryKeyIsMissing(this, json);
 		}
 		CcpJsonRepresentation onlyPrimaryKeyValues = json.getJsonPiece(onlyPrimaryKeyNames);
-		List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> jsonTransformers = this.getJsonTransformers();
+		List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> jsonTransformers = this.getStepsBefore(CcpEntityCrudOperationType.save);
 		CcpJsonRepresentation transformedJson = onlyPrimaryKeyValues;
 		for (Function<CcpJsonRepresentation, CcpJsonRepresentation> jsonTransformer : jsonTransformers) {
 			try {
@@ -195,11 +195,16 @@ public interface CcpEntity{
 		CcpJsonRepresentation handledJson = this.getHandledJson(json);
 		CcpJsonRepresentation onlyExistingFields = this.getOnlyExistingFields(handledJson);
 		crud.createOrUpdate(entityName, onlyExistingFields, id);
+		List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> stepsAfter = this.getStepsAfter(CcpEntityCrudOperationType.save);
+		for (Function<CcpJsonRepresentation, CcpJsonRepresentation> stepAfter : stepsAfter) {
+			
+		}
 		return handledJson;
 	}
 
 	default CcpJsonRepresentation delete(CcpJsonRepresentation json) {
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
+		
 		String calculateId = this.calculateId(json);
 		String entityName = this.getEntityName();
 		crud.delete(entityName, calculateId);
@@ -214,7 +219,7 @@ public interface CcpEntity{
 	}
 
 	default CcpJsonRepresentation getHandledJson(CcpJsonRepresentation json) {
-		List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> jsonTransformers = this.getJsonTransformers();
+		List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> jsonTransformers = this.getStepsBefore(CcpEntityCrudOperationType.save);
 		CcpJsonRepresentation transformedJson = json.getTransformedJson(jsonTransformers);
 		return transformedJson;
 	}
@@ -303,12 +308,6 @@ public interface CcpEntity{
 	}
 
 	
-	default CcpEntity validateJson(CcpJsonRepresentation json) {
-		return this;
-	}
-	
-	List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getJsonTransformers();
-	
 	default Function<CcpJsonRepresentation, CcpJsonRepresentation> getOperationCallback(CcpEntityCrudOperationType operation){
 		return json -> operation.execute(this, json);
 	}
@@ -321,4 +320,13 @@ public interface CcpEntity{
 		.put("entityName", entityName);
 		return put;
 	}
+	
+	default CcpJsonRepresentation changeStatus(CcpJsonRepresentation json) {
+		return null;
+	}
+	List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getStepsBefore(CcpEntityCrudOperationType operation);
+
+	List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getStepsAfter(CcpEntityCrudOperationType operation);
+
+	CcpEntity validateJson(CcpEntityCrudOperationType operation, CcpJsonRepresentation json);
 }

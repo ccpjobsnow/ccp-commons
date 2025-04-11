@@ -1,6 +1,5 @@
 package com.ccp.especifications.db.utils.decorators.engine;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -10,19 +9,18 @@ import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpEntityBulkOperationType;
 import com.ccp.especifications.db.utils.CcpEntity;
+import com.ccp.especifications.db.utils.CcpEntityCrudOperationType;
 import com.ccp.especifications.db.utils.CcpEntityField;
 import com.ccp.validation.CcpJsonFieldsValidations;
 import com.ccp.validation.annotations.CcpJsonFieldsValidation;
 
 final class DefaultImplementationEntity implements CcpEntity{
 
-	final List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> jsonTransformers;
 	final Class<?> entityClass;
 	final CcpEntityField[] fields;
 	final String entityName;
 
-	public DefaultImplementationEntity(String entityName, Class<?> entityClass, List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> jsonTransformers, CcpEntityField... fields) {
-		this.jsonTransformers = jsonTransformers;
+	public DefaultImplementationEntity(String entityName, Class<?> entityClass, CcpEntityField... fields) {
 		this.entityClass = entityClass;
 		this.entityName = entityName;
 		this.fields = fields;
@@ -79,10 +77,23 @@ final class DefaultImplementationEntity implements CcpEntity{
 		return this;
 	}
 
-	public List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getJsonTransformers() {
-		ArrayList<Function<CcpJsonRepresentation, CcpJsonRepresentation>> arrayList = new ArrayList<>(this.jsonTransformers);
-		return arrayList;
+	public List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getStepsBefore(
+			CcpEntityCrudOperationType operation) {
+		List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> stepsBefore = operation.getStepsBefore(this.entityClass);
+		return stepsBefore;
 	}
+
+	public List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getStepsAfter(
+			CcpEntityCrudOperationType operation) {
+		List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> stepsAfter = operation.getStepsAfter(this.entityClass);
+		return stepsAfter;
+	}
+
+	public CcpEntity validateJson(CcpEntityCrudOperationType operation, CcpJsonRepresentation json) {
+		operation.validate(this.entityClass, operation, json);
+		return this;
+	}
+
 	
 	
 	
