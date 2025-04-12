@@ -2,7 +2,6 @@ package com.ccp.especifications.db.utils.decorators.engine;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.ccp.decorators.CcpJsonRepresentation;
@@ -11,16 +10,16 @@ import com.ccp.especifications.db.bulk.CcpEntityBulkOperationType;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.db.utils.CcpEntityCrudOperationType;
 import com.ccp.especifications.db.utils.CcpEntityField;
-import com.ccp.validation.CcpJsonFieldsValidations;
-import com.ccp.validation.annotations.CcpJsonFieldsValidation;
 
 final class DefaultImplementationEntity implements CcpEntity{
 
-	final Class<?> entityClass;
+	final CcpEntityTransferRecordToReverseEntity entityTransferRecordToReverseEntity;
 	final CcpEntityField[] fields;
+	final Class<?> entityClass;
 	final String entityName;
 
-	public DefaultImplementationEntity(String entityName, Class<?> entityClass, CcpEntityField... fields) {
+	public DefaultImplementationEntity(String entityName, Class<?> entityClass, CcpEntityTransferRecordToReverseEntity entityTransferRecordToReverseEntity, CcpEntityField... fields) {
+		this.entityTransferRecordToReverseEntity = entityTransferRecordToReverseEntity;
 		this.entityClass = entityClass;
 		this.entityName = entityName;
 		this.fields = fields;
@@ -63,35 +62,23 @@ final class DefaultImplementationEntity implements CcpEntity{
 		}
 	}
 
-	
-	public CcpEntity validateJson(CcpJsonRepresentation json) {
-		boolean hasNotAnnotation = this.entityClass.isAnnotationPresent(CcpJsonFieldsValidation.class) == false;
-		
-		if(hasNotAnnotation) {
-			return this;
-		}
-		
-		CcpJsonFieldsValidation annotation = this.entityClass.getAnnotation(CcpJsonFieldsValidation.class);
-		String actionName = "save(" +this.entityClass.getSimpleName();
-		CcpJsonFieldsValidations.validate(annotation, json.content, actionName);
-		return this;
+	public CcpJsonRepresentation getTransformedJsonBeforeOperation(CcpJsonRepresentation json, CcpEntityCrudOperationType operation) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
-	public List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getStepsBefore(
-			CcpEntityCrudOperationType operation) {
-		List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> stepsBefore = operation.getStepsBefore(this.entityClass);
-		return stepsBefore;
+	public CcpJsonRepresentation getTransformedJsonAfterOperation(CcpJsonRepresentation json, CcpEntityCrudOperationType operation) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
-	public List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getStepsAfter(
-			CcpEntityCrudOperationType operation) {
-		List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> stepsAfter = operation.getStepsAfter(this.entityClass);
-		return stepsAfter;
+	public CcpEntity validateJson(CcpJsonRepresentation json, CcpEntityCrudOperationType operation) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
-	public CcpEntity validateJson(CcpEntityCrudOperationType operation, CcpJsonRepresentation json) {
-		operation.validate(this.entityClass, operation, json);
-		return this;
+	public CcpEntityTransferRecordToReverseEntity getTransferRecordToReverseEntity() {
+		return this.entityTransferRecordToReverseEntity;
 	}
 
 	

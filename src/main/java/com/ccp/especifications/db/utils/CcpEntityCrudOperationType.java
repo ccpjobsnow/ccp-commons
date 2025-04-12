@@ -8,8 +8,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.ccp.decorators.CcpJsonRepresentation;
+import com.ccp.especifications.db.utils.decorators.configurations.CcpEntityOperationSpecification;
 import com.ccp.especifications.db.utils.decorators.configurations.CcpEntitySpecifications;
-import com.ccp.especifications.db.utils.decorators.configurations.CcpEntityValidation;
 import com.ccp.validation.CcpJsonFieldsValidations;
 
 public enum CcpEntityCrudOperationType 
@@ -23,24 +23,24 @@ public enum CcpEntityCrudOperationType
 
 		public List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getStepsBefore(Class<?> entityClass) {
 			CcpEntitySpecifications especifications = super.getEspecifications(entityClass);
-			CcpEntityValidation operation = especifications.save();
+			CcpEntityOperationSpecification operation = especifications.save();
 			Class<?>[] callBacks = operation.beforeOperation();
-			List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> collect = Arrays.asList(callBacks).stream().map(x -> super.intanciateFunction(x)).collect(Collectors.toList());
+			List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> collect = Arrays.asList(callBacks).stream().map(x -> instanciateFunction(x)).collect(Collectors.toList());
 			return  collect;
 		}
 
 		public List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getStepsAfter(Class<?> entityClass) {
 			CcpEntitySpecifications especifications = super.getEspecifications(entityClass);
-			CcpEntityValidation operation = especifications.save();
+			CcpEntityOperationSpecification operation = especifications.save();
 			Class<?>[] callBacks = operation.afterOperation();
-			List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> collect = Arrays.asList(callBacks).stream().map(x -> super.intanciateFunction(x)).collect(Collectors.toList());
+			List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> collect = Arrays.asList(callBacks).stream().map(x -> instanciateFunction(x)).collect(Collectors.toList());
 			return  collect;
 		}
 
 		public void validate(Class<?> entityClass, CcpEntityCrudOperationType operation, CcpJsonRepresentation json) {
 			CcpEntitySpecifications especifications = super.getEspecifications(entityClass);
-			CcpEntityValidation op = especifications.save();
-			Class<?> jsonValidationClass = op.jsonValidationClass();
+			CcpEntityOperationSpecification op = especifications.save();
+			Class<?> jsonValidationClass = op.classWithFieldsValidationsRules();
 			String featureName = entityClass.getName()+ "." + this;
 			CcpJsonFieldsValidations.validate(jsonValidationClass, json.content, featureName);
 		}
@@ -55,24 +55,24 @@ public enum CcpEntityCrudOperationType
 		}
 		public List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getStepsBefore(Class<?> entityClass) {
 			CcpEntitySpecifications especifications = super.getEspecifications(entityClass);
-			CcpEntityValidation operation = especifications.delete();
+			CcpEntityOperationSpecification operation = especifications.delete();
 			Class<?>[] callBacks = operation.beforeOperation();
-			List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> collect = Arrays.asList(callBacks).stream().map(x -> super.intanciateFunction(x)).collect(Collectors.toList());
+			List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> collect = Arrays.asList(callBacks).stream().map(x -> instanciateFunction(x)).collect(Collectors.toList());
 			return  collect;
 		}
 
 		public List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getStepsAfter(Class<?> entityClass) {
 			CcpEntitySpecifications especifications = super.getEspecifications(entityClass);
-			CcpEntityValidation operation = especifications.delete();
+			CcpEntityOperationSpecification operation = especifications.delete();
 			Class<?>[] callBacks = operation.afterOperation();
-			List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> collect = Arrays.asList(callBacks).stream().map(x -> super.intanciateFunction(x)).collect(Collectors.toList());
+			List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> collect = Arrays.asList(callBacks).stream().map(x -> instanciateFunction(x)).collect(Collectors.toList());
 			return  collect;
 		}
 
 		public void validate(Class<?> entityClass, CcpEntityCrudOperationType operation, CcpJsonRepresentation json) {
 			CcpEntitySpecifications especifications = super.getEspecifications(entityClass);
-			CcpEntityValidation op = especifications.delete();
-			Class<?> jsonValidationClass = op.jsonValidationClass();
+			CcpEntityOperationSpecification op = especifications.delete();
+			Class<?> jsonValidationClass = op.classWithFieldsValidationsRules();
 			String featureName = entityClass.getName()+ "." + this;
 			CcpJsonFieldsValidations.validate(jsonValidationClass, json.content, featureName);
 		}
@@ -81,37 +81,7 @@ public enum CcpEntityCrudOperationType
 		
 	}
 	,
-	changeStatus {
-		@Override
-		public CcpJsonRepresentation execute(CcpEntity entity, CcpJsonRepresentation json) {
-			// FIXME
-			return null;
-		}
-		public List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getStepsBefore(Class<?> entityClass) {
-			CcpEntitySpecifications especifications = super.getEspecifications(entityClass);
-			CcpEntityValidation operation = especifications.changeStatus();
-			Class<?>[] callBacks = operation.beforeOperation();
-			List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> collect = Arrays.asList(callBacks).stream().map(x -> super.intanciateFunction(x)).collect(Collectors.toList());
-			return  collect;
-		}
-
-		public List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getStepsAfter(Class<?> entityClass) {
-			CcpEntitySpecifications especifications = super.getEspecifications(entityClass);
-			CcpEntityValidation operation = especifications.changeStatus();
-			Class<?>[] callBacks = operation.afterOperation();
-			List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> collect = Arrays.asList(callBacks).stream().map(x -> super.intanciateFunction(x)).collect(Collectors.toList());
-			return  collect;
-		}
-
-		public void validate(Class<?> entityClass, CcpEntityCrudOperationType operation, CcpJsonRepresentation json) {
-			CcpEntitySpecifications especifications = super.getEspecifications(entityClass);
-			CcpEntityValidation op = especifications.changeStatus();
-			Class<?> jsonValidationClass = op.jsonValidationClass();
-			String featureName = entityClass.getName()+ "." + this;
-			CcpJsonFieldsValidations.validate(jsonValidationClass, json.content, featureName);
-		}
-
-	},
+	
 	none {
 
 		public CcpJsonRepresentation execute(CcpEntity entity, CcpJsonRepresentation json) {
@@ -143,7 +113,7 @@ public enum CcpEntityCrudOperationType
 	public abstract void validate(Class<?> entityClass, CcpEntityCrudOperationType operation, CcpJsonRepresentation json);
 	
 	@SuppressWarnings("unchecked")
-	private Function<CcpJsonRepresentation, CcpJsonRepresentation> intanciateFunction(Class<?> x) {
+	public static Function<CcpJsonRepresentation, CcpJsonRepresentation> instanciateFunction(Class<?> x) {
 		try {
 			Constructor<?> declaredConstructor = x.getDeclaredConstructor();
 			declaredConstructor.setAccessible(true);
@@ -162,5 +132,7 @@ public enum CcpEntityCrudOperationType
 		CcpEntitySpecifications annotation = entityClass.getAnnotation(CcpEntitySpecifications.class);
 		return annotation;
 	}
+	
+
 
 }

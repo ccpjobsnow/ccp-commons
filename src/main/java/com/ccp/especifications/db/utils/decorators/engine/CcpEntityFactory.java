@@ -43,7 +43,7 @@ public class CcpEntityFactory {
 		String twinEntityName = annotation.twinEntityName();
 		
 		CcpEntity original = this.getEntityInstance(configurationClass);
-		CcpEntity twin = this.getEntityInstance(configurationClass, twinEntityName);
+		CcpEntity twin = this.getEntityInstance(configurationClass, twinEntityName, false);
 		
 		DecoratorTwinEntity entity = new DecoratorTwinEntity(original, twin);
 		return entity;
@@ -56,13 +56,14 @@ public class CcpEntityFactory {
 		int indexOf = snackCase.indexOf("entity");
 		String entityName = snackCase.substring(indexOf + 7);
 	
-		CcpEntity entity = this.getEntityInstance(configurationClass, entityName);
+		CcpEntity entity = this.getEntityInstance(configurationClass, entityName, true);
 		return entity;
 	}
 
-	private CcpEntity getEntityInstance(Class<?> configurationClass, String entityName) {
+	private CcpEntity getEntityInstance(Class<?> configurationClass, String entityName, Boolean transferType) {
 
-		CcpEntity entity = new DefaultImplementationEntity(entityName, configurationClass, this.entityFields);
+		CcpEntityTransferRecordToReverseEntity entityTransferRecordToReverseEntity = new CcpEntityTransferRecordToReverseEntity(transferType, configurationClass);
+		CcpEntity entity = new DefaultImplementationEntity(entityName, configurationClass, entityTransferRecordToReverseEntity, this.entityFields);
 		
 		boolean hasDecorators = configurationClass.isAnnotationPresent(CcpEntityDecorators.class);
 	
@@ -74,10 +75,10 @@ public class CcpEntityFactory {
 
 		boolean isExpurgableEntity = configurationClass.isAnnotationPresent(CcpEntityExpurgable.class);
 		
-		boolean invalidConfiguration = hasDecorators && isExpurgableEntity;
+		boolean thisClassIsAnnotedByExpurgableAndDecoratorsAtSameTime = hasDecorators && isExpurgableEntity;
 		
-		if(invalidConfiguration) {
-			throw new CcpIncorrectEntityClassConfiguration(configurationClass, IncorrectEntityClassConfigurationType.theConfigurationClassHaveAnInvalidConfiguration);
+		if(thisClassIsAnnotedByExpurgableAndDecoratorsAtSameTime) {
+			throw new CcpIncorrectEntityClassConfiguration(configurationClass, IncorrectEntityClassConfigurationType.thisClassIsAnnotedByExpurgableAndDecoratorsAtSameTime);
 
 		}
 		int cacheExpires = CcpEntityExpurgableOptions.daily.cacheExpires;

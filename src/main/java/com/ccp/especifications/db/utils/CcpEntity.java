@@ -19,7 +19,7 @@ import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpEntityBulkOperationType;
 import com.ccp.especifications.db.crud.CcpCrud;
 import com.ccp.especifications.db.crud.CcpSelectUnionAll;
-import com.ccp.exceptions.db.utils.CcpEntityCalculateIdError;
+import com.ccp.especifications.db.utils.decorators.engine.CcpEntityTransferRecordToReverseEntity;
 import com.ccp.exceptions.db.utils.CcpEntityPrimaryKeyIsMissing;
 import com.ccp.exceptions.db.utils.CcpEntityRecordNotFound;
 import com.ccp.exceptions.process.CcpFlowDisturb;
@@ -102,15 +102,8 @@ public interface CcpEntity{
 			throw new CcpEntityPrimaryKeyIsMissing(this, json);
 		}
 		CcpJsonRepresentation onlyPrimaryKeyValues = json.getJsonPiece(onlyPrimaryKeyNames);
-		List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> jsonTransformers = this.getStepsBefore(CcpEntityCrudOperationType.save);
-		CcpJsonRepresentation transformedJson = onlyPrimaryKeyValues;
-		for (Function<CcpJsonRepresentation, CcpJsonRepresentation> jsonTransformer : jsonTransformers) {
-			try {
-				transformedJson = transformedJson.getTransformedJson(jsonTransformer);
-			} catch (CcpEntityCalculateIdError e) {
-				continue;
-			}
-		}
+		
+		CcpJsonRepresentation transformedJson = this.getTransformedJsonBeforeOperation(onlyPrimaryKeyValues, CcpEntityCrudOperationType.save);
 		
 		CcpJsonRepresentation jsonPiece = transformedJson.getJsonPiece(onlyPrimaryKeyNames);
 		return jsonPiece;
@@ -192,14 +185,11 @@ public interface CcpEntity{
 	default CcpJsonRepresentation createOrUpdate(CcpJsonRepresentation json, String id) {
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
 		String entityName = this.getEntityName();
-		CcpJsonRepresentation handledJson = this.getHandledJson(json);
+		CcpJsonRepresentation handledJson = this.getTransformedJsonBeforeOperation(json, CcpEntityCrudOperationType.save);
 		CcpJsonRepresentation onlyExistingFields = this.getOnlyExistingFields(handledJson);
 		crud.createOrUpdate(entityName, onlyExistingFields, id);
-		List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> stepsAfter = this.getStepsAfter(CcpEntityCrudOperationType.save);
-		for (Function<CcpJsonRepresentation, CcpJsonRepresentation> stepAfter : stepsAfter) {
-			
-		}
-		return handledJson;
+		CcpJsonRepresentation transformedJson = this.getTransformedJsonAfterOperation(handledJson, CcpEntityCrudOperationType.save);
+		return transformedJson;
 	}
 
 	default CcpJsonRepresentation delete(CcpJsonRepresentation json) {
@@ -218,13 +208,6 @@ public interface CcpEntity{
 		return remove;
 	}
 
-	default CcpJsonRepresentation getHandledJson(CcpJsonRepresentation json) {
-		List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> jsonTransformers = this.getStepsBefore(CcpEntityCrudOperationType.save);
-		CcpJsonRepresentation transformedJson = json.getTransformedJson(jsonTransformers);
-		return transformedJson;
-	}
-	
-
 	default CcpJsonRepresentation getOnlyExistingFields(CcpJsonRepresentation json) {
 		CcpEntityField[] fields = this.getFields();
 		String[] array = Arrays.asList(fields).stream().map(x -> x.name()).collect(Collectors.toList()).toArray(new String[fields.length]);
@@ -233,8 +216,8 @@ public interface CcpEntity{
 	}
 	
 	default CcpJsonRepresentation getOnlyExistingFieldsAndHandledJson(CcpJsonRepresentation json) {
-		CcpJsonRepresentation handledJson = this.getHandledJson(json);
-		CcpJsonRepresentation onlyExistingFields = this.getOnlyExistingFields(handledJson);
+		CcpJsonRepresentation transformedJson = this.getTransformedJsonBeforeOperation(json, CcpEntityCrudOperationType.save);
+		CcpJsonRepresentation onlyExistingFields = this.getOnlyExistingFields(transformedJson);
 		return onlyExistingFields;
 	}
 
@@ -321,12 +304,11 @@ public interface CcpEntity{
 		return put;
 	}
 	
-	default CcpJsonRepresentation changeStatus(CcpJsonRepresentation json) {
-		return null;
-	}
-	List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getStepsBefore(CcpEntityCrudOperationType operation);
+	CcpJsonRepresentation getTransformedJsonBeforeOperation(CcpJsonRepresentation json, CcpEntityCrudOperationType operation);
 
-	List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getStepsAfter(CcpEntityCrudOperationType operation);
-
-	CcpEntity validateJson(CcpEntityCrudOperationType operation, CcpJsonRepresentation json);
+	CcpJsonRepresentation getTransformedJsonAfterOperation(CcpJsonRepresentation json, CcpEntityCrudOperationType operation);
+	
+	CcpEntity validateJson(CcpJsonRepresentation json, CcpEntityCrudOperationType operation);
+	
+	CcpEntityTransferRecordToReverseEntity getTransferRecordToReverseEntity();
 }

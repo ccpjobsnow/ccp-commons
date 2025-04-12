@@ -30,7 +30,7 @@ public class CcpIncorrectEntityClassConfiguration extends RuntimeException{
 				return message;
 			}
 		},
-		theConfigurationClassHaveAnInvalidConfiguration {
+		thisClassIsAnnotedByExpurgableAndDecoratorsAtSameTime {
 			String getMessage(String className) {
 				String message = "The class '" + className + "' can not be annoted by '" 
 						+ CcpEntityDecorators.class.getName() + "' annotation and '" + CcpEntityExpurgable.class.getName() + "' at the same time";	

@@ -1,8 +1,9 @@
 package com.ccp.especifications.db.crud;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
-import com.ccp.constantes.CcpOtherConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.utils.CcpEntity;
 
@@ -14,20 +15,20 @@ public interface CcpHandleWithSearchResultsInTheEntity<T> {
 	
 	CcpEntity getEntityToSearch();
 	
-	default Function<CcpJsonRepresentation, CcpJsonRepresentation> doBeforeSavingIfRecordIsNotFound(){
-		return CcpOtherConstants.DO_NOTHING;
+	default List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> doBeforeSavingIfRecordIsNotFound(){
+		return new ArrayList<>();
 	}
 
-	default Function<CcpJsonRepresentation, CcpJsonRepresentation> doBeforeSavingIfRecordIsFound(){
-		return CcpOtherConstants.DO_NOTHING;
+	default List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> doBeforeSavingIfRecordIsFound(){
+		return new ArrayList<>();
 	}
 
-	default Function<CcpJsonRepresentation, CcpJsonRepresentation> doAfterSavingIfRecordIsNotFound(){
-		return CcpOtherConstants.DO_NOTHING;
+	default List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> doAfterSavingIfRecordIsNotFound(){
+		return new ArrayList<>();
 	}
 
-	default Function<CcpJsonRepresentation, CcpJsonRepresentation> doAfterSavingIfRecordIsFound(){
-		return CcpOtherConstants.DO_NOTHING;
+	default List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> doAfterSavingIfRecordIsFound(){
+		return new ArrayList<>();
 	}
 	
 }

@@ -162,11 +162,6 @@ public abstract class CcpEntityDelegator implements CcpEntity{
 		return entityName;
 	}
 
-	public CcpJsonRepresentation getHandledJson(CcpJsonRepresentation json) {
-		CcpJsonRepresentation handledJson = this.entity.getHandledJson(json);
-		return handledJson;
-	}
-
 	public CcpBulkItem toBulkItemToCreateOrDelete(CcpSelectUnionAll unionAll, CcpJsonRepresentation json) {
 		CcpBulkItem bulkItemToCreateOrDelete = this.entity.toBulkItemToCreateOrDelete(unionAll, json);
 		return bulkItemToCreateOrDelete;
@@ -198,27 +193,27 @@ public abstract class CcpEntityDelegator implements CcpEntity{
 		return bulkItems;
 	}
 
-	public CcpJsonRepresentation changeStatus(CcpJsonRepresentation json) {
-		CcpJsonRepresentation changeStatus = this.entity.changeStatus(json);
-		return changeStatus;
-	}
-
-	public List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getStepsBefore(
+	public CcpJsonRepresentation getTransformedJsonBeforeOperation(CcpJsonRepresentation json,
 			CcpEntityCrudOperationType operation) {
-		List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> stepsBefore = this.entity.getStepsBefore(operation);
-		return stepsBefore;
+		CcpJsonRepresentation transformedJsonBeforeOperation = this.entity.getTransformedJsonBeforeOperation(json, operation);
+		return transformedJsonBeforeOperation;
 	}
 
-	public List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getStepsAfter(
+	public CcpJsonRepresentation getTransformedJsonAfterOperation(CcpJsonRepresentation json,
 			CcpEntityCrudOperationType operation) {
-		List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> stepsAfter = this.entity.getStepsAfter(operation);
-		return stepsAfter;
+		CcpJsonRepresentation transformedJsonAfterOperation = this.entity.getTransformedJsonAfterOperation(json, operation);
+		return transformedJsonAfterOperation;
 	}
 
-	public CcpEntity validateJson(CcpEntityCrudOperationType operation, CcpJsonRepresentation json) {
-		CcpEntity validateJson = this.entity.validateJson(operation, json);
+	public CcpEntity validateJson(CcpJsonRepresentation json, CcpEntityCrudOperationType operation) {
+		CcpEntity validateJson = this.entity.validateJson(json, operation);
 		return validateJson;
 	}
-	
+
+	public CcpEntityTransferRecordToReverseEntity getTransferRecordToReverseEntity() {
+		CcpEntityTransferRecordToReverseEntity transferRecordToReverseEntity = this.entity.getTransferRecordToReverseEntity();
+		return transferRecordToReverseEntity;
+	}
+
 	
 }
