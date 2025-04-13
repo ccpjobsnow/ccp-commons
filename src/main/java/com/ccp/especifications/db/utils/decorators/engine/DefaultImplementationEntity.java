@@ -7,18 +7,19 @@ import java.util.stream.Collectors;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpEntityBulkOperationType;
+import com.ccp.especifications.db.bulk.handlers.CcpBulkHandlerTransferRecordToReverseEntity;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.db.utils.CcpEntityCrudOperationType;
 import com.ccp.especifications.db.utils.CcpEntityField;
 
 final class DefaultImplementationEntity implements CcpEntity{
 
-	final CcpEntityTransferRecordToReverseEntity entityTransferRecordToReverseEntity;
+	final CcpBulkHandlerTransferRecordToReverseEntity entityTransferRecordToReverseEntity;
 	final CcpEntityField[] fields;
 	final Class<?> entityClass;
 	final String entityName;
 
-	public DefaultImplementationEntity(String entityName, Class<?> entityClass, CcpEntityTransferRecordToReverseEntity entityTransferRecordToReverseEntity, CcpEntityField... fields) {
+	public DefaultImplementationEntity(String entityName, Class<?> entityClass, CcpBulkHandlerTransferRecordToReverseEntity entityTransferRecordToReverseEntity, CcpEntityField... fields) {
 		this.entityTransferRecordToReverseEntity = entityTransferRecordToReverseEntity;
 		this.entityClass = entityClass;
 		this.entityName = entityName;
@@ -77,7 +78,7 @@ final class DefaultImplementationEntity implements CcpEntity{
 		return null;
 	}
 
-	public CcpEntityTransferRecordToReverseEntity getTransferRecordToReverseEntity() {
+	public CcpBulkHandlerTransferRecordToReverseEntity getTransferRecordToReverseEntity() {
 		return this.entityTransferRecordToReverseEntity;
 	}
 

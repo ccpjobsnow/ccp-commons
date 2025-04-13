@@ -1,4 +1,4 @@
-package com.ccp.especifications.db.utils.decorators.engine;
+package com.ccp.especifications.db.bulk.handlers;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -17,17 +17,13 @@ import com.ccp.especifications.db.utils.decorators.configurations.CcpEntityOpera
 import com.ccp.especifications.db.utils.decorators.configurations.CcpEntitySpecifications;
 import com.ccp.especifications.db.utils.decorators.configurations.CcpEntityTransferOperationEspecification;
 
-public class CcpEntityTransferRecordToReverseEntity implements CcpHandleWithSearchResultsInTheEntity<List<CcpBulkItem>>{
-	//FIXME VALIDACAO E TRANSFORMACAO AQUI
-	//FIXME VALIDACAO E TRANSFORMACAO NO DELETE
-	//FIXME VALIDACAO E TRANSFORMACAO NO SAVE
-	//FIXME IGNORAR CAMPOS INVALIDOS EM CASO DE TRANSFORMACAO DO JSON
+public class CcpBulkHandlerTransferRecordToReverseEntity implements CcpHandleWithSearchResultsInTheEntity<List<CcpBulkItem>>{
 	
 	private final String transferType;
 	
 	private final Class<?> entityClass;
 
-	public CcpEntityTransferRecordToReverseEntity(Boolean inactivate,
+	public CcpBulkHandlerTransferRecordToReverseEntity(Boolean inactivate,
 			Class<?> entityClass) {
 		this.transferType = inactivate ? "inactivate" : "reactivate";
 		this.entityClass = entityClass;

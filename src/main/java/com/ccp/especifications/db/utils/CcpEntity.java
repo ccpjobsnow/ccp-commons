@@ -17,9 +17,9 @@ import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpEntityBulkOperationType;
+import com.ccp.especifications.db.bulk.handlers.CcpBulkHandlerTransferRecordToReverseEntity;
 import com.ccp.especifications.db.crud.CcpCrud;
 import com.ccp.especifications.db.crud.CcpSelectUnionAll;
-import com.ccp.especifications.db.utils.decorators.engine.CcpEntityTransferRecordToReverseEntity;
 import com.ccp.exceptions.db.utils.CcpEntityPrimaryKeyIsMissing;
 import com.ccp.exceptions.db.utils.CcpEntityRecordNotFound;
 import com.ccp.exceptions.process.CcpFlowDisturb;
@@ -310,5 +310,5 @@ public interface CcpEntity{
 	
 	CcpEntity validateJson(CcpJsonRepresentation json, CcpEntityCrudOperationType operation);
 	
-	CcpEntityTransferRecordToReverseEntity getTransferRecordToReverseEntity();
+	CcpBulkHandlerTransferRecordToReverseEntity getTransferRecordToReverseEntity();
 }
