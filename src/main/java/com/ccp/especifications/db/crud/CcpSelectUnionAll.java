@@ -1,7 +1,6 @@
 package com.ccp.especifications.db.crud;
 
 import java.util.List;
-import java.util.function.Function;
 
 import com.ccp.constantes.CcpOtherConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
@@ -58,9 +57,7 @@ public class CcpSelectUnionAll {
 		boolean recordNotFound = entity.isPresentInThisUnionAll(this, searchParameter) == false;
 		
 		if(recordNotFound) {
-			List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> doBeforeSavingIfRecordIsNotFound = handler.doBeforeSavingIfRecordIsNotFound();
-			CcpJsonRepresentation apply = searchParameter.getTransformedJson(doBeforeSavingIfRecordIsNotFound);
-			T whenRecordWasNotFoundInTheEntitySearch = handler.whenRecordWasNotFoundInTheEntitySearch(apply);
+			T whenRecordWasNotFoundInTheEntitySearch = handler.whenRecordWasNotFoundInTheEntitySearch(searchParameter);
 			return whenRecordWasNotFoundInTheEntitySearch; 
 		}
 		
@@ -68,11 +65,7 @@ public class CcpSelectUnionAll {
 		CcpJsonRepresentation onlyExistingFieldsAndHandledJson = entity.getOnlyExistingFieldsAndHandledJson(searchParameter);
 		CcpJsonRepresentation recordFound = onlyExistingFieldsAndHandledJson.putAll(requiredEntityRow);
 		
-		List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> doBeforeSavingIfRecordIsFound = handler.doBeforeSavingIfRecordIsFound();
-		
-		CcpJsonRepresentation transformedJson = recordFound.getTransformedJson(doBeforeSavingIfRecordIsFound);
-		
-		CcpJsonRepresentation apply = transformedJson.putAll(searchParameter);
+		CcpJsonRepresentation apply = recordFound.putAll(searchParameter);
 		
 		T whenRecordWasFoundInTheEntitySearch = handler.whenRecordWasFoundInTheEntitySearch(apply, recordFound);
 		

@@ -8,19 +8,15 @@ import com.ccp.especifications.db.bulk.CcpExecuteBulkOperation;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.exceptions.mensageria.receiver.CcpInvalidTopic;
 
-public abstract class CcpMensageriaReceiver {
+public class CcpMensageriaReceiver {
 	
 	private final String operationTypeFieldName;
 	private final String operationFieldName;
 	
 	public CcpMensageriaReceiver(String operationTypeFieldName,  String operationFieldName) {
-		super();
 		this.operationTypeFieldName = operationTypeFieldName;
 		this.operationFieldName = operationFieldName;
 	}
-
-
-
 
 	public CcpTopic getProcess(String processName, CcpJsonRepresentation json){
 		
@@ -52,10 +48,14 @@ public abstract class CcpMensageriaReceiver {
 		Consumer<String[]> functionToDeleteKeysInTheCache = this.getFunctionToDeleteKeysInTheCache();
 		CcpTopic jnEntityTopic = valueOf.getTopicType(entity, this.operationFieldName, executeBulkOperation, functionToDeleteKeysInTheCache);
 		return jnEntityTopic;
-		
 	}
 	
 
-	public abstract CcpExecuteBulkOperation getExecuteBulkOperation();
-	public abstract Consumer<String[]> getFunctionToDeleteKeysInTheCache();
+	public CcpExecuteBulkOperation getExecuteBulkOperation() {
+		throw new UnsupportedOperationException();
+	}
+	
+	public Consumer<String[]> getFunctionToDeleteKeysInTheCache(){
+		throw new UnsupportedOperationException();
+	}
 }

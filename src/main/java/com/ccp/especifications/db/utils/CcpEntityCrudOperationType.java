@@ -10,10 +10,8 @@ import java.util.stream.Collectors;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.utils.decorators.configurations.CcpEntityOperationSpecification;
 import com.ccp.especifications.db.utils.decorators.configurations.CcpEntitySpecifications;
-import com.ccp.validation.CcpJsonFieldsValidations;
 
 public enum CcpEntityCrudOperationType 
-//implements CcpHandleWithSearchResultsInTheEntity<List<CcpBulkItem>>
 {
 	save {
 		public CcpJsonRepresentation execute(CcpEntity entity, CcpJsonRepresentation json) {
@@ -21,14 +19,6 @@ public enum CcpEntityCrudOperationType
 			return json;
 		}
 
-		public List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getStepsBefore(Class<?> entityClass) {
-			CcpEntitySpecifications especifications = super.getEspecifications(entityClass);
-			CcpEntityOperationSpecification operation = especifications.save();
-			Class<?>[] callBacks = operation.beforeOperation();
-			List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> collect = Arrays.asList(callBacks).stream().map(x -> instanciateFunction(x)).collect(Collectors.toList());
-			return  collect;
-		}
-
 		public List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getStepsAfter(Class<?> entityClass) {
 			CcpEntitySpecifications especifications = super.getEspecifications(entityClass);
 			CcpEntityOperationSpecification operation = especifications.save();
@@ -36,16 +26,6 @@ public enum CcpEntityCrudOperationType
 			List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> collect = Arrays.asList(callBacks).stream().map(x -> instanciateFunction(x)).collect(Collectors.toList());
 			return  collect;
 		}
-
-		public void validate(Class<?> entityClass, CcpEntityCrudOperationType operation, CcpJsonRepresentation json) {
-			CcpEntitySpecifications especifications = super.getEspecifications(entityClass);
-			CcpEntityOperationSpecification op = especifications.save();
-			Class<?> jsonValidationClass = op.classWithFieldsValidationsRules();
-			String featureName = entityClass.getName()+ "." + this;
-			CcpJsonFieldsValidations.validate(jsonValidationClass, json.content, featureName);
-		}
-
-		
 	},
 	delete {
 
@@ -53,13 +33,6 @@ public enum CcpEntityCrudOperationType
 			entity.delete(json);
 			return json;
 		}
-		public List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getStepsBefore(Class<?> entityClass) {
-			CcpEntitySpecifications especifications = super.getEspecifications(entityClass);
-			CcpEntityOperationSpecification operation = especifications.delete();
-			Class<?>[] callBacks = operation.beforeOperation();
-			List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> collect = Arrays.asList(callBacks).stream().map(x -> instanciateFunction(x)).collect(Collectors.toList());
-			return  collect;
-		}
 
 		public List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getStepsAfter(Class<?> entityClass) {
 			CcpEntitySpecifications especifications = super.getEspecifications(entityClass);
@@ -68,17 +41,6 @@ public enum CcpEntityCrudOperationType
 			List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> collect = Arrays.asList(callBacks).stream().map(x -> instanciateFunction(x)).collect(Collectors.toList());
 			return  collect;
 		}
-
-		public void validate(Class<?> entityClass, CcpEntityCrudOperationType operation, CcpJsonRepresentation json) {
-			CcpEntitySpecifications especifications = super.getEspecifications(entityClass);
-			CcpEntityOperationSpecification op = especifications.delete();
-			Class<?> jsonValidationClass = op.classWithFieldsValidationsRules();
-			String featureName = entityClass.getName()+ "." + this;
-			CcpJsonFieldsValidations.validate(jsonValidationClass, json.content, featureName);
-		}
-
-
-		
 	}
 	,
 	
@@ -88,30 +50,19 @@ public enum CcpEntityCrudOperationType
 			return json;
 		}
 
-		public List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getStepsBefore(Class<?> entityClass) {
-			return new ArrayList<>();
-		}
 
 		public List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getStepsAfter(Class<?> entityClass) {
 			return new ArrayList<>();
 		}
 
-		public void validate(Class<?> entityClass, CcpEntityCrudOperationType operation, CcpJsonRepresentation json) {
-
-		}
 	}
 	
 	;
 
 	public abstract CcpJsonRepresentation execute(CcpEntity entity, CcpJsonRepresentation json);
 
-	public abstract List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getStepsBefore(
-			Class<?> entityClass);
-
 	public abstract List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> getStepsAfter(Class<?> entityClass);
 
-	public abstract void validate(Class<?> entityClass, CcpEntityCrudOperationType operation, CcpJsonRepresentation json);
-	
 	@SuppressWarnings("unchecked")
 	public static Function<CcpJsonRepresentation, CcpJsonRepresentation> instanciateFunction(Class<?> x) {
 		try {
@@ -125,7 +76,7 @@ public enum CcpEntityCrudOperationType
 		}
 	}
 	
-	private CcpEntitySpecifications getEspecifications(Class<?> entityClass) {
+	public static CcpEntitySpecifications getEspecifications(Class<?> entityClass) {
 		if(entityClass.isAnnotationPresent(CcpEntitySpecifications.class) == false) {
 			throw new RuntimeException("The class '" + entityClass + "' is not annoted by " + CcpEntitySpecifications.class.getName());
 		}

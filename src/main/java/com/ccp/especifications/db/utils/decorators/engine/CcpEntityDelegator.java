@@ -194,9 +194,8 @@ public abstract class CcpEntityDelegator implements CcpEntity{
 		return bulkItems;
 	}
 
-	public CcpJsonRepresentation getTransformedJsonBeforeOperation(CcpJsonRepresentation json,
-			CcpEntityCrudOperationType operation) {
-		CcpJsonRepresentation transformedJsonBeforeOperation = this.entity.getTransformedJsonBeforeOperation(json, operation);
+	public CcpJsonRepresentation getTransformedJsonBeforeAnyCrudOperations(CcpJsonRepresentation json) {
+		CcpJsonRepresentation transformedJsonBeforeOperation = this.entity.getTransformedJsonBeforeAnyCrudOperations(json);
 		return transformedJsonBeforeOperation;
 	}
 
@@ -206,8 +205,8 @@ public abstract class CcpEntityDelegator implements CcpEntity{
 		return transformedJsonAfterOperation;
 	}
 
-	public CcpEntity validateJson(CcpJsonRepresentation json, CcpEntityCrudOperationType operation) {
-		CcpEntity validateJson = this.entity.validateJson(json, operation);
+	public CcpEntity validateJson(CcpJsonRepresentation json) {
+		CcpEntity validateJson = this.entity.validateJson(json);
 		return validateJson;
 	}
 

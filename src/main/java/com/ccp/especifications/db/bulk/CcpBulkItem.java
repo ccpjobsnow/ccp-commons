@@ -5,7 +5,7 @@ import java.util.function.Function;
 import com.ccp.constantes.CcpOtherConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.utils.CcpEntity;
-import com.ccp.exceptions.db.utils.CcpEntityCalculateIdError;
+import com.ccp.exceptions.db.utils.CcpEntityJsonTransformerError;
 
 public class CcpBulkItem {
 
@@ -24,7 +24,7 @@ public class CcpBulkItem {
 		CcpJsonRepresentation transformedJson = json;
 		try {
 			transformedJson = transformer.apply(json);
-		} catch (CcpEntityCalculateIdError e) {
+		} catch (CcpEntityJsonTransformerError e) {
 		}
 		this.json = transformedJson;
 		this.operation = operation;

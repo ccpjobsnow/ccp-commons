@@ -103,7 +103,7 @@ public interface CcpEntity{
 		}
 		CcpJsonRepresentation onlyPrimaryKeyValues = json.getJsonPiece(onlyPrimaryKeyNames);
 		
-		CcpJsonRepresentation transformedJson = this.getTransformedJsonBeforeOperation(onlyPrimaryKeyValues, CcpEntityCrudOperationType.save);
+		CcpJsonRepresentation transformedJson = this.getTransformedJsonBeforeAnyCrudOperations(onlyPrimaryKeyValues);
 		
 		CcpJsonRepresentation jsonPiece = transformedJson.getJsonPiece(onlyPrimaryKeyNames);
 		return jsonPiece;
@@ -183,9 +183,10 @@ public interface CcpEntity{
 	}
 
 	default CcpJsonRepresentation createOrUpdate(CcpJsonRepresentation json, String id) {
+		this.validateJson(json);
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
 		String entityName = this.getEntityName();
-		CcpJsonRepresentation handledJson = this.getTransformedJsonBeforeOperation(json, CcpEntityCrudOperationType.save);
+		CcpJsonRepresentation handledJson = this.getTransformedJsonBeforeAnyCrudOperations(json);
 		CcpJsonRepresentation onlyExistingFields = this.getOnlyExistingFields(handledJson);
 		crud.createOrUpdate(entityName, onlyExistingFields, id);
 		CcpJsonRepresentation transformedJson = this.getTransformedJsonAfterOperation(handledJson, CcpEntityCrudOperationType.save);
@@ -198,7 +199,8 @@ public interface CcpEntity{
 		String calculateId = this.calculateId(json);
 		String entityName = this.getEntityName();
 		crud.delete(entityName, calculateId);
-		return json;
+		CcpJsonRepresentation transformedJsonAfterOperation = this.getTransformedJsonAfterOperation(json, CcpEntityCrudOperationType.delete);
+		return transformedJsonAfterOperation;
 	}
 	
 	default boolean delete(String id) {
@@ -216,7 +218,7 @@ public interface CcpEntity{
 	}
 	
 	default CcpJsonRepresentation getOnlyExistingFieldsAndHandledJson(CcpJsonRepresentation json) {
-		CcpJsonRepresentation transformedJson = this.getTransformedJsonBeforeOperation(json, CcpEntityCrudOperationType.save);
+		CcpJsonRepresentation transformedJson = this.getTransformedJsonBeforeAnyCrudOperations(json);
 		CcpJsonRepresentation onlyExistingFields = this.getOnlyExistingFields(transformedJson);
 		return onlyExistingFields;
 	}
@@ -304,11 +306,11 @@ public interface CcpEntity{
 		return put;
 	}
 	
-	CcpJsonRepresentation getTransformedJsonBeforeOperation(CcpJsonRepresentation json, CcpEntityCrudOperationType operation);
+	CcpJsonRepresentation getTransformedJsonBeforeAnyCrudOperations(CcpJsonRepresentation json);
 
 	CcpJsonRepresentation getTransformedJsonAfterOperation(CcpJsonRepresentation json, CcpEntityCrudOperationType operation);
 	
-	CcpEntity validateJson(CcpJsonRepresentation json, CcpEntityCrudOperationType operation);
+	CcpEntity validateJson(CcpJsonRepresentation json);
 	
 	CcpBulkHandlerTransferRecordToReverseEntity getTransferRecordToReverseEntity();
 }

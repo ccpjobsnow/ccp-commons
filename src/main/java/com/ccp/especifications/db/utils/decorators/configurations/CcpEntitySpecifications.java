@@ -13,6 +13,7 @@ public @interface CcpEntitySpecifications {
 	CcpEntityTransferOperationEspecification reactivate();
 	CcpEntityOperationSpecification delete();
 	CcpEntityOperationSpecification save();
+	Class<?> classWithFieldsValidationsRules();
 
 	boolean cacheableEntity();
 	

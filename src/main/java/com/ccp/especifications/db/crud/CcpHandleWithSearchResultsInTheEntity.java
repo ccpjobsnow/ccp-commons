@@ -15,14 +15,6 @@ public interface CcpHandleWithSearchResultsInTheEntity<T> {
 	
 	CcpEntity getEntityToSearch();
 	
-	default List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> doBeforeSavingIfRecordIsNotFound(){
-		return new ArrayList<>();
-	}
-
-	default List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> doBeforeSavingIfRecordIsFound(){
-		return new ArrayList<>();
-	}
-
 	default List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> doAfterSavingIfRecordIsNotFound(){
 		return new ArrayList<>();
 	}

@@ -58,18 +58,11 @@ public class CcpBulkHandlerTransferRecordToReverseEntity implements CcpHandleWit
 		}
 	}
 	
-	public List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> doBeforeSavingIfRecordIsNotFound() {
-		List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> functions = this.getFunctions("whenRecordToTransferIsNotFound", "beforeOperation");
-		return functions;
-	}
-	public List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> doBeforeSavingIfRecordIsFound() {
-		List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> functions = this.getFunctions("whenRecordToTransferIsFound", "beforeOperation");
-		return functions;
-	}
 	public List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> doAfterSavingIfRecordIsNotFound() {
 		List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> functions = this.getFunctions("whenRecordToTransferIsNotFound", "afterOperation");
 		return functions;
 	}
+	
 	public List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> doAfterSavingIfRecordIsFound() {
 		List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> functions = this.getFunctions("whenRecordToTransferIsFound", "afterOperation");
 		return functions;
